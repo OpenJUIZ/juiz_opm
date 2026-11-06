@@ -1,7 +1,7 @@
 # OPM メタモデル
 
 - 状態: 案(2026-11-06、Step 1)。決めたことは [docs/decisions/0005](../docs/decisions/0005-metamodel-layers.md) に記録した
-- 関連: [opm-mapping.md](opm-mapping.md)(juiz と OPM の対応)、[0004](../docs/decisions/0004-xml-interchange.md)(交換形式)、[OPCAT の OPX](../docs/research/opcat-opx.md)
+- 関連: [opm-mapping.md](opm-mapping.md)(juiz と OPM の対応)、[xml.md](xml.md)(この表を写した XML、Step 2)、[0004](../docs/decisions/0004-xml-interchange.md)(交換形式)、[OPCAT の OPX](../docs/research/opcat-opx.md)
 
 ## 1. 目的と範囲
 
@@ -50,7 +50,7 @@ Model
 
 | 項目 | 決めごと |
 | --- | --- |
-| id | すべての要素(Thing、State、Link、Fan、InZoom、OPD、Appearance)が持つ。モデルの中で一意。読み書きで変えない。形は文字列で、使える文字は Step 2 で決める |
+| id | すべての要素(Thing、State、Link、Fan、InZoom、OPD、Appearance)が持つ。モデルの中で一意。読み書きで変えない。形は文字列で、XML では `[A-Za-z_][A-Za-z0-9_.-]*`([xml.md](xml.md) §4) |
 | name | Thing と State が持つ。Thing の名前はモデルの中で一意、State の名前は持ち主の Object の中で一意 |
 | description | Thing、State、Link が 0..1 で持つ自由な説明 |
 
@@ -257,8 +257,8 @@ juiz の要素になる Thing には役割を付ける。役割のない Thing �
 | juiz:id | system 以外の実体(container, composite_container, process, container_process, ec, transform) | 0..1 | juiz の ID 文字列 | `core://core/process/<ns>/<name>::<type>` など。conf から作るときは省略してよく、profile_full から作るときは必ず付ける |
 | juiz:name | 実体、topic、slot | 1 | 文字列 | juiz の名前(ネームスペースを含まない)。OPM の name は表示用で、`robot1/arm` のようにネームスペース付きでもよい |
 | juiz:namespace | 実体 | 0..1 | 文字列 | ネームスペース。省略は既定 |
-| juiz:type | container, process, container_process, node, ec, slot | 1 | type_name | 型名。型は分類リンクではなくこの注釈で持つ([0002](../docs/decisions/0002-open-points.md) の 4)。Anchor は `periodic_anchor` / `static_anchor` |
-| juiz:datatype | value | 0..1 | 型の完全名(と指紋) | juiz.datatype の型。型なしなら省略 |
+| juiz:type | container, process, container_process, composite, node, ec, slot | 1 | type_name | 型名。composite では自分の型名(J10 はこれで照らし合わせる)。型は分類リンクではなくこの注釈で持つ([0002](../docs/decisions/0002-open-points.md) の 4)。Anchor は `periodic_anchor` / `static_anchor` |
+| juiz:datatype | value | 0..1 | 型の完全名か、`<完全名>@sha256:<64 桁>`(juiz の datatype.md §5) | juiz.datatype の型。型なしなら省略 |
 | juiz:value_kind | value | 1 | `output` / `input` / `intermediate` / `const` | 戻り値、つながっていない引数、Composite の中の値、Composite の定数 |
 | juiz:value | value(value_kind が const のとき) | 1 | JSON の値 | 定数 |
 | juiz:rate | ec, container(Anchor) | 0..1 | 数(Hz) | 周期 |
@@ -338,7 +338,7 @@ juiz の要素になる Thing には役割を付ける。役割のない Thing �
 | J7 | ec は State `stopped` と `started` をちょうど持ち、initial はどちらか 1 つ。ec_cycle は ec ごとにちょうど 1 つで、その ec の `started` からの instrument(modifier が condition)をちょうど 1 本持つ。ec_cycle からの invocation の先は自分か process か container_process で、bind 先への juiz:order は 0 から隙間なく並ぶ。juiz:type が main_loop_ec なら自分への invocation があり、one_shot_ec なら自分への invocation はなく、ec を `started` から `stopped` へ変える effect がある。他の型の EC はこの 2 つを縛らない |
 | J8 | juiz の実体(container、composite_container、topic、transform、process、container_process、ec)は、role が system の Object を source とする aggregation か exhibition の target に、ちょうど 1 回なる(composite_container からの aggregation は数えない) |
 | J9 | composite の InZoom の steps は node を 1 段に 1 つずつ並べ、その順は式の木を juiz:arg_index の順に深さ優先でたどった順(composition.md §5.1)と一致する |
-| J10 | process・container_process の juiz:type が composite の型名なら、その名前の role composite の Thing がモデルにある |
+| J10 | process・container_process の juiz:type が composite の型名なら、同じ juiz:type の role composite の Thing がモデルにある |
 | J11 | transform は juiz:end が source と destination の tagged をちょうど 1 本ずつ持ち、両端は container。Transform の木の規則(transformations.md §5.2)を満たす |
 | J12 | pose は container からの exhibition をちょうど 1 本持ち、pose_listener の instrument がなければ現れない |
 | J13 | role のある Thing は consumption、agent、例外リンク、Fan を持たない |
@@ -373,7 +373,6 @@ conf のキーとの対応:
 
 ## 11. この Step で決めないこと
 
-- XML の要素名、名前空間の URI、id の文字の制限(Step 2)。
 - OPL の語と文の並び、名前の引用の仕方(Step 3)。juiz の名前(`talker0`)をそのまま OPL の名前に使えるか。
 - 上の階層の図の「まとめた線」を導く規則と、描画の形(Step 6)。
 - 同じ名前の Process と Container がある System で OPM の名前をどう分けるか(Step 7。juiz:id があれば juiz 側は区別できる)。

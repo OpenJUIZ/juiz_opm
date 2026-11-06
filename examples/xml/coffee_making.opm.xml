@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  A plain OPM model without juiz annotations. It uses the parts of the core that juiz does not:
+  agent, consumption, a state change, a XOR fan, a tagged link, duration, parallel steps,
+  and a child diagram that suppresses a state.
+
+  OPL (informal, the grammar is Step 3):
+    Barista is physical. Water can be cold or hot.
+    Coffee Making zooms into Water Heating and Grinding, in parallel, and then Brewing.
+    Water Heating changes Water from cold to hot.
+    Barista handles Grinding. Grinding consumes Coffee Beans. Grinding yields Ground Coffee.
+    Brewing consumes either Ground Coffee or Instant Coffee. Brewing consumes hot Water.
+    Brewing requires Coffee Machine. Brewing yields Coffee.
+    Coffee Machine is located in Kitchen.
+-->
+<opm:model xmlns:opm="https://openjuiz.github.io/ns/opm/v0"
+           format_version="0.1" id="coffee" name="Coffee Making">
+  <opm:description>An example of the core and diagram layers.</opm:description>
+  <opm:things>
+    <opm:object id="barista" name="Barista" essence="physical" affiliation="environmental"/>
+    <opm:object id="water" name="Water" essence="physical">
+      <opm:state id="water_cold" name="cold" initial="true" default="true"/>
+      <opm:state id="water_hot" name="hot"/>
+    </opm:object>
+    <opm:object id="beans" name="Coffee Beans" essence="physical"/>
+    <opm:object id="ground" name="Ground Coffee" essence="physical"/>
+    <opm:object id="instant" name="Instant Coffee" essence="physical"/>
+    <opm:object id="machine" name="Coffee Machine" essence="physical"/>
+    <opm:object id="kitchen" name="Kitchen" essence="physical" affiliation="environmental"/>
+    <opm:object id="coffee_cup" name="Coffee" essence="physical"/>
+
+    <opm:process id="making" name="Coffee Making"/>
+    <opm:process id="heating" name="Water Heating"/>
+    <opm:process id="grinding" name="Grinding"/>
+    <opm:process id="brewing" name="Brewing">
+      <opm:duration min="2" expected="3" max="5" unit="min"/>
+    </opm:process>
+  </opm:things>
+
+  <opm:links>
+    <opm:effect id="l_heat" source="heating" target="water" from_state="water_cold" to_state="water_hot"/>
+    <opm:agent id="l_barista" source="barista" target="grinding"/>
+    <opm:consumption id="l_beans" source="beans" target="grinding"/>
+    <opm:result id="l_ground" source="grinding" target="ground"/>
+    <opm:consumption id="l_use_ground" source="ground" target="brewing"/>
+    <opm:consumption id="l_use_instant" source="instant" target="brewing"/>
+    <opm:consumption id="l_use_water" source="water_hot" target="brewing"/>
+    <opm:instrument id="l_machine" source="machine" target="brewing"/>
+    <opm:result id="l_coffee" source="brewing" target="coffee_cup"/>
+    <opm:tagged id="l_located" source="machine" target="kitchen" tag="is located in"/>
+  </opm:links>
+
+  <opm:fans>
+    <opm:fan id="f_coffee_kind" operator="xor">
+      <opm:link_ref ref="l_use_ground"/>
+      <opm:link_ref ref="l_use_instant"/>
+    </opm:fan>
+  </opm:fans>
+
+  <opm:in_zooms>
+    <opm:in_zoom id="iz_making" refinee="making">
+      <opm:step>
+        <opm:member ref="heating"/>
+        <opm:member ref="grinding"/>
+      </opm:step>
+      <opm:step>
+        <opm:member ref="brewing"/>
+      </opm:step>
+    </opm:in_zoom>
+  </opm:in_zooms>
+
+  <opm:diagram id="sd" name="SD">
+    <opm:appearance id="a_making" thing="making"/>
+    <opm:appearance id="a_barista" thing="barista"/>
+    <opm:appearance id="a_water" thing="water"/>
+    <opm:appearance id="a_beans" thing="beans"/>
+    <opm:appearance id="a_coffee" thing="coffee_cup"/>
+    <opm:diagram id="sd1" name="SD1" refinement="in_zoom" refinee="making">
+      <opm:appearance id="a1_making" thing="making"/>
+      <opm:appearance id="a1_heating" thing="heating"/>
+      <opm:appearance id="a1_grinding" thing="grinding"/>
+      <opm:appearance id="a1_brewing" thing="brewing"/>
+      <opm:appearance id="a1_water" thing="water"/>
+      <opm:appearance id="a1_beans" thing="beans"/>
+      <opm:appearance id="a1_ground" thing="ground"/>
+      <opm:appearance id="a1_instant" thing="instant"/>
+      <opm:appearance id="a1_machine" thing="machine"/>
+      <opm:appearance id="a1_barista" thing="barista"/>
+      <opm:appearance id="a1_coffee" thing="coffee_cup"/>
+    </opm:diagram>
+    <opm:diagram id="sd2" name="SD2" refinement="view">
+      <opm:appearance id="a2_machine" thing="machine"/>
+      <opm:appearance id="a2_kitchen" thing="kitchen"/>
+      <opm:appearance id="a2_water" thing="water">
+        <opm:suppressed_state ref="water_cold"/>
+      </opm:appearance>
+    </opm:diagram>
+  </opm:diagram>
+</opm:model>

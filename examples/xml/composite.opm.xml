@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  A Composite type without slots (spec/metamodel.md §9.5, juiz docs/spec/composition.md §3).
+
+    composites:
+      - type_name: blur_gray
+        body:
+          process: cv_gaussian_blur
+          args:
+            img:
+              process: cv_cvt_color
+              args:
+                img: { expose: img }
+                code: { const: "COLOR_BGR2GRAY" }
+
+  The argument lists of the child processes are shortened for the example.
+  Evaluation is depth first, so the inner node is step 1 and the root node is step 2 (rule J9).
+-->
+<opm:model xmlns:opm="https://openjuiz.github.io/ns/opm/v0"
+           xmlns:juiz="https://openjuiz.github.io/ns/juiz/v0"
+           format_version="0.1" id="blur_gray_model" name="Blur Gray">
+  <opm:things>
+    <opm:process id="blur_gray" name="Blur Gray" juiz:role="composite" juiz:type="blur_gray">
+      <opm:description>Converts an image to grey and blurs it.</opm:description>
+    </opm:process>
+
+    <!-- Seen from outside: the exposed argument and the return value. -->
+    <opm:object id="blur_gray_img" name="Blur Gray Img" juiz:role="value" juiz:value_kind="input"/>
+    <opm:object id="blur_gray_out" name="Blur Gray Out" juiz:role="value" juiz:value_kind="output"/>
+
+    <!-- Inside. -->
+    <opm:process id="n_cvt" name="Cvt Color Node" juiz:role="node" juiz:type="cv_cvt_color"
+                 juiz:path="body.img"/>
+    <opm:object id="v_code" name="Code Const" juiz:role="value" juiz:value_kind="const">
+      <juiz:value>"COLOR_BGR2GRAY"</juiz:value>
+    </opm:object>
+    <opm:object id="v_gray" name="Gray" juiz:role="value" juiz:value_kind="intermediate"/>
+    <opm:process id="n_blur" name="Gaussian Blur Node" juiz:role="node" juiz:type="cv_gaussian_blur"
+                 juiz:path="body"/>
+  </opm:things>
+
+  <opm:links>
+    <opm:instrument id="l_expose_img" source="blur_gray_img" target="n_cvt"
+                    juiz:arg="img" juiz:arg_index="0"/>
+    <opm:instrument id="l_const_code" source="v_code" target="n_cvt"
+                    juiz:arg="code" juiz:arg_index="1"/>
+    <opm:result id="l_cvt_gray" source="n_cvt" target="v_gray"/>
+    <opm:instrument id="l_gray_blur" source="v_gray" target="n_blur"
+                    juiz:arg="img" juiz:arg_index="0"/>
+    <opm:result id="l_blur_out" source="n_blur" target="blur_gray_out"/>
+  </opm:links>
+
+  <opm:in_zooms>
+    <opm:in_zoom id="iz_blur_gray" refinee="blur_gray">
+      <opm:step><opm:member ref="n_cvt"/></opm:step>
+      <opm:step><opm:member ref="n_blur"/></opm:step>
+      <opm:part ref="v_code"/>
+      <opm:part ref="v_gray"/>
+    </opm:in_zoom>
+  </opm:in_zooms>
+
+  <opm:diagram id="sd" name="SD">
+    <opm:appearance id="a_blur_gray" thing="blur_gray"/>
+    <opm:appearance id="a_img" thing="blur_gray_img"/>
+    <opm:appearance id="a_out" thing="blur_gray_out"/>
+    <opm:diagram id="sd1" name="SD1" refinement="in_zoom" refinee="blur_gray">
+      <opm:appearance id="a1_blur_gray" thing="blur_gray"/>
+      <opm:appearance id="a1_img" thing="blur_gray_img"/>
+      <opm:appearance id="a1_out" thing="blur_gray_out"/>
+      <opm:appearance id="a1_cvt" thing="n_cvt"/>
+      <opm:appearance id="a1_code" thing="v_code"/>
+      <opm:appearance id="a1_gray" thing="v_gray"/>
+      <opm:appearance id="a1_blur" thing="n_blur"/>
+    </opm:diagram>
+  </opm:diagram>
+</opm:model>

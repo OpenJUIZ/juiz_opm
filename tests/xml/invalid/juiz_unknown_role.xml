@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- juiz:role takes the values of metamodel §9.2 -->
+<opm:model xmlns:opm="https://openjuiz.github.io/ns/opm/v0" xmlns:juiz="https://openjuiz.github.io/ns/juiz/v0" format_version="0.1" id="m">
+  <opm:things><opm:object id="a" name="A" juiz:role="widget"/></opm:things>
+</opm:model>
