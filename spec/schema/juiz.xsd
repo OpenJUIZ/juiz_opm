@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  juiz extension of the OPM model interchange format (metamodel §9).
+  Specification: spec/xml.md. Validate a juiz model with this schema; it imports opm.xsd.
+
+  Scalar annotations are attributes, structured ones (JSON values, translation, rotation)
+  are child elements. Which annotation may appear on which element is rule J1-J13 and §9.3/§9.4
+  of the metamodel, checked by the checker (Step 4 / Step 7), not by this schema.
+
+  SPDX-License-Identifier: MIT OR Apache-2.0
+  Copyright (c) ysuga
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:juiz="https://openjuiz.github.io/ns/juiz/v0"
+           targetNamespace="https://openjuiz.github.io/ns/juiz/v0"
+           elementFormDefault="qualified"
+           attributeFormDefault="qualified"
+           version="0.1">
+
+  <xs:import namespace="https://openjuiz.github.io/ns/opm/v0" schemaLocation="opm.xsd"/>
+
+  <!-- ===== Simple types ===== -->
+
+  <xs:simpleType name="Role">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="system"/>
+      <xs:enumeration value="container"/>
+      <xs:enumeration value="composite_container"/>
+      <xs:enumeration value="topic"/>
+      <xs:enumeration value="value"/>
+      <xs:enumeration value="transform"/>
+      <xs:enumeration value="pose"/>
+      <xs:enumeration value="slot"/>
+      <xs:enumeration value="process"/>
+      <xs:enumeration value="container_process"/>
+      <xs:enumeration value="composite"/>
+      <xs:enumeration value="node"/>
+      <xs:enumeration value="ec"/>
+      <xs:enumeration value="ec_cycle"/>
+      <xs:enumeration value="client"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="ValueKind">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="output"/>
+      <xs:enumeration value="input"/>
+      <xs:enumeration value="intermediate"/>
+      <xs:enumeration value="const"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Status">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="released"/>
+      <xs:enumeration value="merged"/>
+      <xs:enumeration value="in_progress"/>
+      <xs:enumeration value="planned"/>
+      <xs:enumeration value="defect"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Connection">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="push"/>
+      <xs:enumeration value="pull"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="End">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="source"/>
+      <xs:enumeration value="destination"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- A juiz name, type_name, argument name, etc.: non-empty, no white space. -->
+  <xs:simpleType name="Token">
+    <xs:restriction base="xs:token">
+      <xs:pattern value="\S+"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="TokenList">
+    <xs:list itemType="juiz:Token"/>
+  </xs:simpleType>
+
+  <!-- juiz#123, OpenJUIZ.github.io#45 -->
+  <xs:simpleType name="IssueRef">
+    <xs:restriction base="xs:token">
+      <xs:pattern value="[A-Za-z0-9_.\-]+#[0-9]+"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="IssueRefList">
+    <xs:list itemType="juiz:IssueRef"/>
+  </xs:simpleType>
+
+  <!-- A datatype as juiz writes it (juiz docs/spec/datatype.md §5):
+       full name, optionally with the fingerprint, e.g. robot.geometry.Pose2D@sha256:<64 hex>. -->
+  <xs:simpleType name="Datatype">
+    <xs:restriction base="xs:token">
+      <xs:pattern value="[^@\s]+(@sha256:[0-9a-f]{64})?"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- ===== Attributes on things (metamodel §9.2, §9.3) ===== -->
+
+  <xs:attribute name="role" type="juiz:Role"/>
+  <xs:attribute name="id" type="juiz:Token"/>
+  <xs:attribute name="name" type="juiz:Token"/>
+  <xs:attribute name="namespace" type="juiz:Token"/>
+  <xs:attribute name="type" type="juiz:Token"/>
+  <xs:attribute name="datatype" type="juiz:Datatype"/>
+  <xs:attribute name="value_kind" type="juiz:ValueKind"/>
+  <xs:attribute name="rate">
+    <xs:simpleType>
+      <xs:restriction base="xs:double">
+        <xs:minExclusive value="0"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:attribute>
+  <xs:attribute name="use_memo" type="xs:boolean"/>
+  <xs:attribute name="path" type="juiz:Token"/>
+  <xs:attribute name="writers" type="juiz:TokenList"/>
+
+  <!-- On any element, links included. -->
+  <xs:attribute name="status" type="juiz:Status"/>
+  <xs:attribute name="refs" type="juiz:IssueRefList"/>
+
+  <!-- ===== Attributes on links (metamodel §9.4) ===== -->
+
+  <xs:attribute name="arg" type="juiz:Token"/>
+  <xs:attribute name="arg_index" type="xs:nonNegativeInteger"/>
+  <xs:attribute name="connection" type="juiz:Connection"/>
+  <xs:attribute name="connection_name" type="juiz:Token"/>
+  <xs:attribute name="order" type="xs:nonNegativeInteger"/>
+  <xs:attribute name="slot_name" type="juiz:Token"/>
+  <xs:attribute name="reference" type="juiz:Token"/>
+  <xs:attribute name="initial" type="xs:boolean"/>
+  <xs:attribute name="end" type="juiz:End"/>
+
+  <!-- ===== Child elements ===== -->
+
+  <!-- JSON text. juiz:value on a value (const) thing, juiz:applied on an instrument (p_apply). -->
+  <xs:element name="value" type="xs:string"/>
+  <xs:element name="applied" type="xs:string"/>
+
+  <!-- juiz_std.geometry.Transform on a transform thing. Omitted means zero / no rotation. -->
+  <xs:element name="translation">
+    <xs:complexType>
+      <xs:attribute name="x" type="xs:double" form="unqualified" default="0"/>
+      <xs:attribute name="y" type="xs:double" form="unqualified" default="0"/>
+      <xs:attribute name="z" type="xs:double" form="unqualified" default="0"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="rotation">
+    <xs:complexType>
+      <xs:attribute name="x" type="xs:double" form="unqualified" default="0"/>
+      <xs:attribute name="y" type="xs:double" form="unqualified" default="0"/>
+      <xs:attribute name="z" type="xs:double" form="unqualified" default="0"/>
+      <xs:attribute name="w" type="xs:double" form="unqualified" default="1"/>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

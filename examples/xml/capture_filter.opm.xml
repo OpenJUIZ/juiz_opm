@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Capture and Filter (spec/metamodel.md §9.5, spec/opm-mapping.md §4).
+  A camera container process yields an image, which is pushed to a colour conversion.
+  A main loop EC runs the capture at 10 Hz.
+-->
+<opm:model xmlns:opm="https://openjuiz.github.io/ns/opm/v0"
+           xmlns:juiz="https://openjuiz.github.io/ns/juiz/v0"
+           format_version="0.1" id="capture_filter" name="Capture and Filter">
+  <opm:things>
+    <opm:object id="vision" name="Vision System" juiz:role="system" juiz:name="vision"/>
+
+    <opm:object id="camera" name="Camera" essence="physical"
+                juiz:role="container" juiz:name="camera0" juiz:type="video_capture"/>
+    <opm:process id="capture" name="Capture"
+                 juiz:role="container_process" juiz:name="camera0_readandget"
+                 juiz:type="video_capture_readandget"/>
+    <opm:object id="image" name="Image"
+                juiz:role="value" juiz:value_kind="output" juiz:datatype="juiz.Image"/>
+
+    <opm:process id="filter" name="Filter"
+                 juiz:role="process" juiz:name="cvt_color0" juiz:type="cv_cvt_color"/>
+    <opm:object id="filter_code" name="Filter Code" juiz:role="value" juiz:value_kind="input"/>
+    <opm:object id="edges" name="Edges"
+                juiz:role="value" juiz:value_kind="output" juiz:datatype="juiz.Image"/>
+
+    <opm:object id="ec" name="Main Loop EC"
+                juiz:role="ec" juiz:name="main_loop_ec0" juiz:type="main_loop_ec" juiz:rate="10">
+      <opm:state id="ec_stopped" name="stopped"/>
+      <opm:state id="ec_started" name="started" initial="true"/>
+    </opm:object>
+    <opm:process id="ec_cycle" name="Main Loop EC Cycle" juiz:role="ec_cycle"/>
+  </opm:things>
+
+  <opm:links>
+    <!-- System -->
+    <opm:aggregation id="l_vision_camera" source="vision" target="camera"/>
+    <opm:aggregation id="l_vision_ec" source="vision" target="ec"/>
+    <opm:exhibition id="l_vision_capture" source="vision" target="capture"/>
+    <opm:exhibition id="l_vision_filter" source="vision" target="filter"/>
+
+    <!-- Capture writes to the camera and yields the image. -->
+    <opm:effect id="l_capture_camera" source="capture" target="camera"/>
+    <opm:result id="l_capture_image" source="capture" target="image"/>
+
+    <!-- Push connection: the shared image, plus the invocation that rule J4 requires. -->
+    <opm:instrument id="l_image_filter" source="image" target="filter"
+                    juiz:arg="img" juiz:arg_index="0" juiz:connection="push"/>
+    <opm:invocation id="l_capture_filter" source="capture" target="filter"/>
+    <opm:instrument id="l_code_filter" source="filter_code" target="filter"
+                    juiz:arg="code" juiz:arg_index="1">
+      <juiz:applied>"COLOR_BGR2GRAY"</juiz:applied>
+    </opm:instrument>
+    <opm:result id="l_filter_edges" source="filter" target="edges"/>
+
+    <!-- EC: the cycle runs while the EC is started, invokes itself, and invokes the bound process. -->
+    <opm:instrument id="l_started_cycle" source="ec_started" target="ec_cycle" modifier="condition"/>
+    <opm:invocation id="l_cycle_self" source="ec_cycle" target="ec_cycle"/>
+    <opm:invocation id="l_cycle_capture" source="ec_cycle" target="capture" juiz:order="0"/>
+  </opm:links>
+
+  <opm:diagram id="sd" name="SD">
+    <opm:appearance id="a_camera" thing="camera">
+      <opm:layout x="40" y="40" width="120" height="60"/>
+    </opm:appearance>
+    <opm:appearance id="a_capture" thing="capture"/>
+    <opm:appearance id="a_image" thing="image"/>
+    <opm:appearance id="a_filter" thing="filter"/>
+    <opm:appearance id="a_filter_code" thing="filter_code"/>
+    <opm:appearance id="a_edges" thing="edges"/>
+    <opm:appearance id="a_ec" thing="ec"/>
+    <opm:appearance id="a_ec_cycle" thing="ec_cycle"/>
+  </opm:diagram>
+</opm:model>

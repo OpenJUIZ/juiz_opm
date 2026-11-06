@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- C10: a child OPD says how it refines -->
+<opm:model xmlns:opm="https://openjuiz.github.io/ns/opm/v0" xmlns:juiz="https://openjuiz.github.io/ns/juiz/v0" format_version="0.1" id="m">
+  <opm:things>
+    <opm:object id="a" name="A"><opm:state id="s1" name="s1"/></opm:object>
+    <opm:process id="p" name="P"/>
+  </opm:things>
+  <opm:diagram id="sd" name="SD"><opm:diagram id="sd1" name="SD1"/></opm:diagram>
+</opm:model>

@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  OPM (ISO 19450) model interchange format: core and diagram layers.
+  Specification: spec/xml.md. Metamodel: spec/metamodel.md.
+  Names follow the metamodel. This namespace is defined by juiz_opm, not by ISO.
+
+  SPDX-License-Identifier: MIT OR Apache-2.0
+  Copyright (c) ysuga
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:opm="https://openjuiz.github.io/ns/opm/v0"
+           targetNamespace="https://openjuiz.github.io/ns/opm/v0"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified"
+           version="0.1">
+
+  <!-- ===== Simple types ===== -->
+
+  <!-- Identifier of every element. ASCII only so that it can be the tail of a URI. -->
+  <xs:simpleType name="Id">
+    <xs:restriction base="xs:ID">
+      <xs:pattern value="[A-Za-z_][A-Za-z0-9_.\-]*"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Reference to an Id. Which kind of element it may point to is checked by keyref on opm:model. -->
+  <xs:simpleType name="IdRef">
+    <xs:restriction base="xs:token">
+      <xs:pattern value="[A-Za-z_][A-Za-z0-9_.\-]*"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Name">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1"/>
+      <xs:pattern value="\S(.*\S)?"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Essence">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="informatical"/>
+      <xs:enumeration value="physical"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Affiliation">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="systemic"/>
+      <xs:enumeration value="environmental"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Modifier">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="event"/>
+      <xs:enumeration value="condition"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- 1, 0..1, *, 2..*, 3..5 -->
+  <xs:simpleType name="Multiplicity">
+    <xs:restriction base="xs:token">
+      <xs:pattern value="[0-9]+|\*|[0-9]+\.\.([0-9]+|\*)"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="FanOperator">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="xor"/>
+      <xs:enumeration value="or"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Refinement">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="in_zoom"/>
+      <xs:enumeration value="unfold"/>
+      <xs:enumeration value="view"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="FormatVersion">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="0.1"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- ===== Common parts ===== -->
+
+  <!-- Free text. Line breaks are kept. -->
+  <xs:element name="description" type="xs:string"/>
+
+  <!-- Extension point: elements of other namespaces (e.g. juiz) come first in each element. -->
+  <xs:group name="Extensions">
+    <xs:sequence>
+      <xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:group>
+
+  <xs:complexType name="Element" abstract="true">
+    <xs:sequence>
+      <xs:element ref="opm:description" minOccurs="0"/>
+      <xs:group ref="opm:Extensions"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="opm:Id" use="required"/>
+    <xs:anyAttribute namespace="##other" processContents="lax"/>
+  </xs:complexType>
+
+  <xs:complexType name="Ref">
+    <xs:attribute name="ref" type="opm:IdRef" use="required"/>
+  </xs:complexType>
+
+  <!-- ===== Model ===== -->
+
+  <xs:element name="model">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="opm:Element">
+          <xs:sequence>
+            <xs:element name="things" type="opm:Things"/>
+            <xs:element name="links" type="opm:Links" minOccurs="0"/>
+            <xs:element name="fans" type="opm:Fans" minOccurs="0"/>
+            <xs:element name="in_zooms" type="opm:InZooms" minOccurs="0"/>
+            <xs:element name="diagram" type="opm:RootDiagram" minOccurs="0"/>
+          </xs:sequence>
+          <xs:attribute name="name" type="opm:Name"/>
+          <xs:attribute name="format_version" type="opm:FormatVersion" use="required"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+
+    <!-- C2: Thing names are unique in the model. -->
+    <xs:unique name="thingName">
+      <xs:selector xpath="opm:things/*"/>
+      <xs:field xpath="@name"/>
+    </xs:unique>
+
+    <!-- Keys by kind, used to check that each reference points to the right kind (C1, C3, C5). -->
+    <xs:key name="thing">
+      <xs:selector xpath="opm:things/*"/>
+      <xs:field xpath="@id"/>
+    </xs:key>
+    <xs:key name="object">
+      <xs:selector xpath="opm:things/opm:object"/>
+      <xs:field xpath="@id"/>
+    </xs:key>
+    <xs:key name="process">
+      <xs:selector xpath="opm:things/opm:process"/>
+      <xs:field xpath="@id"/>
+    </xs:key>
+    <xs:key name="state">
+      <xs:selector xpath="opm:things/opm:object/opm:state"/>
+      <xs:field xpath="@id"/>
+    </xs:key>
+    <xs:key name="objectOrState">
+      <xs:selector xpath="opm:things/opm:object | opm:things/opm:object/opm:state"/>
+      <xs:field xpath="@id"/>
+    </xs:key>
+    <xs:key name="link">
+      <xs:selector xpath="opm:links/*"/>
+      <xs:field xpath="@id"/>
+    </xs:key>
+
+    <!-- Procedural links: object (or state) to process. -->
+    <xs:keyref name="toProcessSource" refer="opm:objectOrState">
+      <xs:selector xpath="opm:links/opm:consumption | opm:links/opm:instrument | opm:links/opm:agent"/>
+      <xs:field xpath="@source"/>
+    </xs:keyref>
+    <xs:keyref name="toProcessTarget" refer="opm:process">
+      <xs:selector xpath="opm:links/opm:consumption | opm:links/opm:instrument | opm:links/opm:agent"/>
+      <xs:field xpath="@target"/>
+    </xs:keyref>
+
+    <!-- result: process to object (or state). -->
+    <xs:keyref name="resultSource" refer="opm:process">
+      <xs:selector xpath="opm:links/opm:result"/>
+      <xs:field xpath="@source"/>
+    </xs:keyref>
+    <xs:keyref name="resultTarget" refer="opm:objectOrState">
+      <xs:selector xpath="opm:links/opm:result"/>
+      <xs:field xpath="@target"/>
+    </xs:keyref>
+
+    <!-- effect: process to object, with states of the target (the owner is checked by the checker, C5). -->
+    <xs:keyref name="effectSource" refer="opm:process">
+      <xs:selector xpath="opm:links/opm:effect"/>
+      <xs:field xpath="@source"/>
+    </xs:keyref>
+    <xs:keyref name="effectTarget" refer="opm:object">
+      <xs:selector xpath="opm:links/opm:effect"/>
+      <xs:field xpath="@target"/>
+    </xs:keyref>
+    <xs:keyref name="effectFromState" refer="opm:state">
+      <xs:selector xpath="opm:links/opm:effect"/>
+      <xs:field xpath="@from_state"/>
+    </xs:keyref>
+    <xs:keyref name="effectToState" refer="opm:state">
+      <xs:selector xpath="opm:links/opm:effect"/>
+      <xs:field xpath="@to_state"/>
+    </xs:keyref>
+
+    <!-- Process to process. -->
+    <xs:keyref name="processToProcessSource" refer="opm:process">
+      <xs:selector xpath="opm:links/opm:invocation | opm:links/opm:overtime_exception | opm:links/opm:undertime_exception"/>
+      <xs:field xpath="@source"/>
+    </xs:keyref>
+    <xs:keyref name="processToProcessTarget" refer="opm:process">
+      <xs:selector xpath="opm:links/opm:invocation | opm:links/opm:overtime_exception | opm:links/opm:undertime_exception"/>
+      <xs:field xpath="@target"/>
+    </xs:keyref>
+
+    <!-- Structural links: thing to thing (same-kind rules are C6, checked by the checker). -->
+    <xs:keyref name="structuralSource" refer="opm:thing">
+      <xs:selector xpath="opm:links/opm:aggregation | opm:links/opm:exhibition | opm:links/opm:generalization | opm:links/opm:classification | opm:links/opm:tagged"/>
+      <xs:field xpath="@source"/>
+    </xs:keyref>
+    <xs:keyref name="structuralTarget" refer="opm:thing">
+      <xs:selector xpath="opm:links/opm:aggregation | opm:links/opm:exhibition | opm:links/opm:generalization | opm:links/opm:classification | opm:links/opm:tagged"/>
+      <xs:field xpath="@target"/>
+    </xs:keyref>
+
+    <!-- Fans. -->
+    <xs:keyref name="fanLink" refer="opm:link">
+      <xs:selector xpath="opm:fans/opm:fan/opm:link_ref"/>
+      <xs:field xpath="@ref"/>
+    </xs:keyref>
+
+    <!-- InZoom: at most one per thing. -->
+    <xs:unique name="inZoomRefinee">
+      <xs:selector xpath="opm:in_zooms/opm:in_zoom"/>
+      <xs:field xpath="@refinee"/>
+    </xs:unique>
+    <xs:keyref name="inZoomRefineeRef" refer="opm:thing">
+      <xs:selector xpath="opm:in_zooms/opm:in_zoom"/>
+      <xs:field xpath="@refinee"/>
+    </xs:keyref>
+    <xs:keyref name="inZoomStepMember" refer="opm:process">
+      <xs:selector xpath="opm:in_zooms/opm:in_zoom/opm:step/opm:member"/>
+      <xs:field xpath="@ref"/>
+    </xs:keyref>
+    <xs:keyref name="inZoomPart" refer="opm:thing">
+      <xs:selector xpath="opm:in_zooms/opm:in_zoom/opm:part"/>
+      <xs:field xpath="@ref"/>
+    </xs:keyref>
+
+    <!-- Diagrams. -->
+    <xs:keyref name="diagramRefinee" refer="opm:thing">
+      <xs:selector xpath=".//opm:diagram"/>
+      <xs:field xpath="@refinee"/>
+    </xs:keyref>
+    <xs:keyref name="appearanceThing" refer="opm:thing">
+      <xs:selector xpath=".//opm:appearance"/>
+      <xs:field xpath="@thing"/>
+    </xs:keyref>
+    <xs:keyref name="suppressedState" refer="opm:state">
+      <xs:selector xpath=".//opm:appearance/opm:suppressed_state"/>
+      <xs:field xpath="@ref"/>
+    </xs:keyref>
+  </xs:element>
+
+  <!-- ===== Things (metamodel §4, §5) ===== -->
+
+  <xs:complexType name="Things">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="object" type="opm:Object">
+        <!-- C2: State names are unique in the owner. -->
+        <xs:unique name="stateName">
+          <xs:selector xpath="opm:state"/>
+          <xs:field xpath="@name"/>
+        </xs:unique>
+      </xs:element>
+      <xs:element name="process" type="opm:Process"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="Thing" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="opm:Element">
+        <xs:attribute name="name" type="opm:Name" use="required"/>
+        <xs:attribute name="essence" type="opm:Essence" default="informatical"/>
+        <xs:attribute name="affiliation" type="opm:Affiliation" default="systemic"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Object">
+    <xs:complexContent>
+      <xs:extension base="opm:Thing">
+        <xs:sequence>
+          <xs:element name="state" type="opm:State" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Process">
+    <xs:complexContent>
+      <xs:extension base="opm:Thing">
+        <xs:sequence>
+          <xs:element name="duration" type="opm:Duration" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Duration">
+    <xs:attribute name="min" type="xs:decimal"/>
+    <xs:attribute name="expected" type="xs:decimal"/>
+    <xs:attribute name="max" type="xs:decimal"/>
+    <xs:attribute name="unit" type="xs:token" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="State">
+    <xs:complexContent>
+      <xs:extension base="opm:Element">
+        <xs:attribute name="name" type="opm:Name" use="required"/>
+        <xs:attribute name="initial" type="xs:boolean" default="false"/>
+        <xs:attribute name="final" type="xs:boolean" default="false"/>
+        <xs:attribute name="default" type="xs:boolean" default="false"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- ===== Links (metamodel §6) ===== -->
+
+  <xs:complexType name="Links">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <!-- procedural (§6.2) -->
+      <xs:element name="consumption" type="opm:ModifiableLink"/>
+      <xs:element name="result" type="opm:Link"/>
+      <xs:element name="effect" type="opm:EffectLink"/>
+      <xs:element name="instrument" type="opm:ModifiableLink"/>
+      <xs:element name="agent" type="opm:ModifiableLink"/>
+      <xs:element name="invocation" type="opm:Link"/>
+      <xs:element name="overtime_exception" type="opm:Link"/>
+      <xs:element name="undertime_exception" type="opm:Link"/>
+      <!-- structural (§6.3) -->
+      <xs:element name="aggregation" type="opm:AggregationLink"/>
+      <xs:element name="exhibition" type="opm:Link"/>
+      <xs:element name="generalization" type="opm:Link"/>
+      <xs:element name="classification" type="opm:Link"/>
+      <xs:element name="tagged" type="opm:TaggedLink"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="Link">
+    <xs:complexContent>
+      <xs:extension base="opm:Element">
+        <xs:attribute name="source" type="opm:IdRef" use="required"/>
+        <xs:attribute name="target" type="opm:IdRef" use="required"/>
+        <xs:attribute name="path" type="opm:Name"/>
+        <xs:attribute name="source_multiplicity" type="opm:Multiplicity"/>
+        <xs:attribute name="target_multiplicity" type="opm:Multiplicity"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- C4: modifier only on consumption, effect, instrument and agent. -->
+  <xs:complexType name="ModifiableLink">
+    <xs:complexContent>
+      <xs:extension base="opm:Link">
+        <xs:attribute name="modifier" type="opm:Modifier"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="EffectLink">
+    <xs:complexContent>
+      <xs:extension base="opm:ModifiableLink">
+        <xs:attribute name="from_state" type="opm:IdRef"/>
+        <xs:attribute name="to_state" type="opm:IdRef"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="AggregationLink">
+    <xs:complexContent>
+      <xs:extension base="opm:Link">
+        <xs:attribute name="ordered" type="xs:boolean" default="false"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="TaggedLink">
+    <xs:complexContent>
+      <xs:extension base="opm:Link">
+        <xs:attribute name="tag" type="opm:Name" use="required"/>
+        <xs:attribute name="backward_tag" type="opm:Name"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- ===== Fans (metamodel §6.4) ===== -->
+
+  <xs:complexType name="Fans">
+    <xs:sequence>
+      <xs:element name="fan" type="opm:Fan" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Fan">
+    <xs:complexContent>
+      <xs:extension base="opm:Element">
+        <xs:sequence>
+          <xs:element name="link_ref" type="opm:Ref" minOccurs="2" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="operator" type="opm:FanOperator" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- ===== InZoom (metamodel §7.1) ===== -->
+
+  <xs:complexType name="InZooms">
+    <xs:sequence>
+      <xs:element name="in_zoom" type="opm:InZoom" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="InZoom">
+    <xs:complexContent>
+      <xs:extension base="opm:Element">
+        <xs:sequence>
+          <!-- Steps run in document order; members of one step run in parallel. -->
+          <xs:element name="step" type="opm:Step" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="part" type="opm:Ref" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="refinee" type="opm:IdRef" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Step">
+    <xs:sequence>
+      <xs:element name="member" type="opm:Ref" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ===== Diagrams (metamodel §7.2) ===== -->
+  <!-- The OPD tree is the element tree: one root (SD), children nested (C10). -->
+
+  <xs:complexType name="RootDiagram">
+    <xs:complexContent>
+      <xs:extension base="opm:Element">
+        <xs:sequence>
+          <xs:element name="appearance" type="opm:Appearance" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="diagram" type="opm:ChildDiagram" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="opm:Name" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ChildDiagram">
+    <xs:complexContent>
+      <xs:extension base="opm:RootDiagram">
+        <xs:attribute name="refinement" type="opm:Refinement" use="required"/>
+        <xs:attribute name="refinee" type="opm:IdRef"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Appearance">
+    <xs:complexContent>
+      <xs:extension base="opm:Element">
+        <xs:sequence>
+          <xs:element name="suppressed_state" type="opm:Ref" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="layout" type="opm:Layout" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="thing" type="opm:IdRef" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Layout">
+    <xs:attribute name="x" type="xs:decimal" use="required"/>
+    <xs:attribute name="y" type="xs:decimal" use="required"/>
+    <xs:attribute name="width" type="xs:decimal"/>
+    <xs:attribute name="height" type="xs:decimal"/>
+  </xs:complexType>
+
+</xs:schema>

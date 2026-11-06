@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- C2: state names are unique in the owner -->
+<opm:model xmlns:opm="https://openjuiz.github.io/ns/opm/v0" xmlns:juiz="https://openjuiz.github.io/ns/juiz/v0" format_version="0.1" id="m">
+  <opm:things>
+    <opm:object id="a" name="A"><opm:state id="s1" name="s"/><opm:state id="s2" name="s"/></opm:object>
+  </opm:things>
+</opm:model>

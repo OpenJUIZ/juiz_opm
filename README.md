@@ -6,7 +6,7 @@ Specifications and tools for describing, exchanging and drawing juiz system mode
 
 ## 状態
 
-議論と仕様づくりの段階です。コードはまだありません。
+議論と仕様づくりの段階です。交換形式の XML スキーマと検証スクリプトはありますが、道具のコードはまだありません。
 
 ## 構成
 
@@ -14,6 +14,9 @@ Specifications and tools for describing, exchanging and drawing juiz system mode
 | --- | --- |
 | [spec/opm-mapping.md](spec/opm-mapping.md) | juiz の概念と OPM の対応、描画の決めごと |
 | [spec/metamodel.md](spec/metamodel.md) | モデルが持つもの(要素、状態、リンク、図の階層、juiz の拡張)の表 |
+| [spec/xml.md](spec/xml.md)、[spec/schema/](spec/schema/) | 交換形式の XML とその XSD |
+| [examples/xml/](examples/xml/) | 交換形式の例 |
+| [scripts/validate_xml.py](scripts/validate_xml.py) | 例と tests/xml/ を XSD で検査する |
 | [docs/decisions/](docs/decisions/) | 決めたことの記録(1 件 1 ファイル) |
 | [docs/research/](docs/research/) | 先行例の調査(OPCAT の保存形式など) |
 | [docs/roadmap.md](docs/roadmap.md) | 今後の作業の順番 |
