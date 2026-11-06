@@ -20,6 +20,7 @@
 7. **型は注釈で持つ。** Process・Container の type_name とデータ型は `juiz:type`・`juiz:datatype` で持ち、分類リンクは使わない([0002](0002-open-points.md) の 4)。ただし Composite の型は中身を持つので Thing(role composite)にする。conf に型だけあって実体がない場合もあるため。
 8. **push は注釈と invocation の両方に出す。** juiz の接続は (送り手, 引数, 受け手) ごとなので注釈が正本。素の OPM として読む人のために invocation も持ち、両者の一致を規則(J4)で縛る。
 9. **戻り値の Object はいつも持つ。** 図に出すかは OPD が決める。正規形を 1 つにするため。
+10. **EC は状態機械とタイマーの組で表す。** EC は State `stopped`・`started` を持つ Object(juiz の ExecutionContextState の STOPPED・STARTED)、1 回分の実行は Process(ec_cycle)とする。ec_cycle は `started` を condition で使い、main_loop_ec は自分を invocation で起こし、one_shot_ec は EC を `stopped` に戻す。`auto_start` は initial の State で表す。ysuga の指摘(2026-11-06)による。最初の案は EC を Process にして bind 先を invocation するだけだったが、開始・停止が図に出ず、何も変えない Process になっていた。
 
 ## 理由
 

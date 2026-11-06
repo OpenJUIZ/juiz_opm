@@ -128,7 +128,7 @@ State を端に取るリンク(状態を指定した consumption など)は、so
 | effect | effect link / input-output link pair | Process → Object | ○ | from_state 0..1、to_state 0..1 | P affects A. P changes A from s1 to s2. | 302 | 書き込み ContainerProcess |
 | instrument | instrument link | Object / State → Process | ○ | | P requires A. | 303(event は 308、condition は 304) | 引数、readonly、subscribe(event) |
 | agent | agent link | Object / State → Process | ○ | | H handles P. | 305 | 使わない(人が呼ぶ図だけ) |
-| invocation | invocation link | Process → Process | | | P1 invokes P2. | 307 | push、EC の bind、外からの call |
+| invocation | invocation link | Process → Process | | | P1 invokes P2. | 307 | push、EC の bind と周期、外からの call |
 | overtime_exception | overtime exception link | Process → Process | | | | 309 | 使わない |
 | undertime_exception | undertime exception link | Process → Process | | | | 309 | 使わない |
 
@@ -213,7 +213,7 @@ Appearance:
 | C5 | effect の from_state・to_state は target の Object の State |
 | C6 | 構造リンクは表 §6.3 の端の種類に従う |
 | C7 | default が真の State は Object ごとに高々 1 つ |
-| C8 | (警告)Process は、InZoom を持つなら中の Process を含めて、少なくとも 1 本の consumption・result・effect を持つ。ISO は何も変えない Process を認めないが、EC や client のように起こすだけの Process があるので、誤りにはせず警告にする |
+| C8 | (警告)Process は、InZoom を持つなら中の Process を含めて、少なくとも 1 本の consumption・result・effect を持つ。ISO は何も変えない Process を認めないが、main_loop_ec の周期の Process(ec_cycle)や client のように起こすだけの Process があるので、誤りにはせず警告にする |
 | C9 | InZoom の steps と parts は重ならず、中の Thing は 1 つの InZoom にだけ属する。InZoom の入れ子は循環しない |
 | C10 | OPD の木は根が 1 つで循環しない。in_zoom の OPD の refinee は InZoom を持つ |
 | C11 | Fan の links は 2 本以上で、kind と Process 側の端が同じ |
@@ -246,7 +246,8 @@ juiz の要素になる Thing には役割を付ける。役割のない Thing �
 | container_process | process | informatical | systemic | ContainerProcess、CompositeContainerProcess | `containers[].processes`、`composite_containers[].processes` |
 | composite | process | informatical | systemic | Composite の型 | `composites:` |
 | node | process | informatical | systemic | Composite の式の木のノード | `composites[].body` |
-| ec | process | informatical | systemic | EC | `ecs:` |
+| ec | object | informatical | systemic | EC。State は `stopped` と `started` | `ecs:` |
+| ec_cycle | process | informatical | systemic | EC が bind した Process を起こす 1 回分の実行(タイマー) | 書かない(ec ごとに 1 つ) |
 | client | process | informatical | environmental | 外から call する相手 | 書かない(図のためだけ) |
 
 ### 9.3 Thing に付ける注釈
@@ -261,7 +262,6 @@ juiz の要素になる Thing には役割を付ける。役割のない Thing �
 | juiz:value_kind | value | 1 | `output` / `input` / `intermediate` / `const` | 戻り値、つながっていない引数、Composite の中の値、Composite の定数 |
 | juiz:value | value(value_kind が const のとき) | 1 | JSON の値 | 定数 |
 | juiz:rate | ec, container(Anchor) | 0..1 | 数(Hz) | 周期 |
-| juiz:auto_start | ec | 0..1 | 真偽 | |
 | juiz:use_memo | process, container_process | 0..1 | 真偽 | |
 | juiz:path | node | 1 | 文字列 | 式の木の中の位置(`body.img` など、composition.md §6) |
 | juiz:translation, juiz:rotation | transform | 0..1 | juiz_std.geometry.Transform の形 | 省略は 0 と回転なし |
@@ -278,7 +278,7 @@ juiz の要素になる Thing には役割を付ける。役割のない Thing �
 | juiz:connection | 別の Process の output の value からの instrument | 1 | `push` / `pull` | 接続の種類 |
 | juiz:connection_name | 同上 | 0..1 | 文字列 | conf の接続の `name` |
 | juiz:applied | instrument | 0..1 | JSON の値 | conf の `p_apply` で入れる値 |
-| juiz:order | ec からの invocation | 1 | 0 からの整数 | `bind` の並び |
+| juiz:order | ec_cycle から bind 先への invocation | 1 | 0 からの整数 | `bind` の並び |
 | juiz:slot_name | composite_container からの aggregation | 1 | 文字列 | スロット名 |
 | juiz:reference | pose からの instrument(event) | 0..1 | Container の名前 | pose_listener の基準 |
 | juiz:initial | 同上 | 0..1 | 真偽 | pose_listener の `initial` |
@@ -294,8 +294,8 @@ juiz の要素になる Thing には役割を付ける。役割のない Thing �
 | push 接続 | 上に加え、送り手から受け手への invocation | 送り手・受け手の組に push の接続が 1 本以上あるときに限り invocation が 1 本ある |
 | ContainerProcess | 持ち主の Container への effect(書き込み)か instrument(readonly)がちょうど 1 本 | readonly の注釈は持たない(線の種類で分かる) |
 | Topic | publish は topic への result、subscribe は topic からの instrument(modifier が event) | subscribe に juiz:arg |
-| EC | ec から bind した Process への invocation | juiz:order、juiz:rate |
-| System | system から Container・CompositeContainer・Topic・Transform への aggregation、Process・ContainerProcess・EC への exhibition。副系は system から system への aggregation | |
+| EC | 状態機械とタイマーの組。ec(Object)は State `stopped` と `started` を持ち、`auto_start` が真なら `started`、偽なら `stopped` を initial にする。ec_cycle は `started` の ec を condition の instrument で使い、bind 先を invocation で起こす。main_loop_ec は ec_cycle が自分を invocation で起こす(周期は ec の juiz:rate)。one_shot_ec は ec_cycle が ec を `started` から `stopped` へ変える(effect、1 回で止まる) | ec に juiz:type・juiz:rate、invocation に juiz:order |
+| System | system から Container・CompositeContainer・Topic・Transform への aggregation、EC への aggregation、Process・ContainerProcess への exhibition。副系は system から system への aggregation | |
 | Composite の型 | process(role composite)の InZoom。steps は node の評価順で、1 段に 1 つ。parts は中の value と slot | 外に見える引数は value(input)、戻り値は value(output) |
 | Composite のノード | node の戻り値は value(intermediate)への result、それを親の node が instrument で受ける。根の node は Composite の value(output)への result | `const` は value(const)からの instrument、`expose` は Composite の value(input)からの instrument |
 | Composite のインスタンス | 普通の process / container_process で、juiz:type が Composite の型名 | 中身は型の InZoom を見る |
@@ -312,7 +312,8 @@ juiz の要素になる Thing には役割を付ける。役割のない Thing �
 | Camera | object, physical | role=container, type=video_capture |
 | Capture | process | role=container_process, type=video_capture_readandget |
 | Filter | process | role=process, type=cv_cvt_color |
-| Main Loop EC | process | role=ec, type=main_loop_ec, rate=10 |
+| Main Loop EC | object | role=ec, type=main_loop_ec, rate=10。State は stopped と started(initial) |
+| Main Loop EC Cycle | process | role=ec_cycle |
 | Image | object | role=value, value_kind=output |
 | Edges | object | role=value, value_kind=output |
 | Capture → Camera | effect | |
@@ -320,7 +321,9 @@ juiz の要素になる Thing には役割を付ける。役割のない Thing �
 | Image → Filter | instrument | arg=img, arg_index=0, connection=push(Filter の 2 つ目の引数 code は省いた) |
 | Capture → Filter | invocation | (push があるため) |
 | Filter → Edges | result | |
-| Main Loop EC → Capture | invocation | order=0 |
+| Main Loop EC の started → Main Loop EC Cycle | instrument | modifier=condition |
+| Main Loop EC Cycle → Main Loop EC Cycle | invocation | (周期。自分を起こす) |
+| Main Loop EC Cycle → Capture | invocation | order=0 |
 
 ### 9.6 juiz の整形式の規則
 
@@ -332,7 +335,7 @@ juiz の要素になる Thing には役割を付ける。役割のない Thing �
 | J4 | 送り手 P1 と受け手 P2 の間の invocation は、P1 の output から P2 への push の接続が 1 本以上あるときに限り、ちょうど 1 本ある |
 | J5 | container_process は、role が container か composite_container の Object への effect か instrument を、ちょうど 1 本持つ(持ち主) |
 | J6 | topic への result と topic からの instrument(event)は、role が process・container_process の Thing にだけ付く |
-| J7 | ec からの invocation の先は process か container_process で、juiz:order は ec の中で 0 から隙間なく並ぶ |
+| J7 | ec は State `stopped` と `started` をちょうど持ち、initial はどちらか 1 つ。ec_cycle は ec ごとにちょうど 1 つで、その ec の `started` からの instrument(modifier が condition)をちょうど 1 本持つ。ec_cycle からの invocation の先は自分か process か container_process で、bind 先への juiz:order は 0 から隙間なく並ぶ。juiz:type が main_loop_ec なら自分への invocation があり、one_shot_ec なら自分への invocation はなく、ec を `started` から `stopped` へ変える effect がある。他の型の EC はこの 2 つを縛らない |
 | J8 | juiz の実体(container、composite_container、topic、transform、process、container_process、ec)は、role が system の Object を source とする aggregation か exhibition の target に、ちょうど 1 回なる(composite_container からの aggregation は数えない) |
 | J9 | composite の InZoom の steps は node を 1 段に 1 つずつ並べ、その順は式の木を juiz:arg_index の順に深さ優先でたどった順(composition.md §5.1)と一致する |
 | J10 | process・container_process の juiz:type が composite の型名なら、その名前の role composite の Thing がモデルにある |
@@ -358,7 +361,7 @@ conf のキーとの対応:
 | `processes:` | role process の Thing、`p_apply` は juiz:applied、`publishes` / `subscribes` は topic へのリンク、`use_memo` は juiz:use_memo |
 | `containers:`、その `processes` | role container の Object と role container_process の Thing、持ち主への effect か instrument |
 | `connections:` | instrument(juiz:connection、juiz:arg、juiz:connection_name)と、push なら invocation |
-| `ecs:` | role ec の Thing と invocation(juiz:order) |
+| `ecs:` | role ec の Object(`auto_start` は initial の State)、role ec_cycle の Process、invocation(juiz:order) |
 | `composites:` | role composite の Thing と InZoom、node・value・slot |
 | `composite_containers:` | role composite_container の Object と aggregation(juiz:slot_name) |
 | `transforms:` | role transform の Object と tagged 2 本 |
