@@ -1,0 +1,21 @@
+Model "Blur Gray".
+
+Blur Gray is a process {description: "Converts an image to grey and blurs it."} [role: composite, type: blur_gray].
+Blur Gray zooms into Cvt Color Node, then Gaussian Blur Node, as well as Code Const and Gray.
+
+Blur Gray Img is an object [role: value, value_kind: input].
+
+Blur Gray Out is an object [role: value, value_kind: output].
+
+Code Const is an object [role: value, value_kind: const, value: "COLOR_BGR2GRAY"].
+
+Cvt Color Node is a process [role: node, type: cv_cvt_color, path: body.img].
+Cvt Color Node yields Gray.
+Cvt Color Node requires Blur Gray Img [arg: img, arg_index: 0].
+Cvt Color Node requires Code Const [arg: code, arg_index: 1].
+
+Gaussian Blur Node is a process [role: node, type: cv_gaussian_blur, path: body].
+Gaussian Blur Node yields Blur Gray Out.
+Gaussian Blur Node requires Gray [arg: img, arg_index: 0].
+
+Gray is an object [role: value, value_kind: intermediate].

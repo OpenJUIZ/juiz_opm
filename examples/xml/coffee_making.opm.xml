@@ -4,14 +4,7 @@
   agent, consumption, a state change, a XOR fan, a tagged link, duration, parallel steps,
   and a child diagram that suppresses a state.
 
-  OPL (informal, the grammar is Step 3):
-    Barista is physical. Water can be cold or hot.
-    Coffee Making zooms into Water Heating and Grinding, in parallel, and then Brewing.
-    Water Heating changes Water from cold to hot.
-    Barista handles Grinding. Grinding consumes Coffee Beans. Grinding yields Ground Coffee.
-    Brewing consumes either Ground Coffee or Instant Coffee. Brewing consumes hot Water.
-    Brewing requires Coffee Machine. Brewing yields Coffee.
-    Coffee Machine is located in Kitchen.
+  The juiz-OPL transcription is examples/opl/coffee_making.opl (spec/opl.md).
 -->
 <opm:model xmlns:opm="https://openjuiz.github.io/ns/opm/v0"
            format_version="0.1" id="coffee" name="Coffee Making">

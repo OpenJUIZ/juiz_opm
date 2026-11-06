@@ -1,0 +1,37 @@
+Model "Coffee Making" {description: "An example of the core and diagram layers."}.
+
+Barista is an environmental physical object.
+
+Brewing is a process {duration_min: 2, duration_expected: 3, duration_max: 5, duration_unit: min}.
+Brewing consumes either Ground Coffee or Instant Coffee.
+Brewing consumes hot Water.
+Brewing yields Coffee.
+Brewing requires Coffee Machine.
+
+Coffee is a physical object.
+
+Coffee Beans is a physical object.
+
+Coffee Machine is a physical object.
+Coffee Machine is located in Kitchen.
+
+Coffee Making is a process.
+Coffee Making zooms into Grinding and Water Heating, then Brewing.
+
+Grinding is a process.
+Grinding consumes Coffee Beans.
+Grinding yields Ground Coffee.
+Barista handles Grinding.
+
+Ground Coffee is a physical object.
+
+Instant Coffee is a physical object.
+
+Kitchen is an environmental physical object.
+
+Water is a physical object.
+Water can be cold or hot.
+State cold of Water is initial and default.
+
+Water Heating is a process.
+Water Heating changes Water from cold to hot.

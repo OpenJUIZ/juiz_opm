@@ -1,7 +1,7 @@
 # OPM メタモデル
 
 - 状態: 案(2026-11-06、Step 1)。決めたことは [docs/decisions/0005](../docs/decisions/0005-metamodel-layers.md) に記録した
-- 関連: [opm-mapping.md](opm-mapping.md)(juiz と OPM の対応)、[xml.md](xml.md)(この表を写した XML、Step 2)、[0004](../docs/decisions/0004-xml-interchange.md)(交換形式)、[OPCAT の OPX](../docs/research/opcat-opx.md)
+- 関連: [opm-mapping.md](opm-mapping.md)(juiz と OPM の対応)、[xml.md](xml.md)(この表を写した XML、Step 2)、[opl.md](opl.md)(この表を写した juiz-OPL、Step 3)、[0004](../docs/decisions/0004-xml-interchange.md)(交換形式)、[OPCAT の OPX](../docs/research/opcat-opx.md)
 
 ## 1. 目的と範囲
 
@@ -373,7 +373,7 @@ conf のキーとの対応:
 
 ## 11. この Step で決めないこと
 
-- OPL の語と文の並び、名前の引用の仕方(Step 3)。juiz の名前(`talker0`)をそのまま OPL の名前に使えるか。
+- OPL の語と文の並び、名前の引用の仕方(Step 3)。juiz の名前(`talker0`)をそのまま OPL の名前に使えるか。→ [opl.md](opl.md) で決めた(引用すれば使える)。
 - 上の階層の図の「まとめた線」を導く規則と、描画の形(Step 6)。
 - 同じ名前の Process と Container がある System で OPM の名前をどう分けるか(Step 7。juiz:id があれば juiz 側は区別できる)。
 - Topic のメッセージを consumption にするか([0002](../docs/decisions/0002-open-points.md) の 2。今は instrument の event)。

@@ -1,0 +1,34 @@
+Model "Capture and Filter".
+
+Camera is a physical object [role: container, name: camera0, type: video_capture].
+
+Capture is a process [role: container_process, name: camera0_readandget, type: video_capture_readandget].
+Capture affects Camera.
+Capture yields Image.
+Capture invokes Filter.
+
+Edges is an object [role: value, value_kind: output, datatype: juiz.Image].
+
+Filter is a process [role: process, name: cvt_color0, type: cv_cvt_color].
+Filter yields Edges.
+Filter requires Filter Code [arg: code, arg_index: 1, applied: "COLOR_BGR2GRAY"].
+Filter requires Image [arg: img, arg_index: 0, connection: push].
+
+Filter Code is an object [role: value, value_kind: input].
+
+Image is an object [role: value, value_kind: output, datatype: juiz.Image].
+
+Main Loop EC is an object [role: ec, name: main_loop_ec0, type: main_loop_ec, rate: 10].
+Main Loop EC can be stopped or started.
+State started of Main Loop EC is initial.
+
+Main Loop EC Cycle is a process [role: ec_cycle].
+Main Loop EC Cycle occurs if Main Loop EC is started, otherwise Main Loop EC Cycle is skipped.
+Main Loop EC Cycle invokes Capture [order: 0].
+Main Loop EC Cycle invokes itself.
+
+Vision System is an object [role: system, name: vision].
+Vision System consists of Camera.
+Vision System consists of Main Loop EC.
+Vision System exhibits Capture.
+Vision System exhibits Filter.
