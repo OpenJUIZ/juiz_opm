@@ -13,6 +13,7 @@ Specifications and tools for describing, exchanging and drawing juiz system mode
 | 場所 | 中身 |
 | --- | --- |
 | [spec/opm-mapping.md](spec/opm-mapping.md) | juiz の概念と OPM の対応、描画の決めごと |
+| [spec/metamodel.md](spec/metamodel.md) | モデルが持つもの(要素、状態、リンク、図の階層、juiz の拡張)の表 |
 | [docs/decisions/](docs/decisions/) | 決めたことの記録(1 件 1 ファイル) |
 | [docs/research/](docs/research/) | 先行例の調査(OPCAT の保存形式など) |
 | [docs/roadmap.md](docs/roadmap.md) | 今後の作業の順番 |

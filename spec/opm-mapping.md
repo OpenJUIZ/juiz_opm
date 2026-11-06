@@ -2,6 +2,7 @@
 
 - 状態: 案(2026-11-06)。決めたことは [docs/decisions/](../docs/decisions/) に記録し、この文書に反映する
 - 議論の元: プロジェクトの文書「juiz-OPM mapping」(2026-11-06)
+- モデルが持つものの正確な定義は [metamodel.md](metamodel.md)。この文書は読み方と描き方の説明
 
 ## 1. 目的と範囲
 
@@ -57,7 +58,7 @@ OPM は「もの(Object)」と「こと(Process)」の 2 種類だけで系を�
 | Topic | 情報 Object。publish は result、subscribe は event リンク | Talker yields Chatter. Chatter triggers Listener. | 受け手は Topic を知るだけで送り手を知らないことが図に出る |
 | CompositeProcess | in-zooming | Pipeline zooms into Capture, Filter and Detect, in that sequence. | 外からは 1 つの Process、中を開くと子 |
 | CompositeContainer | スロットを集約で | Robot consists of Base and Arm. | 実体は既存 Container への参照 |
-| EC(main_loop_ec, one_shot_ec) | Process。bind した Process を invocation | Main Loop EC invokes Capture. | 周期は EC の属性 Rate |
+| EC(main_loop_ec, one_shot_ec) | 状態機械とタイマー。EC は State stopped・started を持つ Object、周期の Process(Cycle)が started のときだけ動き bind した Process を invocation | Main Loop EC can be stopped or started. Cycle requires started Main Loop EC. Cycle invokes Capture. Cycle invokes itself. | main_loop は Cycle が自分を起こし、one_shot は Cycle が EC を stopped に戻す。周期は EC の属性 Rate。詳細は [metamodel.md](metamodel.md) §9.5 |
 | System | 最上位の Object(SD の根) | System consists of Camera and Arm. System exhibits Capture. | 副系は集約で。別 System は別の OPD |
 | ブローカー(HTTP, QUIC, IPC) | call の instrument になる Object | Remote Call requires HTTP Broker. | 配置の図は OPM の外([0002](../docs/decisions/0002-open-points.md) の 3) |
 | ネームスペース・ID | 属性 | Arm exhibits Namespace. | 普段は描かず、名前に robot1/arm と書く |

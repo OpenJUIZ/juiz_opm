@@ -14,3 +14,4 @@
 | [0002](0002-open-points.md) | 対応の未決事項 7 点の決定 | 採用 |
 | [0003](0003-separate-repository.md) | 仕様と道具は juiz_opm リポジトリに置く | 採用 |
 | [0004](0004-xml-interchange.md) | モデル交換形式は XML で、ISO 19450 の用語と juiz の名前空間を使う | 採用(Dori 先生の返事で見直しあり) |
+| [0005](0005-metamodel-layers.md) | メタモデルはコア・図・juiz 拡張の 3 層にし、標準で表せることは注釈にしない | 採用(案、Step 2 で見直し) |
