@@ -134,7 +134,7 @@ State を端に取るリンク(状態を指定した consumption など)は、so
 
 - 状態変化は 1 本の effect に `from_state` と `to_state` を付けて持つ(ISO の input link と output link の組を 1 本にまとめる)。どちらかだけでもよい。1 つの文(P changes A from s1 to s2.)が 1 本のリンクに対応する。
 - 状態を指定した consumption・result・instrument・agent は、source / target に State を書く。
-- invocation は source と target が同じ Process でもよい(自分を起こす)。
+- invocation は source と target が同じ Process でもよい。ISO 19450:2024 §9.5.2.5.2 の self-invocation link(図では戻りの矢印、OPL は「P invokes itself.」)で、繰り返し(ループ)はこれで表す。別の kind にはせず、source と target が同じことで見分ける。
 - OPCAT は overtime と undertime を区別せず 309 にまとめている。書き出すときの扱いは Step 9 で決める。
 
 ### 6.3 構造リンク
@@ -322,7 +322,7 @@ juiz の要素になる Thing には役割を付ける。役割のない Thing �
 | Capture → Filter | invocation | (push があるため) |
 | Filter → Edges | result | |
 | Main Loop EC の started → Main Loop EC Cycle | instrument | modifier=condition |
-| Main Loop EC Cycle → Main Loop EC Cycle | invocation | (周期。自分を起こす) |
+| Main Loop EC Cycle → Main Loop EC Cycle | invocation | (self-invocation。周期で自分を起こす) |
 | Main Loop EC Cycle → Capture | invocation | order=0 |
 
 ### 9.6 juiz の整形式の規則
