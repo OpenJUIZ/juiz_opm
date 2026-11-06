@@ -2,6 +2,7 @@
 
 - 状態: 案(2026-11-06)。決めたことは [docs/decisions/](../docs/decisions/) に記録し、この文書に反映する
 - 議論の元: プロジェクトの文書「juiz-OPM mapping」(2026-11-06)
+- モデルが持つものの正確な定義は [metamodel.md](metamodel.md)。この文書は読み方と描き方の説明
 
 ## 1. 目的と範囲
 
