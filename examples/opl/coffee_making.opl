@@ -16,7 +16,7 @@ Coffee Machine is a physical object.
 Coffee Machine is located in Kitchen.
 
 Coffee Making is a process.
-Coffee Making zooms into Grinding and Water Heating, then Brewing.
+Coffee Making zooms into parallel Grinding and Water Heating, and Brewing, in that sequence.
 
 Grinding is a process.
 Grinding consumes Coffee Beans.
@@ -31,7 +31,8 @@ Kitchen is an environmental physical object.
 
 Water is a physical object.
 Water can be cold or hot.
-State cold of Water is initial and default.
+Water is initially cold.
+State cold of Water is default.
 
 Water Heating is a process.
 Water Heating changes Water from cold to hot.

@@ -20,7 +20,7 @@ Image is an object [role: value, value_kind: output, datatype: juiz.Image].
 
 Main Loop EC is an object [role: ec, name: main_loop_ec0, type: main_loop_ec, rate: 10].
 Main Loop EC can be stopped or started.
-State started of Main Loop EC is initial.
+Main Loop EC is initially started.
 
 Main Loop EC Cycle is a process [role: ec_cycle].
 Main Loop EC Cycle occurs if Main Loop EC is started, otherwise Main Loop EC Cycle is skipped.
