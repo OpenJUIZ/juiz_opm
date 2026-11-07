@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- C6: both ends of an aggregation are objects, or both are processes -->
+<opm:model xmlns:opm="https://openjuiz.github.io/ns/opm/v0" format_version="0.1" id="m">
+  <opm:things>
+    <opm:object id="a" name="A"/>
+    <opm:object id="b" name="B"/>
+    <opm:process id="p" name="P"/>
+  </opm:things>
+  <opm:links>
+    <opm:result id="l" source="p" target="b"/>
+    <opm:aggregation id="g" source="a" target="p"/>
+  </opm:links>
+</opm:model>

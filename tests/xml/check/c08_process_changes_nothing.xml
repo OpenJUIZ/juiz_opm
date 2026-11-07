@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- C8 (warning): a process that only uses an instrument changes nothing -->
+<opm:model xmlns:opm="https://openjuiz.github.io/ns/opm/v0" format_version="0.1" id="m">
+  <opm:things>
+    <opm:object id="a" name="A"/>
+    <opm:process id="p" name="P"/>
+  </opm:things>
+  <opm:links><opm:instrument id="l" source="a" target="p"/></opm:links>
+</opm:model>

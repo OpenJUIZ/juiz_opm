@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- C11: the links of a fan meet the same process -->
+<opm:model xmlns:opm="https://openjuiz.github.io/ns/opm/v0" format_version="0.1" id="m">
+  <opm:things>
+    <opm:object id="a" name="A"/>
+    <opm:object id="b" name="B"/>
+    <opm:process id="p" name="P"/>
+    <opm:process id="q" name="Q"/>
+  </opm:things>
+  <opm:links>
+    <opm:result id="l1" source="p" target="a"/>
+    <opm:result id="l2" source="q" target="b"/>
+  </opm:links>
+  <opm:fans><opm:fan id="f" operator="or"><opm:link_ref ref="l1"/><opm:link_ref ref="l2"/></opm:fan></opm:fans>
+</opm:model>

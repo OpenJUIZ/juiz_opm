@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- C6: both ends of a generalization are of the same kind -->
+<opm:model xmlns:opm="https://openjuiz.github.io/ns/opm/v0" format_version="0.1" id="m">
+  <opm:things>
+    <opm:object id="a" name="A"/>
+    <opm:process id="p" name="P"/>
+  </opm:things>
+  <opm:links>
+    <opm:result id="l" source="p" target="a"/>
+    <opm:generalization id="g" source="p" target="a"/>
+  </opm:links>
+</opm:model>

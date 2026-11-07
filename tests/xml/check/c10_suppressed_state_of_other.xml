@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- C10: a suppressed state belongs to the thing that appears -->
+<opm:model xmlns:opm="https://openjuiz.github.io/ns/opm/v0" format_version="0.1" id="m">
+  <opm:things>
+    <opm:object id="a" name="A"><opm:state id="a_s1" name="s1"/></opm:object>
+    <opm:object id="b" name="B"><opm:state id="b_s1" name="s1"/></opm:object>
+  </opm:things>
+  <opm:diagram id="sd" name="SD">
+    <opm:appearance id="ap" thing="a"><opm:suppressed_state ref="b_s1"/></opm:appearance>
+  </opm:diagram>
+</opm:model>

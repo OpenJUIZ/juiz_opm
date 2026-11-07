@@ -3,14 +3,18 @@
 # Copyright (c) ysuga
 """Validate the XML examples and tests against the XSD (spec/xml.md §10).
 
-- examples/xml/*.xml and tests/xml/valid/*.xml must be valid against juiz.xsd.
-  With the juiz namespace removed, they must also be valid against opm.xsd
+- examples/xml/*.xml, tests/xml/valid/*.xml and tests/xml/check/*.xml must be valid against
+  juiz.xsd. With the juiz namespace removed, they must also be valid against opm.xsd
   (dropping the annotations leaves a plain OPM model, metamodel §9.1).
+  tests/xml/check/ holds models that pass the XSD but break a rule the checker of
+  opm_model sees (spec/xml.md §14).
 - tests/xml/invalid/*.xml must be rejected by juiz.xsd.
+- With --also DIR, DIR/*.xml must be valid too (CI passes the examples written by opm_model).
 
 Needs lxml (pip install lxml).
 """
 
+import argparse
 import copy
 import sys
 from pathlib import Path
@@ -48,15 +52,20 @@ def errors(schema):
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--also", action="append", default=[], metavar="DIR",
+                        help="another directory of documents that must be valid")
+    args = parser.parse_args()
+
     juiz = load_schema("juiz.xsd")
     opm = load_schema("opm.xsd")
     failed = 0
 
-    valid = sorted((ROOT / "examples" / "xml").glob("*.xml")) + sorted(
-        (ROOT / "tests" / "xml" / "valid").glob("*.xml")
-    )
+    dirs = [ROOT / "examples" / "xml", ROOT / "tests" / "xml" / "valid",
+            ROOT / "tests" / "xml" / "check"] + [Path(d).resolve() for d in args.also]
+    valid = [p for d in dirs for p in sorted(d.glob("*.xml"))]
     for path in valid:
-        rel = path.relative_to(ROOT)
+        rel = path.relative_to(ROOT) if path.is_relative_to(ROOT) else path
         doc = etree.parse(str(path))
         if not juiz.validate(doc):
             print("NG  %s (juiz.xsd)\n%s" % (rel, errors(juiz)))
