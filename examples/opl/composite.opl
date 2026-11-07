@@ -1,7 +1,7 @@
 Model "Blur Gray".
 
 Blur Gray is a process {description: "Converts an image to grey and blurs it."} [role: composite, type: blur_gray].
-Blur Gray zooms into Cvt Color Node, then Gaussian Blur Node, as well as Code Const and Gray.
+Blur Gray zooms into Cvt Color Node and Gaussian Blur Node, in that sequence, as well as Code Const and Gray.
 
 Blur Gray Img is an object [role: value, value_kind: input].
 
