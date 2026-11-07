@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- C10: an unfold diagram needs a refinee -->
+<opm:model xmlns:opm="https://openjuiz.github.io/ns/opm/v0" format_version="0.1" id="m">
+  <opm:things>
+    <opm:object id="a" name="A"/>
+  </opm:things>
+  <opm:diagram id="sd" name="SD">
+    <opm:diagram id="sd1" name="SD1" refinement="unfold"/>
+  </opm:diagram>
+</opm:model>

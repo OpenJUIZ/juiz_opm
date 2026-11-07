@@ -1,0 +1,14 @@
+[package]
+name = "opm_model"
+description = "OPM (ISO 19450) metamodel, the juiz_opm XML interchange format and the core well-formedness checks"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+readme = "README.md"
+keywords = ["opm", "iso19450", "mbse", "juiz"]
+categories = ["parser-implementations", "encoding"]
+
+[dependencies]
+roxmltree = "0.21"

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- C9: an inner thing belongs to one in-zoom only -->
+<opm:model xmlns:opm="https://openjuiz.github.io/ns/opm/v0" format_version="0.1" id="m">
+  <opm:things>
+    <opm:object id="a" name="A"/>
+    <opm:process id="p1" name="P1"/>
+    <opm:process id="p2" name="P2"/>
+    <opm:process id="q" name="Q"/>
+  </opm:things>
+  <opm:links><opm:result id="l" source="q" target="a"/></opm:links>
+  <opm:in_zooms>
+    <opm:in_zoom id="z1" refinee="p1"><opm:step><opm:member ref="q"/></opm:step></opm:in_zoom>
+    <opm:in_zoom id="z2" refinee="p2"><opm:step><opm:member ref="q"/></opm:step></opm:in_zoom>
+  </opm:in_zooms>
+</opm:model>

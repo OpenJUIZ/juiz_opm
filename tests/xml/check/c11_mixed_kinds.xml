@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- C11: the links of a fan are of one kind -->
+<opm:model xmlns:opm="https://openjuiz.github.io/ns/opm/v0" format_version="0.1" id="m">
+  <opm:things>
+    <opm:object id="a" name="A"/>
+    <opm:object id="b" name="B"/>
+    <opm:process id="p" name="P"/>
+  </opm:things>
+  <opm:links>
+    <opm:consumption id="l1" source="a" target="p"/>
+    <opm:instrument id="l2" source="b" target="p"/>
+  </opm:links>
+  <opm:fans><opm:fan id="f" operator="xor"><opm:link_ref ref="l1"/><opm:link_ref ref="l2"/></opm:fan></opm:fans>
+</opm:model>

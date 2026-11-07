@@ -253,7 +253,7 @@ pip install lxml
 python3 scripts/validate_xml.py
 ```
 
-- `examples/xml/` と `tests/xml/valid/`(今は空。置けば同じく検査する)の文書が juiz.xsd に通り、juiz の名前空間を取り除くと opm.xsd に通ることを確かめる。
+- `examples/xml/`、`tests/xml/valid/`(今は空。置けば同じく検査する)、`tests/xml/check/`(§14.4)の文書が juiz.xsd に通り、juiz の名前空間を取り除くと opm.xsd に通ることを確かめる。
 - `tests/xml/invalid/` の文書が juiz.xsd に通らないことを確かめる。各ファイルの最初の注釈に、どの規則を破る例かを書いている。
 - CI(`.github/workflows/validate-xml.yml`)でも同じスクリプトを走らせる。
 - xmllint なら `xmllint --noout --schema spec/schema/juiz.xsd examples/xml/capture_filter.opm.xml` で 1 つずつ確かめられる。
@@ -276,6 +276,64 @@ python3 scripts/validate_xml.py
 ## 13. この Step で決めないこと
 
 - OPL の文法と、XML との相互変換の規則(Step 3)。→ [opl.md](opl.md) §10。
-- 検査器の誤りの書き方と、警告と誤りの区別の細目(Step 4)。
+- 検査器の誤りの書き方と、警告と誤りの区別の細目(Step 4)。→ §14 で決めた。
 - RDF の基底 URI と語彙(RDF を扱う Step)。
 - OPCAT の OPX との対応(Step 9)。
+
+## 14. 読み書きと検査の実装(opm_model、Step 4)
+
+[crates/opm_model](../crates/opm_model/) がこの形式を読み書きし、コアの規則を検査する。決めたことは [0009](../docs/decisions/0009-opm-model-crate.md)。
+
+### 14.1 読み手
+
+- 形だけを見て、最初の誤りで止まる。誤りは行と列と文で返す。
+- 誤りにするもの: 根が `opm:model` でない、`format_version` が `0.1` でない、opm の名前空間の知らない要素、名前空間のない要素、知らない属性(名前空間なし)と opm の名前空間の属性、必須の属性の欠け、列挙(essence、modifier、refinement など)と数(duration、layout)と真偽の値の誤り、構造の要素の中の文字。
+- 見ないもの: 子要素の順(XSD が見る)、参照の解決、整形式の規則(§14.3)。
+- 他の名前空間の属性と要素は、id を持つ要素ごとにそのまま保つ(§8)。要素の中の字下げだけの文字は捨て、文字を含む要素の中身はそのまま保つ。根で宣言された接頭辞は、書くときにも使う。
+- DTD は受けない。
+
+### 14.2 書き手
+
+- 毎回同じ形に書く。字下げは空白 2 つ、属性は id を先頭に決まった並び、既定値と同じ属性と空の並び(`opm:links` など)は書かない。`opm:things` は空でも書く。
+- 名前空間は根でまとめて宣言する。コアは常に `opm`。読んだ文書の接頭辞を保ち、宣言のない名前空間は juiz なら `juiz`、ほかは `ns1`、`ns2` … にする。
+- 注釈(XML のコメント)、元の改行の位置と属性の並びは保たない。
+- 検査(§14.3)で誤りのないモデルを書いた文書は、XSD に通る。誤りのあるモデルも書けるが、XSD に通るとは限らない。
+
+### 14.3 検査器
+
+metamodel §8 の C1〜C12 を、XSD が見るものも含めてすべて見る(コードで組んだモデルも確かめられるように)。値の形は F1〜F4 として見る。
+
+| 番号 | 中身 | 重さ |
+| --- | --- | --- |
+| F1 | id が `[A-Za-z_][A-Za-z0-9_.-]*`(§4) | 誤り |
+| F2 | 名前、tag、backward_tag、path が空でなく、両端に空白がない。duration の unit が空でない | 誤り |
+| F3 | 多重度が `1`、`*`、`0..1`、`2..*`、`3..5` の形 | 誤り |
+| F4 | `format_version` が `0.1` | 誤り |
+| C1〜C7、C9〜C12 | metamodel §8 | 誤り |
+| C8 | metamodel §8 | 警告 |
+
+metamodel §8 の表で書き切れていない点は、近い規則で見る。
+
+| 点 | 規則 |
+| --- | --- |
+| 参照先の種類(リンクの端、step の member、part、refinee、Appearance の thing) | リンクは C3・C6、InZoom は C9、OPD は C10 |
+| effect 以外に付いた from_state・to_state | C5 |
+| aggregation 以外の ordered、tagged 以外の tag・backward_tag、tag のない tagged、State を端にする構造リンク | C6 |
+| 空の step、Object を開く InZoom の steps、自分を中に含む InZoom | C9 |
+| 根の OPD の refinement と refinee、Appearance の隠す State がその Thing の State であること | C10 |
+| Fan に同じリンクが 2 度、構造リンクを束ねた Fan | C11 |
+| Fan のリンクの「Process 側の端」 | consumption・instrument・agent は target、ほかは source |
+
+誤りと警告は「重さ、規則の番号、要素の id、英語の文」で返す。文字にすると `error[C5] l_heat: from_state "x" is a state of "A", not of the target "B"` の形。
+
+### 14.4 往復の確かめ方
+
+- `examples/xml/` の文書を読み、検査で誤りがなく(capture_filter の ec_cycle の C8 の警告だけが出る)、読む → 書く → 読むで同じモデルになり、2 回書いた文字が同じであること。
+- `tests/xml/invalid/` の文書(XSD が誤りにするもの)は、読み手か検査器が誤りにする。juiz の注釈の値の誤り(`juiz_` で始まるもの)はコアでは誤りにせず、Step 7 で見る。
+- `tests/xml/check/` の文書は XSD に通り、ファイル名の番号(`c05_…` なら C5)の規則だけを検査器が報告する。
+- CI(`.github/workflows/rust.yml`)は、書き出した例を `OPM_ROUNDTRIP_OUT` に置き、`scripts/validate_xml.py --also` で XSD に通ることを確かめる。
+
+```sh
+cargo test
+OPM_ROUNDTRIP_OUT=target/roundtrip cargo test && python3 scripts/validate_xml.py --also target/roundtrip
+```

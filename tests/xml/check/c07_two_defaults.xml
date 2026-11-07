@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- C7: an object has at most one default state -->
+<opm:model xmlns:opm="https://openjuiz.github.io/ns/opm/v0" format_version="0.1" id="m">
+  <opm:things>
+    <opm:object id="a" name="A">
+      <opm:state id="s1" name="s1" default="true"/>
+      <opm:state id="s2" name="s2" default="true"/>
+    </opm:object>
+  </opm:things>
+</opm:model>

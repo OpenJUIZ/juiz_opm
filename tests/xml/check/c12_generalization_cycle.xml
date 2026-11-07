@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- C12: generalization does not make a cycle -->
+<opm:model xmlns:opm="https://openjuiz.github.io/ns/opm/v0" format_version="0.1" id="m">
+  <opm:things>
+    <opm:object id="a" name="A"/>
+    <opm:object id="b" name="B"/>
+    <opm:object id="c" name="C"/>
+  </opm:things>
+  <opm:links>
+    <opm:generalization id="g1" source="a" target="b"/>
+    <opm:generalization id="g2" source="b" target="c"/>
+    <opm:generalization id="g3" source="c" target="a"/>
+  </opm:links>
+</opm:model>

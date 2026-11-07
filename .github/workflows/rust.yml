@@ -1,0 +1,26 @@
+name: Rust
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - run: cargo fmt --all --check
+      - run: cargo clippy --all-targets -- -D warnings
+      - run: cargo test
+        env:
+          OPM_ROUNDTRIP_OUT: target/roundtrip
+      # The documents opm_model writes must pass the XSD too (spec/xml.md §14).
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install lxml
+      - run: python scripts/validate_xml.py --also target/roundtrip

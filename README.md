@@ -6,7 +6,7 @@ Specifications and tools for describing, exchanging and drawing juiz system mode
 
 ## 状態
 
-議論と仕様づくりの段階です。交換形式の XML スキーマと検証スクリプト、juiz-OPL の文法はありますが、道具のコードはまだありません。
+仕様づくりと道具づくりの段階です。交換形式の XML スキーマと検証スクリプト、juiz-OPL の文法と、交換形式を読み書きして検査する opm_model クレートがあります。
 
 ## 構成
 
@@ -18,15 +18,16 @@ Specifications and tools for describing, exchanging and drawing juiz system mode
 | [spec/opl.md](spec/opl.md) | juiz-OPL の文法(EBNF)、整形式の規則、正規形、XML との対応 |
 | [examples/xml/](examples/xml/)、[examples/opl/](examples/opl/) | 交換形式の例と、その juiz-OPL の書き起こし |
 | [scripts/validate_xml.py](scripts/validate_xml.py) | 例と tests/xml/ を XSD で検査する |
+| [crates/opm_model/](crates/opm_model/) | メタモデルの型、交換形式の読み書き、コアの規則の検査 |
 | [docs/decisions/](docs/decisions/) | 決めたことの記録(1 件 1 ファイル) |
 | [docs/research/](docs/research/) | 先行例の調査(OPCAT の保存形式など) |
 | [docs/roadmap.md](docs/roadmap.md) | 今後の作業の順番 |
 
-予定している道具(Rust の workspace、`crates/` に置く予定):
+道具(Rust の workspace、`crates/` に置く。今あるのは opm_model だけ):
 
 | クレート | 役割 |
 | --- | --- |
-| opm_model | OPM のメタモデル、交換用 XML の読み書き、OPCAT の OPX の書き出し |
+| opm_model | OPM のメタモデル、交換用 XML の読み書き、コアの規則の検査(OPCAT の OPX の書き出しは Step 9) |
 | opm_opl | OPL の解析と正規形での出力 |
 | opm_graph | DOT / SVG の描画(コマンド `opl_graph`) |
 | juiz_opm | juiz 拡張と juiz の conf との相互変換 |

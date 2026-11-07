@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- C5: the states of an effect belong to its target -->
+<opm:model xmlns:opm="https://openjuiz.github.io/ns/opm/v0" format_version="0.1" id="m">
+  <opm:things>
+    <opm:object id="a" name="A"><opm:state id="a_s1" name="s1"/></opm:object>
+    <opm:object id="b" name="B"><opm:state id="b_s1" name="s1"/><opm:state id="b_s2" name="s2"/></opm:object>
+    <opm:process id="p" name="P"/>
+  </opm:things>
+  <opm:links><opm:effect id="l" source="p" target="b" from_state="a_s1" to_state="b_s2"/></opm:links>
+</opm:model>
