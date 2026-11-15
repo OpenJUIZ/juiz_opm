@@ -1,0 +1,324 @@
+{
+ "composites": [],
+ "connections": [],
+ "format": "juiz_opm/system/0",
+ "pose_listeners": [],
+ "system": {
+  "broker_name": "core",
+  "broker_type_name": "core",
+  "class_name": "broker_proxy",
+  "core_store": {
+   "broker_factories": {
+    "http": {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "broker_factory",
+     "identifier": "core://core/broker_factory/http::http",
+     "name": "http",
+     "type_name": "http"
+    },
+    "local": {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "broker_factory",
+     "identifier": "core://core/broker_factory/local::local",
+     "name": "local",
+     "type_name": "local"
+    }
+   },
+   "broker_proxies": [],
+   "brokers": [
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "description": {
+      "text": ""
+     },
+     "name": "local",
+     "type_name": "local"
+    },
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "description": {
+      "text": ""
+     },
+     "name": "127.0.0.1:8000",
+     "type_name": "http"
+    }
+   ],
+   "container_factories": [
+    {
+     "__class__": "ContainerFactoryWrapper",
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "container_factory",
+     "container_factory": {
+      "arguments": [
+       {
+        "default": 0,
+        "description": {
+         "text": ""
+        },
+        "name": "initial_value",
+        "type_name": "Int"
+       }
+      ],
+      "broker_name": "core",
+      "broker_type_name": "core",
+      "class_name": "container_factory",
+      "identifier": "core://core/container_factory/example_container_python::example_container_python",
+      "language": "python",
+      "model": null,
+      "name": "example_container_python",
+      "type_name": "example_container_python"
+     },
+     "identifier": "core://core/container_factory/example_container_python::example_container_python",
+     "language": "python",
+     "name": "example_container_python",
+     "plugin": {
+      "path": "./container/example_container_python.py"
+     },
+     "type_name": "example_container_python"
+    }
+   ],
+   "container_process_factories": [
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "container_process_factory",
+     "container_process_factory": {
+      "arguments": [],
+      "broker_name": "core",
+      "broker_type_name": "core",
+      "class_name": "container_process_factory",
+      "identifier": "core://core/container_process_factory/example_container_python_get::example_container_python_get",
+      "language": "python",
+      "name": "example_container_python_get",
+      "type_name": "example_container_python_get"
+     },
+     "identifier": "core://core/container_process_factory/example_container_python_get::example_container_python_get",
+     "language": "python",
+     "name": "example_container_python_get",
+     "plugin": {
+      "path": "./container/example_container_python_get.py"
+     },
+     "type_name": "example_container_python_get"
+    },
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "container_process_factory",
+     "container_process_factory": {
+      "arguments": [
+       {
+        "default": 1,
+        "description": {
+         "text": ""
+        },
+        "name": "arg1",
+        "type_name": "Int"
+       }
+      ],
+      "broker_name": "core",
+      "broker_type_name": "core",
+      "class_name": "container_process_factory",
+      "identifier": "core://core/container_process_factory/example_container_python_increment::example_container_python_increment",
+      "language": "python",
+      "name": "example_container_python_increment",
+      "type_name": "example_container_python_increment"
+     },
+     "identifier": "core://core/container_process_factory/example_container_python_increment::example_container_python_increment",
+     "language": "python",
+     "name": "example_container_python_increment",
+     "plugin": {
+      "path": "./container/example_container_python_increment.py"
+     },
+     "type_name": "example_container_python_increment"
+    }
+   ],
+   "container_processes": [
+    {
+     "arguments": [],
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "container_process",
+     "container_name": "container0",
+     "container_type": "example_container_python",
+     "description": {
+      "text": "Container の値を返す"
+     },
+     "factory": "process_factory",
+     "identifier": "core://core/container_process/get0::example_container_python_get:container0",
+     "language": "rust",
+     "name": "get0",
+     "namespace": "",
+     "outputs": {
+      "default_value": "",
+      "enum_type": "Primitive",
+      "type_name": "Int"
+     },
+     "publishes": [],
+     "subscribes": {},
+     "type_name": "example_container_python_get",
+     "use_memo": false
+    },
+    {
+     "arguments": [
+      {
+       "default": 1,
+       "description": {
+        "text": ""
+       },
+       "name": "arg1",
+       "type_name": "Int"
+      }
+     ],
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "container_process",
+     "container_name": "container0",
+     "container_type": "example_container_python",
+     "description": {
+      "text": "Container の値に arg1 を足して、足した後の値を返す"
+     },
+     "factory": "process_factory",
+     "identifier": "core://core/container_process/increment0::example_container_python_increment:container0",
+     "language": "rust",
+     "name": "increment0",
+     "namespace": "",
+     "outputs": {
+      "default_value": "",
+      "enum_type": "Primitive",
+      "type_name": "Int"
+     },
+     "publishes": [],
+     "subscribes": {},
+     "type_name": "example_container_python_increment",
+     "use_memo": false
+    }
+   ],
+   "containers": [
+    {
+     "args": {},
+     "arguments": [
+      {
+       "default": 0,
+       "description": {
+        "text": ""
+       },
+       "name": "initial_value",
+       "type_name": "Int"
+      }
+     ],
+     "class_name": "container",
+     "description": {
+      "text": "整数値を 1 つ保持する Container"
+     },
+     "factory": "container_factory",
+     "identifier": "core://core/container/container0::example_container_python",
+     "language": "python",
+     "model": null,
+     "name": "container0",
+     "namespace": "",
+     "parent_name": null,
+     "parent_type_name": null,
+     "processes": [
+      {
+       "arguments": [],
+       "broker_name": "core",
+       "broker_type_name": "core",
+       "class_name": "container_process",
+       "container_name": "container0",
+       "container_type": "example_container_python",
+       "description": {
+        "text": "Container の値を返す"
+       },
+       "factory": "process_factory",
+       "identifier": "core://core/container_process/get0::example_container_python_get:container0",
+       "language": "rust",
+       "name": "get0",
+       "namespace": "",
+       "outputs": {
+        "default_value": "",
+        "enum_type": "Primitive",
+        "type_name": "Int"
+       },
+       "publishes": [],
+       "subscribes": {},
+       "type_name": "example_container_python_get",
+       "use_memo": false
+      },
+      {
+       "arguments": [
+        {
+         "default": 1,
+         "description": {
+          "text": ""
+         },
+         "name": "arg1",
+         "type_name": "Int"
+        }
+       ],
+       "broker_name": "core",
+       "broker_type_name": "core",
+       "class_name": "container_process",
+       "container_name": "container0",
+       "container_type": "example_container_python",
+       "description": {
+        "text": "Container の値に arg1 を足して、足した後の値を返す"
+       },
+       "factory": "process_factory",
+       "identifier": "core://core/container_process/increment0::example_container_python_increment:container0",
+       "language": "rust",
+       "name": "increment0",
+       "namespace": "",
+       "outputs": {
+        "default_value": "",
+        "enum_type": "Primitive",
+        "type_name": "Int"
+       },
+       "publishes": [],
+       "subscribes": {},
+       "type_name": "example_container_python_increment",
+       "use_memo": false
+      }
+     ],
+     "type_name": "example_container_python"
+    }
+   ],
+   "ec_factories": {
+    "main_loop_ec": {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "execution_context_factory",
+     "identifier": "core://core/execution_context_factory/main_loop_ec::main_loop_ec",
+     "name": "main_loop_ec",
+     "type_name": "main_loop_ec"
+    }
+   },
+   "ecs": {},
+   "process_factories": [],
+   "processes": [],
+   "topics": []
+  },
+  "identifier": "core://core/broker_proxy/core::core",
+  "mastersystem": [],
+  "name": "core",
+  "subsystems": [],
+  "system_store": {
+   "broker_factories": [
+    "http",
+    "local"
+   ],
+   "broker_proxies": [],
+   "brokers": [
+    "local",
+    "http"
+   ],
+   "uuid": "dfe02564-9f9f-4c8e-90a4-290bf4453593"
+  },
+  "type_name": "core"
+ },
+ "transforms": []
+}

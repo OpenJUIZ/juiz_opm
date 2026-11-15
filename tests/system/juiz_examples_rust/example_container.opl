@@ -1,0 +1,23 @@
+Model "test_system".
+
+"container0" is an object [role: container, id: core://core/container/container0::example_container, name: container0, type: example_container].
+
+"get0" is a process [role: container_process, id: core://core/container_process/get0::example_container_get:container0, name: get0, type: example_container_get, use_memo: false].
+"get0" affects "container0".
+"get0" yields "get0 out".
+
+"get0 out" is an object [role: value, value_kind: output].
+
+"increment0" is a process [role: container_process, id: core://core/container_process/increment0::example_container_increment:container0, name: increment0, type: example_container_increment, use_memo: false].
+"increment0" affects "container0".
+"increment0" yields "increment0 out".
+"increment0" requires "increment0 arg1" [arg: arg1, arg_index: 0].
+
+"increment0 arg1" is an object [role: value, value_kind: input, default: 1].
+
+"increment0 out" is an object [role: value, value_kind: output].
+
+"test_system" is an object [role: system, name: test_system].
+"test_system" consists of "container0".
+"test_system" exhibits "get0".
+"test_system" exhibits "increment0".

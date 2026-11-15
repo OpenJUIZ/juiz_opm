@@ -4,9 +4,10 @@
 //! The juiz rules J1 to J13 (spec/metamodel.md §9.6, spec/conf.md §6).
 //!
 //! They look only at Things with a `juiz:role`; a model without roles has nothing to break.
-//! J10 needs the type names of the plugins and is not checked from the model alone.
+//! J10 needs the type names of the plugins: [`check_with_system`] checks it against a running
+//! System (spec/system.md §5).
 
-use std::collections::{BTreeMap, HashMap, HashSet};
+use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::fmt;
 
 use opm_model::{Affiliation, Link, LinkKind, Model, Modifier, Thing, JUIZ_NS};
@@ -103,6 +104,37 @@ const ENTITIES: &[&str] = &[
     "container_process",
     "ec",
 ];
+
+/// [`check`] and J10: a process or container process whose type is a composite of the System
+/// (`composite_types`, from [`crate::system::SystemInfo`]) has that composite in the model.
+pub fn check_with_system(m: &Model, composite_types: &BTreeSet<String>) -> Vec<Diagnostic> {
+    let mut out = check(m);
+    let defined: HashSet<&str> = m
+        .things
+        .iter()
+        .filter(|t| role(t) == "composite")
+        .filter_map(|t| ann(&t.extensions, "type"))
+        .collect();
+    for t in &m.things {
+        if !CALLABLE.contains(&role(t)) {
+            continue;
+        }
+        let Some(ty) = ann(&t.extensions, "type") else {
+            continue;
+        };
+        if composite_types.contains(ty) && !defined.contains(ty) {
+            out.push(Diagnostic {
+                rule: 10,
+                id: t.id.clone(),
+                message: format!(
+                    "{:?} is of the composite type {:?}, but the model has no composite {:?}",
+                    t.name, ty, ty
+                ),
+            });
+        }
+    }
+    out
+}
 
 /// Check J1 to J13 (J10 excepted). The model should pass the core rules first.
 pub fn check(m: &Model) -> Vec<Diagnostic> {

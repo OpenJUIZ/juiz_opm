@@ -1,0 +1,892 @@
+{
+ "composites": [],
+ "connections": [],
+ "format": "juiz_opm/system/0",
+ "pose_listeners": [
+  {
+   "arg": "pose",
+   "container": "core://core/container/base0::mobile_base",
+   "identifier": "pose_listener://core://core/container/base0::mobile_base|core://core/process/print0::pose_print|pose",
+   "initial": false,
+   "on_update": false,
+   "process": "core://core/process/print0::pose_print",
+   "reference": "core://core/container/odom::static_anchor"
+  }
+ ],
+ "system": {
+  "broker_name": "core",
+  "broker_type_name": "core",
+  "class_name": "broker_proxy",
+  "core_store": {
+   "broker_factories": {
+    "http": {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "broker_factory",
+     "identifier": "core://core/broker_factory/http::http",
+     "name": "http",
+     "type_name": "http"
+    },
+    "local": {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "broker_factory",
+     "identifier": "core://core/broker_factory/local::local",
+     "name": "local",
+     "type_name": "local"
+    }
+   },
+   "broker_proxies": [],
+   "brokers": [
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "description": {
+      "text": ""
+     },
+     "name": "local",
+     "type_name": "local"
+    },
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "description": {
+      "text": ""
+     },
+     "name": "127.0.0.1:8000",
+     "type_name": "http"
+    }
+   ],
+   "container_factories": [
+    {
+     "__class__": "ContainerFactoryWrapper",
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "container_factory",
+     "container_factory": {
+      "arguments": [],
+      "broker_name": "core",
+      "broker_type_name": "core",
+      "class_name": "container_factory",
+      "identifier": "core://core/container_factory/camera::camera",
+      "language": "rust",
+      "model": null,
+      "name": "camera",
+      "type_name": "camera"
+     },
+     "identifier": "core://core/container_factory/camera::camera",
+     "language": "rust",
+     "name": "camera",
+     "plugin": {
+      "abi": "c",
+      "path": "./target/debug/libmobile_robot.so"
+     },
+     "type_name": "camera"
+    },
+    {
+     "__class__": "ContainerFactoryWrapper",
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "container_factory",
+     "container_factory": {
+      "arguments": [],
+      "broker_name": "core",
+      "broker_type_name": "core",
+      "class_name": "container_factory",
+      "identifier": "core://core/container_factory/mobile_base::mobile_base",
+      "language": "rust",
+      "model": null,
+      "name": "mobile_base",
+      "type_name": "mobile_base"
+     },
+     "identifier": "core://core/container_factory/mobile_base::mobile_base",
+     "language": "rust",
+     "name": "mobile_base",
+     "plugin": {
+      "abi": "c",
+      "path": "./target/debug/libmobile_robot.so"
+     },
+     "type_name": "mobile_base"
+    },
+    {
+     "__class__": "ContainerFactoryWrapper",
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "container_factory",
+     "container_factory": {
+      "arguments": [],
+      "broker_name": "core",
+      "broker_type_name": "core",
+      "class_name": "container_factory",
+      "identifier": "core://core/container_factory/pantilt::pantilt",
+      "language": "rust",
+      "model": null,
+      "name": "pantilt",
+      "type_name": "pantilt"
+     },
+     "identifier": "core://core/container_factory/pantilt::pantilt",
+     "language": "rust",
+     "name": "pantilt",
+     "plugin": {
+      "abi": "c",
+      "path": "./target/debug/libmobile_robot.so"
+     },
+     "type_name": "pantilt"
+    }
+   ],
+   "container_process_factories": [
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "container_process_factory",
+     "container_process_factory": {
+      "arguments": [
+       {
+        "default": 0.0,
+        "description": {
+         "text": "Default description for argument vx"
+        },
+        "name": "vx",
+        "type_name": "Float"
+       },
+       {
+        "default": 0.0,
+        "description": {
+         "text": "Default description for argument omega"
+        },
+        "name": "omega",
+        "type_name": "Float"
+       },
+       {
+        "default": 1.0,
+        "description": {
+         "text": "Default description for argument dt"
+        },
+        "name": "dt",
+        "type_name": "Float"
+       },
+       {
+        "default": "odom",
+        "description": {
+         "text": "Default description for argument reference"
+        },
+        "name": "reference",
+        "type_name": "String"
+       }
+      ],
+      "broker_name": "core",
+      "broker_type_name": "core",
+      "class_name": "container_process_factory",
+      "identifier": "core://core/container_process_factory/mobile_base_move::mobile_base_move",
+      "language": "rust",
+      "name": "mobile_base_move",
+      "type_name": "mobile_base_move"
+     },
+     "identifier": "core://core/container_process_factory/mobile_base_move::mobile_base_move",
+     "language": "rust",
+     "name": "mobile_base_move",
+     "plugin": {
+      "abi": "c",
+      "path": "./target/debug/libmobile_robot.so"
+     },
+     "type_name": "mobile_base_move"
+    },
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "container_process_factory",
+     "container_process_factory": {
+      "arguments": [
+       {
+        "default": 0.0,
+        "description": {
+         "text": "Default description for argument pan"
+        },
+        "name": "pan",
+        "type_name": "Float"
+       },
+       {
+        "default": "base0",
+        "description": {
+         "text": "Default description for argument reference"
+        },
+        "name": "reference",
+        "type_name": "String"
+       }
+      ],
+      "broker_name": "core",
+      "broker_type_name": "core",
+      "class_name": "container_process_factory",
+      "identifier": "core://core/container_process_factory/pantilt_set_pan::pantilt_set_pan",
+      "language": "rust",
+      "name": "pantilt_set_pan",
+      "type_name": "pantilt_set_pan"
+     },
+     "identifier": "core://core/container_process_factory/pantilt_set_pan::pantilt_set_pan",
+     "language": "rust",
+     "name": "pantilt_set_pan",
+     "plugin": {
+      "abi": "c",
+      "path": "./target/debug/libmobile_robot.so"
+     },
+     "type_name": "pantilt_set_pan"
+    },
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "container_process_factory",
+     "container_process_factory": {
+      "arguments": [
+       {
+        "default": "map",
+        "description": {
+         "text": "Default description for argument reference"
+        },
+        "name": "reference",
+        "type_name": "String"
+       }
+      ],
+      "broker_name": "core",
+      "broker_type_name": "core",
+      "class_name": "container_process_factory",
+      "identifier": "core://core/container_process_factory/camera_pose::camera_pose",
+      "language": "rust",
+      "name": "camera_pose",
+      "type_name": "camera_pose"
+     },
+     "identifier": "core://core/container_process_factory/camera_pose::camera_pose",
+     "language": "rust",
+     "name": "camera_pose",
+     "plugin": {
+      "abi": "c",
+      "path": "./target/debug/libmobile_robot.so"
+     },
+     "type_name": "camera_pose"
+    }
+   ],
+   "container_processes": [
+    {
+     "arguments": [
+      {
+       "default": 0.0,
+       "description": {
+        "text": "Default description for argument pan"
+       },
+       "name": "pan",
+       "type_name": "Float"
+      },
+      {
+       "default": "base0",
+       "description": {
+        "text": "Default description for argument reference"
+       },
+       "name": "reference",
+       "type_name": "String"
+      }
+     ],
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "container_process",
+     "container_name": "pantilt0",
+     "container_type": "pantilt",
+     "description": {
+      "text": "Default description of Process(pantilt_set_pan)"
+     },
+     "factory": "process_factory",
+     "identifier": "core://core/container_process/pan0::pantilt_set_pan:pantilt0",
+     "language": "rust",
+     "name": "pan0",
+     "namespace": "",
+     "outputs": null,
+     "publishes": [],
+     "subscribes": {},
+     "type_name": "pantilt_set_pan",
+     "use_memo": false
+    },
+    {
+     "arguments": [
+      {
+       "default": 0.0,
+       "description": {
+        "text": "Default description for argument vx"
+       },
+       "name": "vx",
+       "type_name": "Float"
+      },
+      {
+       "default": 0.0,
+       "description": {
+        "text": "Default description for argument omega"
+       },
+       "name": "omega",
+       "type_name": "Float"
+      },
+      {
+       "default": 1.0,
+       "description": {
+        "text": "Default description for argument dt"
+       },
+       "name": "dt",
+       "type_name": "Float"
+      },
+      {
+       "default": "odom",
+       "description": {
+        "text": "Default description for argument reference"
+       },
+       "name": "reference",
+       "type_name": "String"
+      }
+     ],
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "container_process",
+     "container_name": "base0",
+     "container_type": "mobile_base",
+     "description": {
+      "text": "Default description of Process(mobile_base_move)"
+     },
+     "factory": "process_factory",
+     "identifier": "core://core/container_process/move0::mobile_base_move:base0",
+     "language": "rust",
+     "name": "move0",
+     "namespace": "",
+     "outputs": null,
+     "publishes": [],
+     "subscribes": {},
+     "type_name": "mobile_base_move",
+     "use_memo": false
+    },
+    {
+     "arguments": [
+      {
+       "default": "map",
+       "description": {
+        "text": "Default description for argument reference"
+       },
+       "name": "reference",
+       "type_name": "String"
+      }
+     ],
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "container_process",
+     "container_name": "camera0",
+     "container_type": "camera",
+     "description": {
+      "text": "Default description of Process(camera_pose)"
+     },
+     "factory": "process_factory",
+     "identifier": "core://core/container_process/camera_pose0::camera_pose:camera0",
+     "language": "rust",
+     "name": "camera_pose0",
+     "namespace": "",
+     "outputs": null,
+     "publishes": [],
+     "readonly": true,
+     "subscribes": {},
+     "type_name": "camera_pose",
+     "use_memo": false
+    }
+   ],
+   "containers": [
+    {
+     "args": {},
+     "arguments": [],
+     "class_name": "container",
+     "description": {
+      "text": "Default description of Container(camera)"
+     },
+     "factory": "camera_factory",
+     "identifier": "core://core/container/camera0::camera",
+     "language": "rust",
+     "model": {
+      "color": "#e0e0e0",
+      "file_name": "camera.stl",
+      "format": "stl",
+      "media_type": "model/stl",
+      "origin": {
+       "rotation": {
+        "w": 1.0,
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+       },
+       "translation": {
+        "x": -0.015,
+        "y": 0.0,
+        "z": 0.0
+       }
+      },
+      "scale": 0.001,
+      "sha256": "2883af162d95f9815e98c91dccf239aabf3181677a7d532f75d2b95e62b4a1b1",
+      "size": 7084,
+      "up_axis": "z"
+     },
+     "name": "camera0",
+     "namespace": "",
+     "parent_name": null,
+     "parent_type_name": null,
+     "processes": [
+      {
+       "arguments": [
+        {
+         "default": "map",
+         "description": {
+          "text": "Default description for argument reference"
+         },
+         "name": "reference",
+         "type_name": "String"
+        }
+       ],
+       "broker_name": "core",
+       "broker_type_name": "core",
+       "class_name": "container_process",
+       "container_name": "camera0",
+       "container_type": "camera",
+       "description": {
+        "text": "Default description of Process(camera_pose)"
+       },
+       "factory": "process_factory",
+       "identifier": "core://core/container_process/camera_pose0::camera_pose:camera0",
+       "language": "rust",
+       "name": "camera_pose0",
+       "namespace": "",
+       "outputs": null,
+       "publishes": [],
+       "readonly": true,
+       "subscribes": {},
+       "type_name": "camera_pose",
+       "use_memo": false
+      }
+     ],
+     "type_name": "camera"
+    },
+    {
+     "args": {},
+     "arguments": [],
+     "class_name": "container",
+     "description": {
+      "text": "Default description of Container(mobile_base)"
+     },
+     "factory": "mobile_base_factory",
+     "identifier": "core://core/container/base0::mobile_base",
+     "language": "rust",
+     "model": {
+      "color": "",
+      "file_name": "mobile_base.glb",
+      "format": "glb",
+      "media_type": "model/gltf-binary",
+      "origin": {
+       "rotation": {
+        "w": 1.0,
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+       },
+       "translation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+       }
+      },
+      "scale": 1.0,
+      "sha256": "36d994c1e42417e3d1dd8a14d8ae0ac6280cdfb8253d677d3ef7a5648fee9a73",
+      "size": 24760,
+      "up_axis": "y"
+     },
+     "name": "base0",
+     "namespace": "",
+     "parent_name": null,
+     "parent_type_name": null,
+     "processes": [
+      {
+       "arguments": [
+        {
+         "default": 0.0,
+         "description": {
+          "text": "Default description for argument vx"
+         },
+         "name": "vx",
+         "type_name": "Float"
+        },
+        {
+         "default": 0.0,
+         "description": {
+          "text": "Default description for argument omega"
+         },
+         "name": "omega",
+         "type_name": "Float"
+        },
+        {
+         "default": 1.0,
+         "description": {
+          "text": "Default description for argument dt"
+         },
+         "name": "dt",
+         "type_name": "Float"
+        },
+        {
+         "default": "odom",
+         "description": {
+          "text": "Default description for argument reference"
+         },
+         "name": "reference",
+         "type_name": "String"
+        }
+       ],
+       "broker_name": "core",
+       "broker_type_name": "core",
+       "class_name": "container_process",
+       "container_name": "base0",
+       "container_type": "mobile_base",
+       "description": {
+        "text": "Default description of Process(mobile_base_move)"
+       },
+       "factory": "process_factory",
+       "identifier": "core://core/container_process/move0::mobile_base_move:base0",
+       "language": "rust",
+       "name": "move0",
+       "namespace": "",
+       "outputs": null,
+       "publishes": [],
+       "subscribes": {},
+       "type_name": "mobile_base_move",
+       "use_memo": false
+      }
+     ],
+     "type_name": "mobile_base"
+    },
+    {
+     "anchor": {
+      "kind": "static"
+     },
+     "args": {},
+     "arguments": [],
+     "class_name": "container",
+     "description": {
+      "text": ""
+     },
+     "factory": "static_anchor",
+     "identifier": "core://core/container/odom::static_anchor",
+     "language": "rust",
+     "model": null,
+     "name": "odom",
+     "namespace": "",
+     "parent_name": null,
+     "parent_type_name": null,
+     "processes": [],
+     "type_name": "static_anchor"
+    },
+    {
+     "anchor": {
+      "kind": "periodic",
+      "rate": 10.0
+     },
+     "args": {},
+     "arguments": [],
+     "class_name": "container",
+     "description": {
+      "text": ""
+     },
+     "factory": "periodic_anchor",
+     "identifier": "core://core/container/map::periodic_anchor",
+     "language": "rust",
+     "model": {
+      "color": "",
+      "file_name": "floor.glb",
+      "format": "glb",
+      "media_type": "model/gltf-binary",
+      "origin": {
+       "rotation": {
+        "w": 1.0,
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+       },
+       "translation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+       }
+      },
+      "scale": 1.0,
+      "sha256": "819e3c9ca72684c10412bf096efc03d5bafe4bc99d815fe1f44d1350d438bc82",
+      "size": 4392,
+      "up_axis": "y"
+     },
+     "name": "map",
+     "namespace": "",
+     "parent_name": null,
+     "parent_type_name": null,
+     "processes": [],
+     "type_name": "periodic_anchor"
+    },
+    {
+     "args": {},
+     "arguments": [],
+     "class_name": "container",
+     "description": {
+      "text": "Default description of Container(pantilt)"
+     },
+     "factory": "pantilt_factory",
+     "identifier": "core://core/container/pantilt0::pantilt",
+     "language": "rust",
+     "model": {
+      "color": "#606060",
+      "file_name": "pantilt.sdf",
+      "format": "sdf",
+      "media_type": "application/xml",
+      "origin": {
+       "rotation": {
+        "w": 1.0,
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+       },
+       "translation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+       }
+      },
+      "scale": 1.0,
+      "sha256": "c04dbfd191b15ecc711231c522856c50e8871dfe542517251c99102a541dadd2",
+      "size": 1406,
+      "up_axis": "z"
+     },
+     "name": "pantilt0",
+     "namespace": "",
+     "parent_name": null,
+     "parent_type_name": null,
+     "processes": [
+      {
+       "arguments": [
+        {
+         "default": 0.0,
+         "description": {
+          "text": "Default description for argument pan"
+         },
+         "name": "pan",
+         "type_name": "Float"
+        },
+        {
+         "default": "base0",
+         "description": {
+          "text": "Default description for argument reference"
+         },
+         "name": "reference",
+         "type_name": "String"
+        }
+       ],
+       "broker_name": "core",
+       "broker_type_name": "core",
+       "class_name": "container_process",
+       "container_name": "pantilt0",
+       "container_type": "pantilt",
+       "description": {
+        "text": "Default description of Process(pantilt_set_pan)"
+       },
+       "factory": "process_factory",
+       "identifier": "core://core/container_process/pan0::pantilt_set_pan:pantilt0",
+       "language": "rust",
+       "name": "pan0",
+       "namespace": "",
+       "outputs": null,
+       "publishes": [],
+       "subscribes": {},
+       "type_name": "pantilt_set_pan",
+       "use_memo": false
+      }
+     ],
+     "type_name": "pantilt"
+    }
+   ],
+   "ec_factories": {
+    "main_loop_ec": {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "execution_context_factory",
+     "identifier": "core://core/execution_context_factory/main_loop_ec::main_loop_ec",
+     "name": "main_loop_ec",
+     "type_name": "main_loop_ec"
+    }
+   },
+   "ecs": {},
+   "process_factories": [
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process_factory",
+     "given_process_factory": {
+      "arguments": [
+       {
+        "default": {},
+        "description": {
+         "text": "Default description for argument pose"
+        },
+        "name": "pose",
+        "type_name": "Object"
+       }
+      ],
+      "broker_name": "core",
+      "broker_type_name": "core",
+      "class_name": "process_factory",
+      "identifier": "core://core/process_factory/pose_print::pose_print",
+      "language": "rust",
+      "name": "pose_print",
+      "type_name": "pose_print"
+     },
+     "identifier": "core://core/process_factory/pose_print::pose_print",
+     "language": "rust",
+     "name": "pose_print",
+     "plugin": {
+      "abi": "c",
+      "path": "./target/debug/libmobile_robot.so"
+     },
+     "type_name": "pose_print"
+    }
+   ],
+   "processes": [
+    {
+     "arguments": [
+      {
+       "default": {},
+       "description": {
+        "text": "Default description for argument pose"
+       },
+       "name": "pose",
+       "type_name": "Object"
+      }
+     ],
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process",
+     "container_name": null,
+     "container_type": null,
+     "description": {
+      "text": "Default description of Process(pose_print)"
+     },
+     "factory": "process_factory",
+     "identifier": "core://core/process/print0::pose_print",
+     "language": "rust",
+     "name": "print0",
+     "namespace": "",
+     "outputs": null,
+     "publishes": [],
+     "subscribes": {},
+     "type_name": "pose_print",
+     "use_memo": false
+    }
+   ],
+   "topics": []
+  },
+  "identifier": "core://core/broker_proxy/core::core",
+  "mastersystem": [],
+  "name": "core",
+  "subsystems": [],
+  "system_store": {
+   "broker_factories": [
+    "http",
+    "local"
+   ],
+   "broker_proxies": [],
+   "brokers": [
+    "local",
+    "http"
+   ],
+   "uuid": "6bdfbd49-0cbc-4629-9000-2ff7c633fc95"
+  },
+  "type_name": "core"
+ },
+ "transforms": [
+  {
+   "destination": "core://core/container/pantilt0::pantilt",
+   "identifier": "transform://core://core/container/base0::mobile_base|core://core/container/pantilt0::pantilt",
+   "source": "core://core/container/base0::mobile_base",
+   "stamp": {
+    "nanosec": 482441739,
+    "sec": 1794755240
+   },
+   "transform": {
+    "rotation": {
+     "w": 1.0,
+     "x": 0.0,
+     "y": 0.0,
+     "z": 0.0
+    },
+    "translation": {
+     "x": 0.1,
+     "y": 0.0,
+     "z": 0.3
+    }
+   }
+  },
+  {
+   "destination": "core://core/container/odom::static_anchor",
+   "identifier": "transform://core://core/container/map::periodic_anchor|core://core/container/odom::static_anchor",
+   "source": "core://core/container/map::periodic_anchor",
+   "stamp": {
+    "nanosec": 482428732,
+    "sec": 1794755240
+   },
+   "transform": {
+    "rotation": {
+     "w": 1.0,
+     "x": 0.0,
+     "y": 0.0,
+     "z": 0.0
+    },
+    "translation": {
+     "x": 1.0,
+     "y": 2.0,
+     "z": 0.0
+    }
+   }
+  },
+  {
+   "destination": "core://core/container/base0::mobile_base",
+   "identifier": "transform://core://core/container/odom::static_anchor|core://core/container/base0::mobile_base",
+   "source": "core://core/container/odom::static_anchor",
+   "stamp": {
+    "nanosec": 482438996,
+    "sec": 1794755240
+   },
+   "transform": {
+    "rotation": {
+     "w": 1.0,
+     "x": 0.0,
+     "y": 0.0,
+     "z": 0.0
+    },
+    "translation": {
+     "x": 0.0,
+     "y": 0.0,
+     "z": 0.0
+    }
+   }
+  },
+  {
+   "destination": "core://core/container/camera0::camera",
+   "identifier": "transform://core://core/container/pantilt0::pantilt|core://core/container/camera0::camera",
+   "source": "core://core/container/pantilt0::pantilt",
+   "stamp": {
+    "nanosec": 482444184,
+    "sec": 1794755240
+   },
+   "transform": {
+    "rotation": {
+     "w": 1.0,
+     "x": 0.0,
+     "y": 0.0,
+     "z": 0.0
+    },
+    "translation": {
+     "x": 0.05,
+     "y": 0.0,
+     "z": 0.02
+    }
+   }
+  }
+ ]
+}

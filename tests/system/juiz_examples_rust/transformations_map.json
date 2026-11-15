@@ -1,0 +1,124 @@
+{
+ "composites": [],
+ "connections": [],
+ "format": "juiz_opm/system/0",
+ "pose_listeners": [],
+ "system": {
+  "broker_name": "core",
+  "broker_type_name": "core",
+  "class_name": "broker_proxy",
+  "core_store": {
+   "broker_factories": {
+    "http": {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "broker_factory",
+     "identifier": "core://core/broker_factory/http::http",
+     "name": "http",
+     "type_name": "http"
+    },
+    "local": {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "broker_factory",
+     "identifier": "core://core/broker_factory/local::local",
+     "name": "local",
+     "type_name": "local"
+    }
+   },
+   "broker_proxies": [],
+   "brokers": [
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "description": {
+      "text": ""
+     },
+     "name": "local",
+     "type_name": "local"
+    },
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "description": {
+      "text": ""
+     },
+     "name": "127.0.0.1:8000",
+     "type_name": "http"
+    }
+   ],
+   "container_factories": [],
+   "container_process_factories": [],
+   "container_processes": [],
+   "containers": [
+    {
+     "anchor": {
+      "kind": "periodic",
+      "rate": 10.0
+     },
+     "args": {},
+     "arguments": [],
+     "class_name": "container",
+     "description": {
+      "text": ""
+     },
+     "factory": "periodic_anchor",
+     "identifier": "core://core/container/map::periodic_anchor",
+     "language": "rust",
+     "model": {
+      "color": "",
+      "file_name": "floor.glb",
+      "format": "glb",
+      "media_type": "model/gltf-binary",
+      "origin": {
+       "rotation": {
+        "w": 1.0,
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+       },
+       "translation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+       }
+      },
+      "scale": 1.0,
+      "sha256": "819e3c9ca72684c10412bf096efc03d5bafe4bc99d815fe1f44d1350d438bc82",
+      "size": 4392,
+      "up_axis": "y"
+     },
+     "name": "map",
+     "namespace": "",
+     "parent_name": null,
+     "parent_type_name": null,
+     "processes": [],
+     "type_name": "periodic_anchor"
+    }
+   ],
+   "ec_factories": {},
+   "ecs": {},
+   "process_factories": [],
+   "processes": [],
+   "topics": []
+  },
+  "identifier": "core://core/broker_proxy/core::core",
+  "mastersystem": [],
+  "name": "core",
+  "subsystems": [],
+  "system_store": {
+   "broker_factories": [
+    "http",
+    "local"
+   ],
+   "broker_proxies": [],
+   "brokers": [
+    "local",
+    "http"
+   ],
+   "uuid": "40faac6c-25e1-4d82-a019-e75b95787c78"
+  },
+  "type_name": "core"
+ },
+ "transforms": []
+}

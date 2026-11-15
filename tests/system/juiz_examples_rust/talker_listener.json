@@ -1,0 +1,262 @@
+{
+ "composites": [],
+ "connections": [
+  {
+   "arg_name": "arg1",
+   "connection_type": "Push",
+   "destination_process_id": {
+    "broker_name": "core",
+    "broker_type_name": "core",
+    "class_name": "process",
+    "container_name": null,
+    "name": "listener0",
+    "namespace": "",
+    "type_name": "listener"
+   },
+   "source_process_id": {
+    "broker_name": "core",
+    "broker_type_name": "core",
+    "class_name": "process",
+    "container_name": null,
+    "name": "talker0",
+    "namespace": "",
+    "type_name": "talker"
+   }
+  }
+ ],
+ "format": "juiz_opm/system/0",
+ "pose_listeners": [],
+ "system": {
+  "broker_name": "core",
+  "broker_type_name": "core",
+  "class_name": "broker_proxy",
+  "core_store": {
+   "broker_factories": {
+    "http": {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "broker_factory",
+     "identifier": "core://core/broker_factory/http::http",
+     "name": "http",
+     "type_name": "http"
+    },
+    "local": {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "broker_factory",
+     "identifier": "core://core/broker_factory/local::local",
+     "name": "local",
+     "type_name": "local"
+    }
+   },
+   "broker_proxies": [],
+   "brokers": [
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "description": {
+      "text": ""
+     },
+     "name": "127.0.0.1:8000",
+     "type_name": "http"
+    },
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "description": {
+      "text": ""
+     },
+     "name": "local",
+     "type_name": "local"
+    }
+   ],
+   "container_factories": [],
+   "container_process_factories": [],
+   "container_processes": [],
+   "containers": [],
+   "ec_factories": {
+    "main_loop_ec": {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "execution_context_factory",
+     "identifier": "core://core/execution_context_factory/main_loop_ec::main_loop_ec",
+     "name": "main_loop_ec",
+     "type_name": "main_loop_ec"
+    }
+   },
+   "ecs": {
+    "core://core/execution_context/ec0::main_loop_ec": {
+     "auto_start": true,
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "execution_context",
+     "identifier": "core://core/execution_context/ec0::main_loop_ec",
+     "name": "ec0",
+     "namespace": "",
+     "rate": 1.0,
+     "state": "STARTED",
+     "targets": [
+      {
+       "broker_name": "core",
+       "broker_type_name": "core",
+       "class_name": "process",
+       "container_name": null,
+       "name": "talker0",
+       "namespace": "",
+       "type_name": "talker"
+      }
+     ],
+     "type_name": "main_loop_ec"
+    }
+   },
+   "process_factories": [
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process_factory",
+     "given_process_factory": {
+      "arguments": [
+       {
+        "default": "Hello, Juiz!",
+        "description": {
+         "text": "This message is printed."
+        },
+        "name": "arg1",
+        "type_name": "String"
+       }
+      ],
+      "broker_name": "core",
+      "broker_type_name": "core",
+      "class_name": "process_factory",
+      "identifier": "core://core/process_factory/listener::listener",
+      "language": "rust",
+      "name": "listener",
+      "type_name": "listener"
+     },
+     "identifier": "core://core/process_factory/listener::listener",
+     "language": "rust",
+     "name": "listener",
+     "plugin": {
+      "abi": "c",
+      "path": "./target/debug/liblistener.so"
+     },
+     "type_name": "listener"
+    },
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process_factory",
+     "given_process_factory": {
+      "arguments": [
+       {
+        "default": "Hello World",
+        "description": {
+         "text": "This message is printed and returned."
+        },
+        "name": "message",
+        "type_name": "String"
+       }
+      ],
+      "broker_name": "core",
+      "broker_type_name": "core",
+      "class_name": "process_factory",
+      "identifier": "core://core/process_factory/talker::talker",
+      "language": "rust",
+      "name": "talker",
+      "type_name": "talker"
+     },
+     "identifier": "core://core/process_factory/talker::talker",
+     "language": "rust",
+     "name": "talker",
+     "plugin": {
+      "abi": "c",
+      "path": "./target/debug/libtalker.so"
+     },
+     "type_name": "talker"
+    }
+   ],
+   "processes": [
+    {
+     "arguments": [
+      {
+       "default": "Hello, Juiz!",
+       "description": {
+        "text": "This message is printed."
+       },
+       "name": "arg1",
+       "type_name": "String",
+       "value": "Hello World"
+      }
+     ],
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process",
+     "container_name": null,
+     "container_type": null,
+     "description": {
+      "text": "This is listener process."
+     },
+     "factory": "process_factory",
+     "identifier": "core://core/process/listener0::listener",
+     "language": "rust",
+     "name": "listener0",
+     "namespace": "",
+     "outputs": null,
+     "publishes": [],
+     "subscribes": {},
+     "type_name": "listener",
+     "use_memo": false
+    },
+    {
+     "arguments": [
+      {
+       "default": "Hello World",
+       "description": {
+        "text": "This message is printed and returned."
+       },
+       "name": "message",
+       "type_name": "String"
+      }
+     ],
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process",
+     "container_name": null,
+     "container_type": null,
+     "description": {
+      "text": "This is talker process."
+     },
+     "factory": "process_factory",
+     "identifier": "core://core/process/talker0::talker",
+     "language": "rust",
+     "name": "talker0",
+     "namespace": "",
+     "outputs": null,
+     "publishes": [],
+     "subscribes": {},
+     "type_name": "talker",
+     "use_memo": false
+    }
+   ],
+   "topics": []
+  },
+  "identifier": "core://core/broker_proxy/core::core",
+  "mastersystem": [],
+  "name": "core",
+  "subsystems": [],
+  "system_store": {
+   "broker_factories": [
+    "http",
+    "local"
+   ],
+   "broker_proxies": [],
+   "brokers": [
+    "http",
+    "local"
+   ],
+   "uuid": "2971c8dd-44ca-4513-b039-7f5dddc8489e"
+  },
+  "type_name": "core"
+ },
+ "transforms": []
+}

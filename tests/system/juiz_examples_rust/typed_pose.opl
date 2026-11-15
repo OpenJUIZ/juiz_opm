@@ -1,0 +1,36 @@
+Model "typed_pose".
+
+"move0" is a process [role: process, id: core://core/process/move0::pose_move, name: move0, type: pose_move, use_memo: false].
+"move0" yields "move0 out".
+"move0" requires "move0 dt" [arg: dt, arg_index: 2].
+"move0" requires "move0 pose" [arg: pose, arg_index: 0].
+"move0" requires "twist0 out" [arg: twist, arg_index: 1, connection: pull].
+"move0" invokes "print0".
+
+"move0 dt" is an object [role: value, value_kind: input, default: 1.0].
+
+"move0 out" is an object [role: value, datatype: examples.geometry.Pose2D@sha256:123b8c15cda217478b331e2133a5de7c5aafb8075d0ca203e8a7e7e50797cf9b, value_kind: output].
+
+"move0 pose" is an object [role: value, datatype: examples.geometry.Pose2D@sha256:123b8c15cda217478b331e2133a5de7c5aafb8075d0ca203e8a7e7e50797cf9b, value_kind: input, default: {}].
+
+"print0" is a process [role: process, id: core://core/process/print0::pose_print_python, name: print0, type: pose_print_python, use_memo: false].
+"print0" yields "print0 out".
+"print0" requires "move0 out" [arg: pose, arg_index: 0, connection: push].
+
+"print0 out" is an object [role: value, value_kind: output].
+
+"twist0" is a process [role: process, id: core://core/process/twist0::twist_python, name: twist0, type: twist_python, use_memo: false].
+"twist0" yields "twist0 out".
+"twist0" requires "twist0 angular" [arg: angular, arg_index: 1].
+"twist0" requires "twist0 linear" [arg: linear, arg_index: 0].
+
+"twist0 angular" is an object [role: value, value_kind: input, default: 0.0].
+
+"twist0 linear" is an object [role: value, value_kind: input, default: 0.5].
+
+"twist0 out" is an object [role: value, datatype: examples.geometry.Twist2D@sha256:115b9e0f7b27c487a3af04922d19364cc387e3116468e90f22034c4f51a9fe71, value_kind: output].
+
+"typed_pose" is an object [role: system, name: typed_pose].
+"typed_pose" exhibits "move0".
+"typed_pose" exhibits "print0".
+"typed_pose" exhibits "twist0".

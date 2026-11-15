@@ -1,0 +1,152 @@
+{
+ "composites": [],
+ "connections": [],
+ "format": "juiz_opm/system/0",
+ "pose_listeners": [],
+ "system": {
+  "broker_name": "core",
+  "broker_type_name": "core",
+  "class_name": "broker_proxy",
+  "core_store": {
+   "broker_factories": {
+    "http": {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "broker_factory",
+     "identifier": "core://core/broker_factory/http::http",
+     "name": "http",
+     "type_name": "http"
+    },
+    "local": {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "broker_factory",
+     "identifier": "core://core/broker_factory/local::local",
+     "name": "local",
+     "type_name": "local"
+    }
+   },
+   "broker_proxies": [],
+   "brokers": [
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "description": {
+      "text": ""
+     },
+     "name": "127.0.0.1:8000",
+     "type_name": "http"
+    },
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "description": {
+      "text": ""
+     },
+     "name": "local",
+     "type_name": "local"
+    }
+   ],
+   "container_factories": [],
+   "container_process_factories": [],
+   "container_processes": [],
+   "containers": [],
+   "ec_factories": {
+    "main_loop_ec": {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "execution_context_factory",
+     "identifier": "core://core/execution_context_factory/main_loop_ec::main_loop_ec",
+     "name": "main_loop_ec",
+     "type_name": "main_loop_ec"
+    }
+   },
+   "ecs": {},
+   "process_factories": [
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process_factory",
+     "given_process_factory": {
+      "arguments": [
+       {
+        "default": 1,
+        "description": {
+         "text": "The output will be 'arg1 - 1'."
+        },
+        "name": "arg1",
+        "type_name": "Int"
+       }
+      ],
+      "broker_name": "core",
+      "broker_type_name": "core",
+      "class_name": "process_factory",
+      "identifier": "core://core/process_factory/decrement_process::decrement_process",
+      "language": "rust",
+      "name": "decrement_process",
+      "type_name": "decrement_process"
+     },
+     "identifier": "core://core/process_factory/decrement_process::decrement_process",
+     "language": "rust",
+     "name": "decrement_process",
+     "plugin": {
+      "abi": "c",
+      "path": "./target/debug/libdecrement_process.so"
+     },
+     "type_name": "decrement_process"
+    }
+   ],
+   "processes": [
+    {
+     "arguments": [
+      {
+       "default": 1,
+       "description": {
+        "text": "The output will be 'arg1 - 1'."
+       },
+       "name": "arg1",
+       "type_name": "Int"
+      }
+     ],
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process",
+     "container_name": null,
+     "container_type": null,
+     "description": {
+      "text": "Example(decremnet_process)"
+     },
+     "factory": "process_factory",
+     "identifier": "core://core/process/decrement0::decrement_process",
+     "language": "rust",
+     "name": "decrement0",
+     "namespace": "",
+     "outputs": null,
+     "publishes": [],
+     "subscribes": {},
+     "type_name": "decrement_process",
+     "use_memo": false
+    }
+   ],
+   "topics": []
+  },
+  "identifier": "core://core/broker_proxy/core::core",
+  "mastersystem": [],
+  "name": "core",
+  "subsystems": [],
+  "system_store": {
+   "broker_factories": [
+    "local",
+    "http"
+   ],
+   "broker_proxies": [],
+   "brokers": [
+    "http",
+    "local"
+   ],
+   "uuid": "c190bc3e-eaec-4d69-ac75-d4676809c391"
+  },
+  "type_name": "core"
+ },
+ "transforms": []
+}

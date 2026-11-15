@@ -1,0 +1,6 @@
+Model "transformations_map".
+
+"map" is an object [role: container, id: core://core/container/map::periodic_anchor, name: map, type: periodic_anchor, rate: 10].
+
+"transformations_map" is an object [role: system, name: transformations_map].
+"transformations_map" consists of "map".

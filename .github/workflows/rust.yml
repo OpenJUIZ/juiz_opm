@@ -25,4 +25,4 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install lxml
-      - run: python scripts/validate_xml.py --also target/roundtrip --also target/roundtrip/opl --also target/roundtrip/juiz
+      - run: python scripts/validate_xml.py --also target/roundtrip --also target/roundtrip/opl --also target/roundtrip/juiz --also target/roundtrip/system

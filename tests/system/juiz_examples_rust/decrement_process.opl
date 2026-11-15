@@ -1,0 +1,12 @@
+Model "test_system".
+
+"decrement0" is a process [role: process, id: core://core/process/decrement0::decrement_process, name: decrement0, type: decrement_process, use_memo: false].
+"decrement0" yields "decrement0 out".
+"decrement0" requires "decrement0 arg1" [arg: arg1, arg_index: 0].
+
+"decrement0 arg1" is an object [role: value, value_kind: input, default: 1].
+
+"decrement0 out" is an object [role: value, value_kind: output].
+
+"test_system" is an object [role: system, name: test_system].
+"test_system" exhibits "decrement0".

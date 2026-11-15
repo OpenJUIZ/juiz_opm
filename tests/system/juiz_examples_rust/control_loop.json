@@ -1,0 +1,568 @@
+{
+ "composites": [
+  {
+   "arguments": [
+    {
+     "default": 1.0,
+     "description": {
+      "text": "Default description for argument target"
+     },
+     "name": "target",
+     "type_name": "Float"
+    }
+   ],
+   "broker_name": "core",
+   "broker_type_name": "core",
+   "composition": {
+    "body": {
+     "args": {
+      "velocity": {
+       "args": {
+        "gain": {
+         "const": 2.0
+        },
+        "measured": {
+         "args": {},
+         "container": "sensor",
+         "process": "dummy_sensor_read"
+        },
+        "target": {
+         "expose": "target"
+        }
+       },
+       "process": "p_control"
+      }
+     },
+     "container": "motor",
+     "process": "dummy_motor_drive"
+    },
+    "containers": {
+     "motor": "dummy_motor",
+     "sensor": "dummy_sensor"
+    }
+   },
+   "container_name": null,
+   "container_type": "composite_container",
+   "description": {
+    "text": "位置を読み、P 制御で速度を決めてモータに出す"
+   },
+   "factory": "composite_container_process_factory",
+   "language": "rust",
+   "name": null,
+   "namespace": "",
+   "outputs": null,
+   "publishes": [],
+   "subscribes": {},
+   "type_name": "follow_target",
+   "use_memo": false
+  }
+ ],
+ "connections": [],
+ "format": "juiz_opm/system/0",
+ "pose_listeners": [],
+ "system": {
+  "broker_name": "core",
+  "broker_type_name": "core",
+  "class_name": "broker_proxy",
+  "core_store": {
+   "broker_factories": {
+    "http": {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "broker_factory",
+     "identifier": "core://core/broker_factory/http::http",
+     "name": "http",
+     "type_name": "http"
+    },
+    "local": {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "broker_factory",
+     "identifier": "core://core/broker_factory/local::local",
+     "name": "local",
+     "type_name": "local"
+    }
+   },
+   "broker_proxies": [],
+   "brokers": [
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "description": {
+      "text": ""
+     },
+     "name": "127.0.0.1:8000",
+     "type_name": "http"
+    },
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "description": {
+      "text": ""
+     },
+     "name": "local",
+     "type_name": "local"
+    }
+   ],
+   "container_factories": [
+    {
+     "__class__": "ContainerFactoryWrapper",
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "container_factory",
+     "container_factory": {
+      "arguments": [
+       {
+        "default": 0.05,
+        "description": {
+         "text": "Default description for argument dt"
+        },
+        "name": "dt",
+        "type_name": "Float"
+       }
+      ],
+      "broker_name": "core",
+      "broker_type_name": "core",
+      "class_name": "container_factory",
+      "identifier": "core://core/container_factory/dummy_motor::dummy_motor",
+      "language": "rust",
+      "model": null,
+      "name": "dummy_motor",
+      "type_name": "dummy_motor"
+     },
+     "identifier": "core://core/container_factory/dummy_motor::dummy_motor",
+     "language": "rust",
+     "name": "dummy_motor",
+     "plugin": {
+      "abi": "c",
+      "path": "./target/debug/libexample_control.so"
+     },
+     "type_name": "dummy_motor"
+    },
+    {
+     "__class__": "ContainerFactoryWrapper",
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "container_factory",
+     "container_factory": {
+      "arguments": [],
+      "broker_name": "core",
+      "broker_type_name": "core",
+      "class_name": "container_factory",
+      "identifier": "core://core/container_factory/dummy_sensor::dummy_sensor",
+      "language": "rust",
+      "model": null,
+      "name": "dummy_sensor",
+      "type_name": "dummy_sensor"
+     },
+     "identifier": "core://core/container_factory/dummy_sensor::dummy_sensor",
+     "language": "rust",
+     "name": "dummy_sensor",
+     "plugin": {
+      "abi": "c",
+      "path": "./target/debug/libexample_control.so"
+     },
+     "type_name": "dummy_sensor"
+    }
+   ],
+   "container_process_factories": [
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "container_process_factory",
+     "container_process_factory": {
+      "arguments": [
+       {
+        "default": 0.0,
+        "description": {
+         "text": "Default description for argument velocity"
+        },
+        "name": "velocity",
+        "type_name": "Float"
+       }
+      ],
+      "broker_name": "core",
+      "broker_type_name": "core",
+      "class_name": "container_process_factory",
+      "identifier": "core://core/container_process_factory/dummy_motor_drive::dummy_motor_drive",
+      "language": "rust",
+      "name": "dummy_motor_drive",
+      "type_name": "dummy_motor_drive"
+     },
+     "identifier": "core://core/container_process_factory/dummy_motor_drive::dummy_motor_drive",
+     "language": "rust",
+     "name": "dummy_motor_drive",
+     "plugin": {
+      "abi": "c",
+      "path": "./target/debug/libexample_control.so"
+     },
+     "type_name": "dummy_motor_drive"
+    },
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "container_process_factory",
+     "container_process_factory": {
+      "arguments": [],
+      "broker_name": "core",
+      "broker_type_name": "core",
+      "class_name": "container_process_factory",
+      "identifier": "core://core/container_process_factory/dummy_sensor_read::dummy_sensor_read",
+      "language": "rust",
+      "name": "dummy_sensor_read",
+      "type_name": "dummy_sensor_read"
+     },
+     "identifier": "core://core/container_process_factory/dummy_sensor_read::dummy_sensor_read",
+     "language": "rust",
+     "name": "dummy_sensor_read",
+     "plugin": {
+      "abi": "c",
+      "path": "./target/debug/libexample_control.so"
+     },
+     "type_name": "dummy_sensor_read"
+    },
+    {
+     "arguments": [
+      {
+       "default": 1.0,
+       "description": {
+        "text": "Default description for argument target"
+       },
+       "name": "target",
+       "type_name": "Float"
+      }
+     ],
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "container_process_factory",
+     "composition": {
+      "body": {
+       "args": {
+        "velocity": {
+         "args": {
+          "gain": {
+           "const": 2.0
+          },
+          "measured": {
+           "args": {},
+           "container": "sensor",
+           "process": "dummy_sensor_read"
+          },
+          "target": {
+           "expose": "target"
+          }
+         },
+         "process": "p_control"
+        }
+       },
+       "container": "motor",
+       "process": "dummy_motor_drive"
+      },
+      "containers": {
+       "motor": "dummy_motor",
+       "sensor": "dummy_sensor"
+      }
+     },
+     "container_type": "composite_container",
+     "identifier": "core://core/container_process_factory/follow_target::follow_target",
+     "language": "rust",
+     "name": "follow_target",
+     "type_name": "follow_target"
+    }
+   ],
+   "container_processes": [
+    {
+     "arguments": [
+      {
+       "default": 1.0,
+       "description": {
+        "text": "Default description for argument target"
+       },
+       "name": "target",
+       "type_name": "Float"
+      }
+     ],
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "container_process",
+     "composition": {
+      "body": {
+       "args": {
+        "velocity": {
+         "args": {
+          "gain": {
+           "const": 2.0
+          },
+          "measured": {
+           "args": {},
+           "container": "sensor",
+           "process": "dummy_sensor_read"
+          },
+          "target": {
+           "expose": "target"
+          }
+         },
+         "process": "p_control"
+        }
+       },
+       "container": "motor",
+       "process": "dummy_motor_drive"
+      },
+      "containers": {
+       "motor": "dummy_motor",
+       "sensor": "dummy_sensor"
+      }
+     },
+     "container_name": "robot0",
+     "container_type": "composite_container",
+     "description": {
+      "text": "位置を読み、P 制御で速度を決めてモータに出す"
+     },
+     "factory": "composite_container_process_factory",
+     "identifier": "core://core/container_process/follow0::follow_target:robot0",
+     "language": "rust",
+     "name": "follow0",
+     "namespace": "",
+     "outputs": null,
+     "publishes": [],
+     "subscribes": {},
+     "type_name": "follow_target",
+     "use_memo": false
+    }
+   ],
+   "containers": [
+    {
+     "args": {},
+     "arguments": [],
+     "class_name": "container",
+     "description": {
+      "text": ""
+     },
+     "factory": "composite_container",
+     "identifier": "core://core/container/robot0::composite_container",
+     "language": "rust",
+     "model": null,
+     "name": "robot0",
+     "namespace": "",
+     "parent_name": null,
+     "parent_type_name": null,
+     "processes": [
+      {
+       "arguments": [
+        {
+         "default": 1.0,
+         "description": {
+          "text": "Default description for argument target"
+         },
+         "name": "target",
+         "type_name": "Float"
+        }
+       ],
+       "broker_name": "core",
+       "broker_type_name": "core",
+       "class_name": "container_process",
+       "composition": {
+        "body": {
+         "args": {
+          "velocity": {
+           "args": {
+            "gain": {
+             "const": 2.0
+            },
+            "measured": {
+             "args": {},
+             "container": "sensor",
+             "process": "dummy_sensor_read"
+            },
+            "target": {
+             "expose": "target"
+            }
+           },
+           "process": "p_control"
+          }
+         },
+         "container": "motor",
+         "process": "dummy_motor_drive"
+        },
+        "containers": {
+         "motor": "dummy_motor",
+         "sensor": "dummy_sensor"
+        }
+       },
+       "container_name": "robot0",
+       "container_type": "composite_container",
+       "description": {
+        "text": "位置を読み、P 制御で速度を決めてモータに出す"
+       },
+       "factory": "composite_container_process_factory",
+       "identifier": "core://core/container_process/follow0::follow_target:robot0",
+       "language": "rust",
+       "name": "follow0",
+       "namespace": "",
+       "outputs": null,
+       "publishes": [],
+       "subscribes": {},
+       "type_name": "follow_target",
+       "use_memo": false
+      }
+     ],
+     "slots": {
+      "motor": "core://core/container/motor0::dummy_motor",
+      "sensor": "core://core/container/sensor0::dummy_sensor"
+     },
+     "type_name": "composite_container"
+    },
+    {
+     "args": {},
+     "arguments": [],
+     "class_name": "container",
+     "description": {
+      "text": "Default description of Container(dummy_sensor)"
+     },
+     "factory": "dummy_sensor_factory",
+     "identifier": "core://core/container/sensor0::dummy_sensor",
+     "language": "rust",
+     "model": null,
+     "name": "sensor0",
+     "namespace": "",
+     "parent_name": null,
+     "parent_type_name": null,
+     "processes": [],
+     "type_name": "dummy_sensor"
+    },
+    {
+     "args": {},
+     "arguments": [
+      {
+       "default": 0.05,
+       "description": {
+        "text": "Default description for argument dt"
+       },
+       "name": "dt",
+       "type_name": "Float"
+      }
+     ],
+     "class_name": "container",
+     "description": {
+      "text": "Default description of Container(dummy_motor)"
+     },
+     "factory": "dummy_motor_factory",
+     "identifier": "core://core/container/motor0::dummy_motor",
+     "language": "rust",
+     "model": null,
+     "name": "motor0",
+     "namespace": "",
+     "parent_name": null,
+     "parent_type_name": null,
+     "processes": [],
+     "type_name": "dummy_motor"
+    }
+   ],
+   "ec_factories": {
+    "main_loop_ec": {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "execution_context_factory",
+     "identifier": "core://core/execution_context_factory/main_loop_ec::main_loop_ec",
+     "name": "main_loop_ec",
+     "type_name": "main_loop_ec"
+    }
+   },
+   "ecs": {
+    "core://core/execution_context/ec0::main_loop_ec": {
+     "auto_start": true,
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "execution_context",
+     "identifier": "core://core/execution_context/ec0::main_loop_ec",
+     "name": "ec0",
+     "namespace": "",
+     "rate": 20.0,
+     "state": "STARTED",
+     "targets": [
+      {
+       "broker_name": "core",
+       "broker_type_name": "core",
+       "class_name": "container_process",
+       "container_name": "robot0",
+       "name": "follow0",
+       "namespace": "",
+       "type_name": "follow_target:robot0"
+      }
+     ],
+     "type_name": "main_loop_ec"
+    }
+   },
+   "process_factories": [
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process_factory",
+     "given_process_factory": {
+      "arguments": [
+       {
+        "default": 0.0,
+        "description": {
+         "text": "Default description for argument measured"
+        },
+        "name": "measured",
+        "type_name": "Float"
+       },
+       {
+        "default": 1.0,
+        "description": {
+         "text": "Default description for argument target"
+        },
+        "name": "target",
+        "type_name": "Float"
+       },
+       {
+        "default": 1.0,
+        "description": {
+         "text": "Default description for argument gain"
+        },
+        "name": "gain",
+        "type_name": "Float"
+       }
+      ],
+      "broker_name": "core",
+      "broker_type_name": "core",
+      "class_name": "process_factory",
+      "identifier": "core://core/process_factory/p_control::p_control",
+      "language": "rust",
+      "name": "p_control",
+      "type_name": "p_control"
+     },
+     "identifier": "core://core/process_factory/p_control::p_control",
+     "language": "rust",
+     "name": "p_control",
+     "plugin": {
+      "abi": "c",
+      "path": "./target/debug/libexample_control.so"
+     },
+     "type_name": "p_control"
+    }
+   ],
+   "processes": [],
+   "topics": []
+  },
+  "identifier": "core://core/broker_proxy/core::core",
+  "mastersystem": [],
+  "name": "core",
+  "subsystems": [],
+  "system_store": {
+   "broker_factories": [
+    "local",
+    "http"
+   ],
+   "broker_proxies": [],
+   "brokers": [
+    "http",
+    "local"
+   ],
+   "uuid": "d7ba77ca-87f7-4602-b561-1fe4909c1181"
+  },
+  "type_name": "core"
+ },
+ "transforms": []
+}
