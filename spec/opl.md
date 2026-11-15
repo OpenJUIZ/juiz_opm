@@ -1,6 +1,6 @@
 # juiz-OPL
 
-- 状態: 案(2026-11-06、Step 3。2026-11-07 に言い回しを入門書に合わせた)。決めたことは [docs/decisions/0007](../docs/decisions/0007-opl-grammar.md) と [0008](../docs/decisions/0008-opl-wording-from-book.md) に記録した
+- 状態: 案(2026-11-06、Step 3。2026-11-07 に言い回しを入門書に合わせた。2026-11-15 に実装した(§15))。決めたことは [docs/decisions/0007](../docs/decisions/0007-opl-grammar.md)、[0008](../docs/decisions/0008-opl-wording-from-book.md)、[0012](../docs/decisions/0012-opm-opl-crate.md) に記録した
 - 関連: [metamodel.md](metamodel.md)(この文法が写す表)、[xml.md](xml.md)(同じモデルの XML)、[0002](../docs/decisions/0002-open-points.md) の 5(英語の OPL を正本にする)
 - 例: [examples/opl/](../examples/opl/)(Step 2 の XML の例 3 つを書き起こしたもの)
 - 言い回しの参照: D. Dori, *Model-Based Systems Engineering with OPM and SysML*, Springer, 2016(ISBN 978-1-4939-3295-5。以下「入門書」)
@@ -384,7 +384,7 @@ metamodel §9.5 の形を OPL で書くと次のとおり(注釈は要点だけ)
 
 | juiz | OPL |
 | --- | --- |
-| Process と戻り値 | `Increment is a process [role: process, name: inc0, type: increment].` `Increment yields Count.` `Count is an object [role: value, value_kind: output, datatype: juiz.Int64].` |
+| Process と戻り値 | `Increment is a process [role: process, name: inc0, type: increment].` `Increment yields Count.` `Count is an object [role: value, datatype: juiz.Int64, value_kind: output].` |
 | つながっていない引数 | `Increment requires Arg [arg: arg, arg_index: 0].` |
 | push 接続 | `Filter requires Image [arg: img, arg_index: 0, connection: push].` `Capture invokes Filter.` |
 | pull 接続 | `Filter requires Image [arg: img, arg_index: 0, connection: pull].` |
@@ -418,7 +418,7 @@ metamodel §9.5 の形を OPL で書くと次のとおり(注釈は要点だけ)
 | O11 | `Following path` は手続きリンクの文にだけ付ける。宣言の qualifier は physical と informatical、environmental と systemic を同時に書かず、同じ語を 2 回書かない |
 | O12 | 例外リンクの文の数と単位は、P1 の duration の最大か最小と一致する(§5.3) |
 
-規則に反したときの報告の形と、誤りと警告の区別は Step 5 で決める。
+規則に反したときの報告の形と、誤りと警告の区別は §15.2 で決めた。
 
 ## 9. 正規形
 
@@ -513,7 +513,7 @@ metamodel §9.5 の形を OPL で書くと次のとおり(注釈は要点だけ)
 ### 10.4 id
 
 - 既定では、OPL は `{id: ...}` を書かない。読むときは次の規則で id を作る。id を保ちたいとき(OPCAT などから来た XML を往復させるとき)は、すべての要素に `{id: ...}` を書く形で書き出す(Step 5 の選択肢)。
-- `{id: ...}` が書いてある要素はその id を使う。作る id がそれとぶつかるときは、作る側に `_2`、`_3` を足す。
+- `{id: ...}` が書いてある要素はその id を使う。作る id がそれとぶつかるときは、作る側に Thing と State なら `_2`、`_3`、それ以外(Model、リンク、InZoom、Fan)なら `-2`、`-3` を足す。
 
 | 要素 | 作る id |
 | --- | --- |
@@ -580,7 +580,7 @@ Filter requires Image {id: l_image_filter} [arg: img, arg_index: 0, connection: 
 | backward_tag のある tagged | 2 つの文 | `A t B, and B t' A.` の 1 文 | 2 文では片向き 2 本と区別できない |
 | 多重度の後の名前 | 複数形(`Front Sensors`) | 名前を変えない | 名前を一意に保つため |
 | steps のない Process の InZoom | 例がない | `nothing, as well as` | |
-| ordered の aggregation | `..., in that sequence.` | `{ordered: true}` | メタモデルの ordered はリンクごとの値で、文の並び全体には付かないため。合わせ方は Step 5 で見直す |
+| ordered の aggregation | `..., in that sequence.` | `{ordered: true}` | メタモデルの ordered はリンクごとの値で、文の並び全体には付かないため。Step 5 ではこの形のままにした |
 
 ### 13.3 入門書で確かめられなかったもの(仮置き)
 
@@ -593,7 +593,61 @@ Filter requires Image {id: l_image_filter} [arg: img, arg_index: 0, connection: 
 
 ## 14. この Step で決めないこと
 
-- 解析器の誤りの報告の形、警告と誤りの区別、コメントを `fmt` で残すか(Step 5)。
+- 解析器の誤りの報告の形、警告と誤りの区別、コメントを `fmt` で残すか(Step 5)。→ §15 で決めた(コメントは残さない)。
 - conf から作るときの OPM の名前の付け方と、同じ名前の Process と Container の分け方(Step 7。metamodel §11)。
 - 日本語の文を読み書きの対象にするか(今は §5 の読みを置くだけ)。
 - OPD ごとの OPL と、上の階層の図のまとめた線(Step 6)。
+
+## 15. 読み書きの実装(opm_opl、Step 5)
+
+[crates/opm_opl](../crates/opm_opl/) がこの言語を読み、検査し、正規形で書き出し、XML と相互に変換する。モデルの型は opm_model のものを使う。決めたことは [0012](../docs/decisions/0012-opm-opl-crate.md)。
+
+### 15.1 読み方
+
+1. 字句(§3)。`{...}` と `[...]` は中の値の形(§7.3)ごと読む。字句の誤りは最初の 1 つで止まる。
+2. 文法(§4)。誤った文は報告し、次の `.` から読み直す。1 回で文の誤りをすべて報告するため。O5、O10、O11 は文を読むときに見る。
+3. モデルへ(§5〜§7)。宣言を全部読んでから名前を照らし合わせ(O1)、O2〜O4、O6〜O9、O12 を見る。id のない要素には §10.4 の id を作る。リンクと Fan の id は、正規形の文の順(Fan の links は Fan の文の端の順)で作る。
+4. `check` では、O の誤りがなければ、さらに opm_model の C1〜C12 を見る。juiz の J1〜J13 は Step 7 で見る。
+
+### 15.2 報告の形
+
+| 区分 | 番号 | 重さ |
+| --- | --- | --- |
+| 字句と文法 | `syntax` | 誤り |
+| OPL の整形式 | O1〜O12(§8) | 誤り |
+| モデルのコアの規則 | C1〜C12、F1〜F4(xml.md §14.3) | C8 だけ警告、ほかは誤り |
+| XML から OPL に書けないもの | `unwritable`(§10.2) | 誤り |
+| XML から OPL に書くときに落とすもの | `dropped`(§10.2) | 警告 |
+
+文字にすると `capture_filter.opl:25:1: warning[C8] main_loop_ec_cycle: "Main Loop EC Cycle" has no ...` の形(ファイル、行と列、重さと番号、要素の id、英語の文)。行と列は文の位置で、C の規則は要素を書いた文の位置を付ける。XML から書くときは位置を付けない。
+
+### 15.3 書き方の細目
+
+§9 に加えて、次のとおりにする。
+
+- コメントは読み飛ばすので、`fmt` は残さない。
+- `fmt` は、読んだ文書に `{id: ...}` が 1 つでもあれば id を書く形で書き、なければ書かない形で書く。`--ids` / `--no-ids` で選べる。
+- 入力だけの形(並びの文、記号の多重度、qualifier の既定値、State の文の `initial`・`final`、`is consumed`、OR の Fan の `and`、`handle`)は正規形に直す。記号の多重度 `0..*` は `optional` と書くので、読み直すと `*` になる。
+- `[...]` の数は §9.3 の形に直す(`10.0` は `10`)。真偽は XML の `1` / `0` も `true` / `false` にする。JSON は空白を除く。
+- §10.2 に加え、次も書けない(誤り): 改行を含む名前・description・tag・経路ラベル、名前のない Model を見出しに書くとき、target の多重度を語で書くと tag の続きに読める tagged(`optional`、`an optional`、`at least one`)、reciprocal の tagged・generalization・classification・例外リンクの多重度、step の空の InZoom、parts のない Object の InZoom、State を端にできない形の文の State の端。
+- 次は落として警告する: OPD と配置、Model・InZoom・Fan の注釈、juiz 以外の名前空間の注釈、その要素に付かない juiz の注釈(metamodel §9.3・§9.4 の表にないもの)。
+
+### 15.4 道具
+
+```sh
+opm_opl check <file>...                     # OPL (.opl) と XML (.xml)
+opm_opl fmt [--check | --write] [--ids | --no-ids] <file.opl>...
+opm_opl to-xml <file.opl> [-o <out.xml>]
+opm_opl from-xml [--ids] <file.xml> [-o <out.opl>]
+```
+
+終了状態は、0 が問題なし、1 が誤りあり(`fmt --check` では正規形でない)、2 が使い方か入出力の誤り。
+
+### 15.5 往復の確かめ方
+
+- `examples/opl/` と `tests/opl/` の文書は、誤りがなく、正規形のままで(`fmt` で変わらない)、OPL → XML → OPL で同じ文字になる。書いた XML は CI で XSD に通す。
+- `examples/xml/` の文書から書いた OPL は `examples/opl/` の同じ名前の文書と一致する。落とすのは OPD だけである。
+- `examples/xml/` の文書を id を書く形の OPL にして読み直すと、OPD と並びを除いて同じモデルになる。
+- `tests/opl/all_forms.opl` は §5 の文の形を 1 つずつ持つ。
+- `tests/opl/invalid/` の文書は、ファイル名の先頭の番号(`o5_…` なら O5、`syntax_…` なら文法)の誤りを報告する。
+

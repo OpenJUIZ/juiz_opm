@@ -6,7 +6,7 @@ Specifications and tools for describing, exchanging and drawing juiz system mode
 
 ## 状態
 
-仕様づくりと道具づくりの段階です。交換形式の XML スキーマと検証スクリプト、juiz-OPL の文法と、交換形式を読み書きして検査する opm_model クレートがあります。
+仕様づくりと道具づくりの段階です。交換形式の XML スキーマと検証スクリプト、juiz-OPL の文法、交換形式を読み書きして検査する opm_model クレートと、juiz-OPL を読み書きして検査する opm_opl クレートがあります。
 
 ## 構成
 
@@ -20,16 +20,18 @@ Specifications and tools for describing, exchanging and drawing juiz system mode
 | [examples/xml/](examples/xml/)、[examples/opl/](examples/opl/) | 交換形式の例と、その juiz-OPL の書き起こし |
 | [scripts/validate_xml.py](scripts/validate_xml.py) | 例と tests/xml/ を XSD で検査する |
 | [crates/opm_model/](crates/opm_model/) | メタモデルの型、交換形式の読み書き、コアの規則の検査 |
+| [crates/opm_opl/](crates/opm_opl/) | juiz-OPL の読み書きと検査、XML との変換(コマンド `opm_opl`) |
+| [tests/opl/](tests/opl/) | OPL の文の形をすべて使う例と、誤りの例 |
 | [docs/decisions/](docs/decisions/) | 決めたことの記録(1 件 1 ファイル) |
 | [docs/research/](docs/research/) | 先行例の調査(OPCAT の保存形式など) |
 | [docs/roadmap.md](docs/roadmap.md) | 今後の作業の順番 |
 
-道具(Rust の workspace、`crates/` に置く。今あるのは opm_model だけ):
+道具(Rust の workspace、`crates/` に置く):
 
 | クレート | 役割 | 状態 |
 | --- | --- | --- |
 | opm_model | OPM のメタモデル、交換用 XML の読み書き、コアの規則の検査(OPCAT の OPX の書き出しは Step 9) | あり(Step 4) |
-| opm_opl | OPL の解析と正規形での出力 | 予定(Step 5) |
+| opm_opl | OPL の解析・検査・正規形での出力、XML との変換(コマンド `opm_opl`) | あり(Step 5) |
 | opm_graph | DOT / SVG の描画(コマンド `opl_graph`) | 予定(Step 6) |
 | juiz_opm | juiz 拡張と juiz の conf との相互変換 | 予定(Step 7) |
 

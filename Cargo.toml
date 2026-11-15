@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/opm_model"]
+members = ["crates/opm_model", "crates/opm_opl"]
 
 [workspace.package]
 version = "0.1.0"

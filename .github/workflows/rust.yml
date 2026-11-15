@@ -18,9 +18,9 @@ jobs:
       - run: cargo test
         env:
           OPM_ROUNDTRIP_OUT: target/roundtrip
-      # The documents opm_model writes must pass the XSD too (spec/xml.md §14).
+      # The documents opm_model and opm_opl write must pass the XSD too (spec/xml.md §14).
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - run: pip install lxml
-      - run: python scripts/validate_xml.py --also target/roundtrip
+      - run: python scripts/validate_xml.py --also target/roundtrip --also target/roundtrip/opl

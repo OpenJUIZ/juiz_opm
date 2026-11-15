@@ -1,0 +1,18 @@
+[package]
+name = "opm_opl"
+description = "juiz-OPL (the English Object-Process Language of juiz_opm): parse, check, write in canonical form, convert to and from the XML"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+readme = "README.md"
+keywords = ["opm", "opl", "iso19450", "mbse", "juiz"]
+categories = ["parser-implementations", "command-line-utilities"]
+
+[dependencies]
+opm_model = { path = "../opm_model" }
+
+[[bin]]
+name = "opm_opl"
+path = "src/main.rs"

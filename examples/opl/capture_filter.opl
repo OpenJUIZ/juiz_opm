@@ -7,7 +7,7 @@ Capture affects Camera.
 Capture yields Image.
 Capture invokes Filter.
 
-Edges is an object [role: value, value_kind: output, datatype: juiz.Image].
+Edges is an object [role: value, datatype: juiz.Image, value_kind: output].
 
 Filter is a process [role: process, name: cvt_color0, type: cv_cvt_color].
 Filter yields Edges.
@@ -16,7 +16,7 @@ Filter requires Image [arg: img, arg_index: 0, connection: push].
 
 Filter Code is an object [role: value, value_kind: input].
 
-Image is an object [role: value, value_kind: output, datatype: juiz.Image].
+Image is an object [role: value, datatype: juiz.Image, value_kind: output].
 
 Main Loop EC is an object [role: ec, name: main_loop_ec0, type: main_loop_ec, rate: 10].
 Main Loop EC can be stopped or started.

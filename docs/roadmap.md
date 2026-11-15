@@ -9,7 +9,7 @@
 | 2 | 交換形式の XML と XSD、juiz 名前空間の仕様 | 済み(#3。名前空間と要素名は 0010 で今の形に決めた) |
 | 3 | juiz-OPL の文法(EBNF)、整形式の規則、正規形 | 済み(#4。言い回しは入門書に合わせ直した(0008)。ISO 19450 の本文で見直す) |
 | 4 | opm_model: メタモデルと XML の読み書き、コアの規則 C1〜C12 の検査 | 済み(#6、0009) |
-| 5 | opm_opl: OPL の解析・検査・正規形での出力(check, fmt) | 未着手 |
+| 5 | opm_opl: OPL の解析・検査・正規形での出力(check, fmt) | 済み(0012) |
 | 6 | opm_graph: 略式図([spec/diagram.md](../spec/diagram.md)、0011)の DOT / SVG の描画、実装状況の色(opl_graph) | 未着手 |
 | 7 | juiz_opm: juiz の conf との往復と往復テスト、サンプル 4 リポジトリの題材 | 未着手 |
 | 8 | 動いている System からの書き出し(profile_full) | 未着手 |

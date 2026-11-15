@@ -1,0 +1,4 @@
+A is an object.
+B is an object.
+P is a process.
+A initiates P, which consumes B.
