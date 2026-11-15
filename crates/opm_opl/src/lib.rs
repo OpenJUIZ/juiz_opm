@@ -75,7 +75,7 @@ pub fn parse(text: &str) -> Parsed {
 }
 
 /// [`parse`], then the core rules of the model (opm_model's C1 to C12) when reading found no
-/// error. The juiz rules J1 to J13 are not checked (Step 7).
+/// error. The juiz rules J1 to J13 are checked by the juiz_opm crate.
 pub fn check(text: &str) -> Parsed {
     let mut p = parse(text);
     if p.is_ok() {

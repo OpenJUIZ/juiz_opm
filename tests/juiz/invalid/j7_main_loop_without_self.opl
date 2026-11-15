@@ -1,0 +1,7 @@
+"s" is an object [role: system, name: s].
+"s" consists of "ec0".
+"ec0" is an object [role: ec, name: ec0, type: main_loop_ec].
+"ec0" can be stopped or started.
+"ec0" is initially started.
+"ec0 cycle" is a process [role: ec_cycle].
+"ec0 cycle" occurs if "ec0" is started, otherwise "ec0 cycle" is skipped.

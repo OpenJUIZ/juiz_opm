@@ -1,0 +1,26 @@
+Model "example_component".
+
+"container0" is an object [role: container, name: container0, type: example_component_cpp_container, params: {"value":100}].
+
+"example_component" is an object [role: system, name: example_component].
+"example_component" consists of "container0".
+"example_component" exhibits "get0".
+"example_component" exhibits "increment0".
+"example_component" exhibits "proc0".
+
+"get0" is a process [role: container_process, name: get0, type: example_component_cpp_container_get].
+"get0" affects "container0".
+"get0" yields "get0 out".
+
+"get0 out" is an object [role: value, value_kind: output].
+
+"increment0" is a process [role: container_process, name: increment0, type: example_component_cpp_container_increment].
+"increment0" affects "container0".
+"increment0" yields "increment0 out".
+
+"increment0 out" is an object [role: value, value_kind: output].
+
+"proc0" is a process [role: process, name: proc0, type: example_component_cpp_increment].
+"proc0" yields "proc0 out".
+
+"proc0 out" is an object [role: value, value_kind: output].

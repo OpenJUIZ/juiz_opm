@@ -1,0 +1,49 @@
+Model "test_system".
+
+"cv_camera0" is an object [role: container, name: cv_camera0, type: cv_video_capture].
+
+"cv_cvt_color0" is a process [role: process, name: cv_cvt_color0, type: cv_cvt_color].
+"cv_cvt_color0" yields "cv_cvt_color0 out".
+
+"cv_cvt_color0 out" is an object [role: value, value_kind: output].
+
+"cv_filesystem0" is an object [role: container, name: cv_filesystem0, type: cv_filesystem].
+
+"cv_window0" is an object [role: container, name: cv_window0, type: cv_window].
+
+"imshow0" is a process [role: container_process, name: imshow0, type: imshow].
+"imshow0" affects "cv_window0".
+"imshow0" yields "imshow0 out".
+"imshow0" requires "read0 out" [arg: src, arg_index: 0, connection: pull].
+
+"imshow0 out" is an object [role: value, value_kind: output].
+
+"imwrite0" is a process [role: container_process, name: imwrite0, type: imwrite].
+"imwrite0" affects "cv_filesystem0".
+"imwrite0" yields "imwrite0 out".
+"imwrite0" requires "read0 out" [arg: src, arg_index: 0, connection: push].
+
+"imwrite0 out" is an object [role: value, value_kind: output].
+
+"read0" is a process [role: container_process, name: read0, type: cv_video_capture_read, use_memo: false].
+"read0" affects "cv_camera0".
+"read0" yields "read0 out".
+"read0" invokes "imwrite0".
+
+"read0 out" is an object [role: value, value_kind: output].
+
+"readandget0" is a process [role: container_process, name: readandget0, type: cv_video_capture_readandget, use_memo: false].
+"readandget0" affects "cv_camera0".
+"readandget0" yields "readandget0 out".
+
+"readandget0 out" is an object [role: value, value_kind: output].
+
+"test_system" is an object [role: system, name: test_system].
+"test_system" consists of "cv_camera0".
+"test_system" consists of "cv_filesystem0".
+"test_system" consists of "cv_window0".
+"test_system" exhibits "cv_cvt_color0".
+"test_system" exhibits "imshow0".
+"test_system" exhibits "imwrite0".
+"test_system" exhibits "read0".
+"test_system" exhibits "readandget0".

@@ -1,0 +1,9 @@
+Model "decrement_process".
+
+"decrement0" is a process [role: process, name: decrement0, type: decrement_process_python].
+"decrement0" yields "decrement0 out".
+
+"decrement0 out" is an object [role: value, value_kind: output].
+
+"decrement_process" is an object [role: system, name: decrement_process].
+"decrement_process" exhibits "decrement0".

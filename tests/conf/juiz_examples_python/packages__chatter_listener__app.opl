@@ -1,0 +1,13 @@
+Model "chatter_listener".
+
+"chatter" is an object [role: topic, name: chatter].
+
+"chatter_listener" is an object [role: system, name: chatter_listener].
+"chatter_listener" consists of "chatter".
+"chatter_listener" exhibits "listener0".
+
+"listener0" is a process [role: process, name: listener0, type: listener_python].
+"listener0" yields "listener0 out".
+"chatter" initiates "listener0", which requires "chatter" [arg: arg1, arg_index: 0].
+
+"listener0 out" is an object [role: value, value_kind: output].

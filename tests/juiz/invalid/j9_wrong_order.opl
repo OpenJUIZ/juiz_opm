@@ -1,0 +1,9 @@
+"c" is a process [role: composite, type: c].
+"c" zooms into "c body" and "c body.a", in that sequence, as well as "c body.a out".
+"c body" is a process [role: node, type: t, path: body].
+"c body" yields "c out".
+"c body" requires "c body.a out" [arg: a, arg_index: 0].
+"c body.a" is a process [role: node, type: t, path: body.a].
+"c body.a" yields "c body.a out".
+"c body.a out" is an object [role: value, value_kind: intermediate].
+"c out" is an object [role: value, value_kind: output].

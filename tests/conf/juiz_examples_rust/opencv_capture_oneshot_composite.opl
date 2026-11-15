@@ -1,0 +1,53 @@
+Model "opencv_capture_oneshot_composite".
+
+"cam_fs0" is an object [role: composite_container, name: cam_fs0].
+"cam_fs0" consists of "cv_camera0" [slot_name: camera].
+"cam_fs0" consists of "filesystem0" [slot_name: fs].
+
+"capture_save" is a process {description: "カメラから 1 枚撮って、色を変換してファイルに保存する"} [role: composite, type: capture_save].
+"capture_save" zooms into "capture_save body.img.img", "capture_save body.img", and "capture_save body", in that sequence, as well as "capture_save body.img out", "capture_save body.img.code", "capture_save body.img.img out", "capture_save camera", and "capture_save fs".
+
+"capture_save body" is a process [role: node, type: filesystem_imwrite, path: body].
+"capture_save body" affects "capture_save fs".
+"capture_save body" yields "capture_save out".
+"capture_save body" requires "capture_save body.img out" [arg: img, arg_index: 0].
+"capture_save body" requires "capture_save path" [arg: file_name, arg_index: 1].
+
+"capture_save body.img" is a process [role: node, type: cv_cvt_color, path: body.img].
+"capture_save body.img" yields "capture_save body.img out".
+"capture_save body.img" requires "capture_save body.img.code" [arg: code, arg_index: 1].
+"capture_save body.img" requires "capture_save body.img.img out" [arg: img, arg_index: 0].
+
+"capture_save body.img out" is an object [role: value, value_kind: intermediate].
+
+"capture_save body.img.code" is an object [role: value, value_kind: const, value: "BGR2RGB"].
+
+"capture_save body.img.img" is a process [role: node, type: video_capture_readandget, path: body.img.img].
+"capture_save body.img.img" affects "capture_save camera".
+"capture_save body.img.img" yields "capture_save body.img.img out".
+
+"capture_save body.img.img out" is an object [role: value, value_kind: intermediate].
+
+"capture_save camera" is an object [role: slot, name: camera, type: video_capture].
+
+"capture_save fs" is an object [role: slot, name: fs, type: filesystem].
+
+"capture_save out" is an object [role: value, value_kind: output].
+
+"capture_save path" is an object [role: value, name: path, value_kind: input, default: "capture.png"].
+
+"capture_save0" is a process [role: container_process, name: capture_save0, type: capture_save].
+"capture_save0" affects "cam_fs0".
+"capture_save0" yields "capture_save0 out".
+
+"capture_save0 out" is an object [role: value, value_kind: output].
+
+"cv_camera0" is an object [role: container, name: cv_camera0, type: video_capture, params: {"camera_id":0}].
+
+"filesystem0" is an object [role: container, name: filesystem0, type: filesystem].
+
+"opencv_capture_oneshot_composite" is an object [role: system, name: opencv_capture_oneshot_composite].
+"opencv_capture_oneshot_composite" consists of "cam_fs0".
+"opencv_capture_oneshot_composite" consists of "cv_camera0".
+"opencv_capture_oneshot_composite" consists of "filesystem0".
+"opencv_capture_oneshot_composite" exhibits "capture_save0".

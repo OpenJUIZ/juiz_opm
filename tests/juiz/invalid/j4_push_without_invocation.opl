@@ -1,0 +1,10 @@
+"s" is an object [role: system, name: s].
+"s" exhibits "p0".
+"s" exhibits "p1".
+"p0" is a process [role: process, name: p0, type: t].
+"p0" yields "p0 out".
+"p0 out" is an object [role: value, value_kind: output].
+"p1" is a process [role: process, name: p1, type: t].
+"p1" yields "p1 out".
+"p1 out" is an object [role: value, value_kind: output].
+"p1" requires "p0 out" [arg: a, arg_index: 0, connection: push].

@@ -5,7 +5,7 @@
 //! (F1 to F4, spec/xml.md §14).
 //!
 //! The checker looks at every rule, including those the XSD already checks, because a model can
-//! also be built in code. The juiz rules (J1 to J13) are not checked here (Step 7).
+//! also be built in code. The juiz rules (J1 to J13) are checked by the juiz_opm crate.
 
 use std::collections::{HashMap, HashSet};
 use std::fmt;

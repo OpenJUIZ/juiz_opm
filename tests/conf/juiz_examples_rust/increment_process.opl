@@ -1,0 +1,9 @@
+Model "test_system".
+
+"increment0" is a process [role: process, name: increment0, type: increment_process].
+"increment0" yields "increment0 out".
+
+"increment0 out" is an object [role: value, value_kind: output].
+
+"test_system" is an object [role: system, name: test_system].
+"test_system" exhibits "increment0".

@@ -1,0 +1,21 @@
+[package]
+name = "juiz_opm"
+description = "Convert juiz system confs to and from juiz-OPL / the juiz_opm XML, and check the juiz rules J1 to J13"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+readme = "README.md"
+keywords = ["opm", "opl", "iso19450", "mbse", "juiz"]
+categories = ["command-line-utilities", "encoding"]
+
+[dependencies]
+opm_model = { path = "../opm_model" }
+opm_opl = { path = "../opm_opl" }
+serde_json = { version = "1", features = ["preserve_order"] }
+serde_yaml = "0.9"
+
+[[bin]]
+name = "juiz_opm"
+path = "src/main.rs"

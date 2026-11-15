@@ -1,0 +1,9 @@
+Model "increment_process".
+
+"increment0" is a process [role: process, name: increment0, type: increment_process_python].
+"increment0" yields "increment0 out".
+
+"increment0 out" is an object [role: value, value_kind: output].
+
+"increment_process" is an object [role: system, name: increment_process].
+"increment_process" exhibits "increment0".

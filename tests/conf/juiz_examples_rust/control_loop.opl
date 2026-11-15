@@ -1,0 +1,60 @@
+Model "control_loop".
+
+"control_loop" is an object [role: system, name: control_loop].
+"control_loop" consists of "ec0".
+"control_loop" consists of "motor0".
+"control_loop" consists of "robot0".
+"control_loop" consists of "sensor0".
+"control_loop" exhibits "follow0".
+
+"ec0" is an object [role: ec, name: ec0, type: main_loop_ec, rate: 20].
+"ec0" can be stopped or started.
+"ec0" is initially started.
+
+"ec0 cycle" is a process [role: ec_cycle].
+"ec0 cycle" occurs if "ec0" is started, otherwise "ec0 cycle" is skipped.
+"ec0 cycle" invokes "follow0" [order: 0].
+"ec0 cycle" invokes itself.
+
+"follow0" is a process [role: container_process, name: follow0, type: follow_target].
+"follow0" affects "robot0".
+"follow0" yields "follow0 out".
+
+"follow0 out" is an object [role: value, value_kind: output].
+
+"follow_target" is a process {description: "位置を読み、P 制御で速度を決めてモータに出す"} [role: composite, type: follow_target].
+"follow_target" zooms into "follow_target body.velocity.measured", "follow_target body.velocity", and "follow_target body", in that sequence, as well as "follow_target body.velocity out", "follow_target body.velocity.gain", "follow_target body.velocity.measured out", "follow_target motor", and "follow_target sensor".
+
+"follow_target body" is a process [role: node, type: dummy_motor_drive, path: body].
+"follow_target body" affects "follow_target motor".
+"follow_target body" yields "follow_target out".
+"follow_target body" requires "follow_target body.velocity out" [arg: velocity, arg_index: 0].
+
+"follow_target body.velocity" is a process [role: node, type: p_control, path: body.velocity].
+"follow_target body.velocity" yields "follow_target body.velocity out".
+"follow_target body.velocity" requires "follow_target body.velocity.gain" [arg: gain, arg_index: 1].
+"follow_target body.velocity" requires "follow_target body.velocity.measured out" [arg: measured, arg_index: 0].
+
+"follow_target body.velocity out" is an object [role: value, value_kind: intermediate].
+
+"follow_target body.velocity.gain" is an object [role: value, value_kind: const, value: 2.0].
+
+"follow_target body.velocity.measured" is a process [role: node, type: dummy_sensor_read, path: body.velocity.measured].
+"follow_target body.velocity.measured" affects "follow_target sensor".
+"follow_target body.velocity.measured" yields "follow_target body.velocity.measured out".
+
+"follow_target body.velocity.measured out" is an object [role: value, value_kind: intermediate].
+
+"follow_target motor" is an object [role: slot, name: motor, type: dummy_motor].
+
+"follow_target out" is an object [role: value, value_kind: output].
+
+"follow_target sensor" is an object [role: slot, name: sensor, type: dummy_sensor].
+
+"motor0" is an object [role: container, name: motor0, type: dummy_motor, params: {"dt":0.05}].
+
+"robot0" is an object [role: composite_container, name: robot0].
+"robot0" consists of "motor0" [slot_name: motor].
+"robot0" consists of "sensor0" [slot_name: sensor].
+
+"sensor0" is an object [role: container, name: sensor0, type: dummy_sensor].

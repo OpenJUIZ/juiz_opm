@@ -1,0 +1,5 @@
+"s" is an object [role: system, name: s].
+"s" exhibits "p0".
+"p0" is a process [role: container_process, name: p0, type: t].
+"p0" yields "p0 out".
+"p0 out" is an object [role: value, value_kind: output].

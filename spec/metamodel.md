@@ -257,9 +257,9 @@ juiz の要素になる Thing には役割を付ける。役割のない Thing �
 | 注釈 | 付く役割 | 多重度 | 値 | 意味 |
 | --- | --- | --- | --- | --- |
 | juiz:id | system 以外の実体(container, composite_container, process, container_process, ec, transform) | 0..1 | juiz の ID 文字列 | `core://core/process/<ns>/<name>::<type>` など。conf から作るときは省略してよく、profile_full から作るときは必ず付ける |
-| juiz:name | 実体、topic、slot | 1 | 文字列 | juiz の名前(ネームスペースを含まない)。OPM の name は表示用で、`robot1/arm` のようにネームスペース付きでもよい |
-| juiz:namespace | 実体 | 0..1 | 文字列 | ネームスペース。省略は既定 |
-| juiz:type | container, process, container_process, composite, node, ec, slot | 1 | type_name | 型名。composite では自分の型名(J10 はこれで照らし合わせる)。型は分類リンクではなくこの注釈で持つ([0002](../docs/decisions/0002-open-points.md) の 4)。Anchor は `periodic_anchor` / `static_anchor` |
+| juiz:name | 実体、topic、slot、Composite の value(input) | 1(value では公開名があるとき) | 文字列 | juiz の名前(ネームスペースを含まない)。OPM の name は表示用で、`robot1/arm` のようにネームスペース付きでもよい |
+| juiz:namespace | 実体、topic | 0..1 | 文字列 | ネームスペース。省略は既定(ルート)。conf から作るときは解決した絶対のネームスペース(spec/conf.md §2) |
+| juiz:type | container, process, container_process, composite, node, ec, slot、副系の system | 1 | type_name | 型名。composite では自分の型名(J10 はこれで照らし合わせる)。型は分類リンクではなくこの注釈で持つ([0002](../docs/decisions/0002-open-points.md) の 4)。Anchor は `periodic_anchor` / `static_anchor` |
 | juiz:datatype | value | 0..1 | 型の完全名か、`<完全名>@sha256:<64 桁>`(juiz の datatype.md §5) | juiz.datatype の型。型なしなら省略 |
 | juiz:value_kind | value | 1 | `output` / `input` / `intermediate` / `const` | 戻り値、つながっていない引数、Composite の中の値、Composite の定数 |
 | juiz:value | value(value_kind が const のとき) | 1 | JSON の値 | 定数 |
@@ -268,7 +268,7 @@ juiz の要素になる Thing には役割を付ける。役割のない Thing �
 | juiz:path | node | 1 | 文字列 | 式の木の中の位置(`body.img` など、composition.md §6) |
 | juiz:translation, juiz:rotation | transform | 0..1 | juiz_std.geometry.Transform の形 | 省略は 0 と回転なし |
 | juiz:writers | transform | * | Container の名前か ID | `set_transform` で書いてよい Container |
-| juiz:params | container, composite_container, process, container_process | 0..1 | JSON のオブジェクト | 作るときに conf で渡す値(`initial_value: 3` など)。conf の決まったキー以外のもの |
+| juiz:params | container, composite_container, process, container_process, ec, transform, composite, 副系の system | 0..1 | JSON のオブジェクト | 作るときに conf で渡す値(`initial_value: 3` など)。conf の決まったキー以外のもの(spec/conf.md §1) |
 | juiz:default | value(value_kind が input のとき) | 0..1 | JSON の値 | 引数の既定値。conf ではなく manifest から来る |
 | juiz:status | 何にでも(リンクにも) | 0..1 | `released` / `merged` / `in_progress` / `planned` / `defect` | 実装状況(opm-mapping.md §5)。省略は released |
 | juiz:refs | 何にでも | * | `juiz#123` のような issue / PR の参照 | 実装状況の根拠 |
@@ -348,6 +348,9 @@ juiz の要素になる Thing には役割を付ける。役割のない Thing �
 | J12 | pose は container からの exhibition をちょうど 1 本持ち、pose_listener の instrument がなければ現れない |
 | J13 | role のある Thing は consumption、agent、例外リンク、Fan を持たない |
 
+- J8 は、environmental の role container(別の System の Container。juiz:id に ID を持つ、spec/conf.md §4.2)を数えない。
+- J1〜J13 は juiz_opm の `check` が検査する(spec/conf.md §6)。J10 はプラグインの型名の一覧が要るので、モデルだけからは検査しない。
+
 ## 10. 往復の範囲
 
 juiz-OPL と juiz の構成の全単射(opm-mapping.md §7)は、次の範囲で確かめる。
@@ -355,7 +358,7 @@ juiz-OPL と juiz の構成の全単射(opm-mapping.md §7)は、次の範囲で
 | 区分 | 含むもの |
 | --- | --- |
 | 往復する | 役割のある Thing と、その間のリンク、§9.3・§9.4 の注釈のうち juiz:status・juiz:refs 以外 |
-| 往復しない(モデルには持てる) | OPD と配置、役割のない Thing、client、juiz:status・juiz:refs、description、duration、Fan |
+| 往復しない(モデルには持てる) | OPD と配置、役割のない Thing、client、juiz:status・juiz:refs、conf に無い description、duration、Fan |
 | 持たない | ブローカーと配置([0002](../docs/decisions/0002-open-points.md) の 3)、プロセスの起動オプション、プラグインのパス、.juizapp の配布情報、本体のコード |
 
 conf のキーとの対応:
@@ -374,12 +377,14 @@ conf のキーとの対応:
 | `subsystems:` | system から system への aggregation |
 | `plugins:`、`option:`、`brokers:` | 持たない |
 
-引数名・引数の並び・データ型・引数の既定値(juiz:default)は conf になく manifest にあるので、conf から作るときはプラグインの manifest か profile_full を併せて読む(Step 7)。
+conf にある `description`(Composite など)は Thing の description に写して往復させる([0015](../docs/decisions/0015-conf-round-trip.md) の 8)。写し方の詳細と正規形は [conf.md](conf.md)。
+
+つながっていない引数・引数の並び・データ型・引数の既定値(juiz:default)・readonly は conf になく manifest にある。conf から作るモデルにはこれらを出さず、Step 8 で profile_full から書き出すときに埋める([0015](../docs/decisions/0015-conf-round-trip.md) の 2、conf.md §8)。
 
 ## 11. この Step で決めないこと
 
 - OPL の語と文の並び、名前の引用の仕方(Step 3)。juiz の名前(`talker0`)をそのまま OPL の名前に使えるか。→ [opl.md](opl.md) で決めた(引用すれば使える)。
 - 上の階層の図の「まとめた線」を導く規則(Step 6)。描画の形は [diagram.md](diagram.md)([0011](../docs/decisions/0011-abbreviated-diagram.md))で決めた。
-- 同じ名前の Process と Container がある System で OPM の名前をどう分けるか(Step 7。juiz:id があれば juiz 側は区別できる)。
+- 同じ名前の Process と Container がある System で OPM の名前をどう分けるか(Step 7)。→ [conf.md](conf.md) §4.1 で決めた(後から作る方に ` (<role>)` を足す)。
 - Topic のメッセージを consumption にするか([0002](../docs/decisions/0002-open-points.md) の 2。今は instrument の event)。
 - Composite のスロットを持つ Composite を子にする形(juiz 側も未対応、composition.md §13)。

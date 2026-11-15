@@ -12,8 +12,8 @@
 | 5 | opm_opl: OPL の解析・検査・正規形での出力(check, fmt) | 済み(0012) |
 | 6a | opm_graph: 描く範囲、OPM の形、実装状況の色、InZoom とまとめた線の DOT / SVG の描画(コマンド `opm_graph`) | 済み(0013) |
 | 6b | opm_graph: 略式図([spec/diagram.md](../spec/diagram.md)、0011)の juiz の記号(ポート、Container、EC、System、Transform など) | 済み(0014) |
-| 7 | juiz_opm: juiz の conf との往復と往復テスト、サンプル 4 リポジトリの題材 | 未着手 |
-| 8 | 動いている System からの書き出し(profile_full) | 未着手 |
+| 7 | juiz_opm: juiz の conf との往復と往復テスト、サンプル 4 リポジトリの題材 | 済み(0015。manifest にしかない注釈は Step 8 に回した) |
+| 8 | 動いている System からの書き出し(profile_full)。conf に無い引数・引数の順・readonly・データ型・juiz:id を埋め、J10 を検査する([spec/conf.md](../spec/conf.md) §8) | 未着手 |
 | 9 | OPX の書き出しと OPCloud での確認 | 未着手 |
 | 10 | Claude 用の skill、juiz 本体の `juiz opl`、公式サイト | 未着手 |
 

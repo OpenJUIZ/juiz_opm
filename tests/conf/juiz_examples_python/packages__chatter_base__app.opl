@@ -1,0 +1,26 @@
+Model "chatter_base".
+
+"chatter" is an object [role: topic, name: chatter].
+
+"chatter_base" is an object [role: system, name: chatter_base].
+"chatter_base" consists of "chatter".
+"chatter_base" consists of "ec0".
+"chatter_base" exhibits "talker0".
+
+"ec0" is an object [role: ec, name: ec0, type: main_loop_ec, rate: 1].
+"ec0" can be stopped or started.
+"ec0" is initially started.
+
+"ec0 cycle" is a process [role: ec_cycle].
+"ec0 cycle" occurs if "ec0" is started, otherwise "ec0 cycle" is skipped.
+"ec0 cycle" invokes "talker0" [order: 0].
+"ec0 cycle" invokes itself.
+
+"talker0" is a process [role: process, name: talker0, type: talker_python].
+"talker0" yields "chatter".
+"talker0" yields "talker0 out".
+"talker0" requires "talker0 message" [arg: message, arg_index: 0, applied: "Hello from chatter_base"].
+
+"talker0 message" is an object [role: value, value_kind: input].
+
+"talker0 out" is an object [role: value, value_kind: output].

@@ -227,7 +227,7 @@ Thing に付けるもの(metamodel §9.2、§9.3):
 - id を持つ要素は、どれも他の名前空間の属性と子要素を持てる(XSD の `##other` を `lax` で受ける)。juiz の注釈はこの仕組みに乗っている。juiz 以外の道具も自分の名前空間で同じように足せる。
 - 読み手は、知らない名前空間の属性と要素を無視してよい。juiz の名前空間を全部取り除いた文書は opm.xsd に通る(metamodel §9.1 の 3 を XML で確かめる形。§10 のスクリプトが確かめる)。
 - 書き手は、読んだ文書の知らない名前空間の属性と要素を、できるだけ残して書き戻す。
-- `lax` なので、juiz の名前空間の綴りの誤り(`juiz:rol` など)は XSD では見つからない。juiz の検査器(Step 7)が知らない注釈を誤りにする。
+- `lax` なので、juiz の名前空間の綴りの誤り(`juiz:rol` など)は XSD では見つからない。juiz の検査器(juiz_opm の `check`、spec/conf.md §6)が知らない注釈と、値の決まった注釈(role、value_kind、connection、end、status)の範囲外の値を誤りにする。
 
 ## 9. XSD が検査すること・しないこと
 
@@ -246,7 +246,7 @@ Thing に付けるもの(metamodel §9.2、§9.3):
 | C11 Fan のリンク | 2 本以上、リンクを指す | Step 4(kind と Process 側の端が同じ) |
 | C12 generalization・classification の循環 | しない | Step 4 |
 | juiz の注釈の値の形 | 検査する(§7.2 の値) | |
-| どの注釈がどの要素に付くか(metamodel §9.3、§9.4)、J1〜J13 | しない | Step 7 |
+| どの注釈がどの要素に付くか(metamodel §9.3、§9.4)、J1〜J13 | しない | juiz_opm の `check`(spec/conf.md §6) |
 
 XSD 1.0 の範囲で書いている(1.1 の assert は使わない)。libxml2(xmllint、lxml)で検査できるようにするため。
 
@@ -332,7 +332,7 @@ metamodel §8 の表で書き切れていない点は、近い規則で見る。
 ### 14.4 往復の確かめ方
 
 - `examples/xml/` の文書を読み、検査で誤りがなく(capture_filter の ec_cycle の C8 の警告だけが出る)、読む → 書く → 読むで同じモデルになり、2 回書いた文字が同じであること。
-- `tests/xml/invalid/` の文書(XSD が誤りにするもの)は、読み手か検査器が誤りにする。juiz の注釈の値の誤り(`juiz_` で始まるもの)はコアでは誤りにせず、Step 7 で見る。
+- `tests/xml/invalid/` の文書(XSD が誤りにするもの)は、読み手か検査器が誤りにする。juiz の注釈の値の誤り(`juiz_` で始まるもの)はコアでは誤りにせず、juiz_opm の `check` で見る。
 - `tests/xml/check/` の文書は XSD に通り、ファイル名の番号(`c05_…` なら C5)の規則だけを検査器が報告する。
 - CI(`.github/workflows/rust.yml`)は、書き出した例を `OPM_ROUNDTRIP_OUT` に置き、`scripts/validate_xml.py --also` で XSD に通ることを確かめる。
 

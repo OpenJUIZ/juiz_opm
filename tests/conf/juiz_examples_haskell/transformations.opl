@@ -1,0 +1,69 @@
+Model "transformations".
+
+"base0" is an object [role: container, name: base0, type: mobile_base_hs, params: {"model":{"path":"models/mobile_base.glb"}}].
+"base0" exhibits "base0 pose".
+
+"base0 pose" is an object [role: pose].
+
+"base0-pantilt0 transform" is an object [role: transform, translation: 0.1 0 0.3].
+"base0-pantilt0 transform" destination "pantilt0" [end: destination].
+"base0-pantilt0 transform" source "base0" [end: source].
+
+"camera0" is an object [role: container, name: camera0, type: camera_hs, params: {"model":{"path":"models/camera.stl","scale":0.001,"origin":{"translation":{"x":-0.015,"y":0.0,"z":0.0}},"color":"#e0e0e0"}}].
+
+"camera_pose0" is a process [role: container_process, name: camera_pose0, type: camera_hs_pose].
+"camera_pose0" affects "camera0".
+"camera_pose0" yields "camera_pose0 out".
+
+"camera_pose0 out" is an object [role: value, value_kind: output].
+
+"map" is an object [role: container, name: map, type: periodic_anchor, rate: 10, params: {"model":{"path":"models/floor.glb"}}].
+
+"map-odom transform" is an object [role: transform, translation: 1 2 0].
+"map-odom transform" destination "odom" [end: destination].
+"map-odom transform" source "map" [end: source].
+
+"move0" is a process [role: container_process, name: move0, type: mobile_base_hs_move].
+"move0" affects "base0".
+"move0" yields "move0 out".
+
+"move0 out" is an object [role: value, value_kind: output].
+
+"odom" is an object [role: container, name: odom, type: static_anchor].
+
+"odom-base0 transform" is an object [role: transform].
+"odom-base0 transform" destination "base0" [end: destination].
+"odom-base0 transform" source "odom" [end: source].
+
+"pan0" is a process [role: container_process, name: pan0, type: pantilt_hs_set_pan].
+"pan0" affects "pantilt0".
+"pan0" yields "pan0 out".
+
+"pan0 out" is an object [role: value, value_kind: output].
+
+"pantilt0" is an object [role: container, name: pantilt0, type: pantilt_hs, params: {"model":{"path":"models/pantilt.sdf","color":"#606060"}}].
+
+"pantilt0-camera0 transform" is an object [role: transform, translation: 0.05 0 0.02].
+"pantilt0-camera0 transform" destination "camera0" [end: destination].
+"pantilt0-camera0 transform" source "pantilt0" [end: source].
+
+"print0" is a process [role: process, name: print0, type: pose_print_hs].
+"print0" yields "print0 out".
+"base0 pose" initiates "print0", which requires "base0 pose" [arg: pose, arg_index: 0, reference: odom].
+
+"print0 out" is an object [role: value, value_kind: output].
+
+"transformations" is an object [role: system, name: transformations].
+"transformations" consists of "base0".
+"transformations" consists of "base0-pantilt0 transform".
+"transformations" consists of "camera0".
+"transformations" consists of "map".
+"transformations" consists of "map-odom transform".
+"transformations" consists of "odom".
+"transformations" consists of "odom-base0 transform".
+"transformations" consists of "pantilt0".
+"transformations" consists of "pantilt0-camera0 transform".
+"transformations" exhibits "camera_pose0".
+"transformations" exhibits "move0".
+"transformations" exhibits "pan0".
+"transformations" exhibits "print0".

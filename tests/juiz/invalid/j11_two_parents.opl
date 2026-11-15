@@ -1,0 +1,15 @@
+"s" is an object [role: system, name: s].
+"s" consists of "a".
+"s" consists of "b".
+"s" consists of "c".
+"s" consists of "a-c".
+"s" consists of "b-c".
+"a" is an object [role: container, name: a, type: t].
+"b" is an object [role: container, name: b, type: t].
+"c" is an object [role: container, name: c, type: t].
+"a-c" is an object [role: transform].
+"a-c" source "a" [end: source].
+"a-c" destination "c" [end: destination].
+"b-c" is an object [role: transform].
+"b-c" source "b" [end: source].
+"b-c" destination "c" [end: destination].

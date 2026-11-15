@@ -1,0 +1,16 @@
+Model "typed_mismatch".
+
+"move0" is a process [role: process, name: move0, type: pose_move_python].
+"move0" yields "move0 out".
+"move0" requires "twist0 out" [arg: pose, arg_index: 0, connection: pull, connection_name: twist_to_pose].
+
+"move0 out" is an object [role: value, value_kind: output].
+
+"twist0" is a process [role: process, name: twist0, type: twist_python].
+"twist0" yields "twist0 out".
+
+"twist0 out" is an object [role: value, value_kind: output].
+
+"typed_mismatch" is an object [role: system, name: typed_mismatch].
+"typed_mismatch" exhibits "move0".
+"typed_mismatch" exhibits "twist0".

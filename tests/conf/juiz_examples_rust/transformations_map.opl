@@ -1,0 +1,6 @@
+Model "transformations_map".
+
+"map" is an object [role: container, name: map, type: periodic_anchor, rate: 10, params: {"model":{"path":"models/floor.glb"}}].
+
+"transformations_map" is an object [role: system, name: transformations_map].
+"transformations_map" consists of "map".
