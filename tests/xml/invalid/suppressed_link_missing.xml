@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- C1: an OPD suppresses a link that does not exist -->
+<opm:model xmlns:opm="https://openjuiz.github.io/ns/opm/v0" format_version="0.1" id="m">
+  <opm:things>
+    <opm:object id="a" name="A"/>
+    <opm:process id="p" name="P"/>
+  </opm:things>
+  <opm:links><opm:result id="l" source="p" target="a"/></opm:links>
+  <opm:diagram id="sd" name="SD">
+    <opm:appearance id="a_a" thing="a"/>
+    <opm:appearance id="a_p" thing="p"/>
+    <opm:suppressed_link ref="nothing"/>
+  </opm:diagram>
+</opm:model>

@@ -139,12 +139,18 @@
   <xs:attribute name="reference" type="juiz:Token"/>
   <xs:attribute name="initial" type="xs:boolean"/>
   <xs:attribute name="end" type="juiz:End"/>
+  <xs:attribute name="on_update" type="xs:boolean"/>
 
   <!-- ===== Child elements ===== -->
 
   <!-- JSON text. juiz:value on a value (const) thing, juiz:applied on an instrument (p_apply). -->
   <xs:element name="value" type="xs:string"/>
   <xs:element name="applied" type="xs:string"/>
+  <!-- JSON text. juiz:params (a JSON object) on a container, composite_container, process or
+       container_process: the values given when the instance is created (conf, e.g. initial_value).
+       juiz:default on a value (input): the default of the argument (manifest). -->
+  <xs:element name="params" type="xs:string"/>
+  <xs:element name="default" type="xs:string"/>
 
   <!-- juiz_std.geometry.Transform on a transform thing. Omitted means zero / no rotation. -->
   <xs:element name="translation">

@@ -253,6 +253,10 @@
       <xs:selector xpath=".//opm:appearance"/>
       <xs:field xpath="@thing"/>
     </xs:keyref>
+    <xs:keyref name="suppressedLink" refer="opm:link">
+      <xs:selector xpath=".//opm:diagram/opm:suppressed_link"/>
+      <xs:field xpath="@ref"/>
+    </xs:keyref>
     <xs:keyref name="suppressedState" refer="opm:state">
       <xs:selector xpath=".//opm:appearance/opm:suppressed_state"/>
       <xs:field xpath="@ref"/>
@@ -445,6 +449,8 @@
       <xs:extension base="opm:Element">
         <xs:sequence>
           <xs:element name="appearance" type="opm:Appearance" minOccurs="0" maxOccurs="unbounded"/>
+          <!-- A link not drawn here although both ends appear (metamodel §7.2). -->
+          <xs:element name="suppressed_link" type="opm:Ref" minOccurs="0" maxOccurs="unbounded"/>
           <xs:element name="diagram" type="opm:ChildDiagram" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="name" type="opm:Name" use="required"/>

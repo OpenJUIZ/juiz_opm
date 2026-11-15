@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  The tutorial's chapter 3 (tutorial.conf, Python), with the initial value of chapter 3's last
+  section: two increment processes and a counter container with two container processes.
+  Shows juiz:params (initial_value), juiz:default (argument defaults from the manifest) and
+  an OPD that leaves elements out on purpose (spec/diagram.md §4).
+    containers:
+      - type_name: example_container_python
+        name: counter0
+        initial_value: 3
+        processes: [increment0 (example_container_python_increment), get0 (..._get)]
+    processes: [inc0, inc1 (increment_process_python)]
+  The juiz-OPL transcription is examples/opl/tutorial.opl.
+-->
+<opm:model xmlns:opm="https://openjuiz.github.io/ns/opm/v0"
+           xmlns:juiz="https://openjuiz.github.io/ns/juiz/v0"
+           format_version="0.1" id="tutorial_model" name="tutorial">
+  <opm:things>
+    <opm:object id="tutorial" name="tutorial" juiz:role="system" juiz:name="tutorial"/>
+
+    <opm:object id="counter0" name="counter0"
+                juiz:role="container" juiz:name="counter0" juiz:type="example_container_python">
+      <juiz:params>{"initial_value":3}</juiz:params>
+    </opm:object>
+    <opm:process id="increment0" name="increment0" juiz:role="container_process"
+                 juiz:name="increment0" juiz:type="example_container_python_increment"/>
+    <opm:object id="increment0_arg1" name="increment0 arg1" juiz:role="value" juiz:value_kind="input">
+      <juiz:default>1</juiz:default>
+    </opm:object>
+    <opm:object id="increment0_out" name="increment0 out" juiz:role="value" juiz:value_kind="output"/>
+    <opm:process id="get0" name="get0" juiz:role="container_process"
+                 juiz:name="get0" juiz:type="example_container_python_get"/>
+    <opm:object id="get0_out" name="get0 out" juiz:role="value" juiz:value_kind="output"/>
+
+    <opm:process id="inc0" name="inc0"
+                 juiz:role="process" juiz:name="inc0" juiz:type="increment_process_python"/>
+    <opm:object id="inc0_arg1" name="inc0 arg1" juiz:role="value" juiz:value_kind="input">
+      <juiz:default>0</juiz:default>
+    </opm:object>
+    <opm:object id="inc0_out" name="inc0 out" juiz:role="value" juiz:value_kind="output"/>
+    <opm:process id="inc1" name="inc1"
+                 juiz:role="process" juiz:name="inc1" juiz:type="increment_process_python"/>
+    <opm:object id="inc1_arg1" name="inc1 arg1" juiz:role="value" juiz:value_kind="input">
+      <juiz:default>0</juiz:default>
+    </opm:object>
+    <opm:object id="inc1_out" name="inc1 out" juiz:role="value" juiz:value_kind="output"/>
+
+    <!-- Outside the system: whoever calls the processes (juiz process call ...). -->
+    <opm:process id="client" name="Client" affiliation="environmental" juiz:role="client"/>
+  </opm:things>
+
+  <opm:links>
+    <opm:aggregation id="l_tutorial_counter0" source="tutorial" target="counter0"/>
+    <opm:exhibition id="l_tutorial_increment0" source="tutorial" target="increment0"/>
+    <opm:exhibition id="l_tutorial_get0" source="tutorial" target="get0"/>
+    <opm:exhibition id="l_tutorial_inc0" source="tutorial" target="inc0"/>
+    <opm:exhibition id="l_tutorial_inc1" source="tutorial" target="inc1"/>
+
+    <opm:effect id="l_increment0_counter0" source="increment0" target="counter0"/>
+    <opm:instrument id="l_increment0_arg1" source="increment0_arg1" target="increment0"
+                    juiz:arg="arg1" juiz:arg_index="0"/>
+    <opm:result id="l_increment0_out" source="increment0" target="increment0_out"/>
+    <opm:instrument id="l_counter0_get0" source="counter0" target="get0"/>
+    <opm:result id="l_get0_out" source="get0" target="get0_out"/>
+
+    <opm:instrument id="l_inc0_arg1" source="inc0_arg1" target="inc0" juiz:arg="arg1" juiz:arg_index="0"/>
+    <opm:result id="l_inc0_out" source="inc0" target="inc0_out"/>
+    <opm:instrument id="l_inc1_arg1" source="inc1_arg1" target="inc1" juiz:arg="arg1" juiz:arg_index="0"/>
+    <opm:result id="l_inc1_out" source="inc1" target="inc1_out"/>
+
+    <opm:invocation id="l_client_inc0" source="client" target="inc0"/>
+    <opm:invocation id="l_client_increment0" source="client" target="increment0"/>
+    <opm:invocation id="l_client_get0" source="client" target="get0"/>
+  </opm:links>
+
+  <!-- SD: everything but the client's call to inc0, which the author left out on purpose. -->
+  <opm:diagram id="sd" name="SD">
+    <opm:appearance id="a_tutorial" thing="tutorial"/>
+    <opm:appearance id="a_counter0" thing="counter0"/>
+    <opm:appearance id="a_increment0" thing="increment0"/>
+    <opm:appearance id="a_increment0_arg1" thing="increment0_arg1"/>
+    <opm:appearance id="a_increment0_out" thing="increment0_out"/>
+    <opm:appearance id="a_get0" thing="get0"/>
+    <opm:appearance id="a_get0_out" thing="get0_out"/>
+    <opm:appearance id="a_inc0" thing="inc0"/>
+    <opm:appearance id="a_inc0_arg1" thing="inc0_arg1"/>
+    <opm:appearance id="a_inc0_out" thing="inc0_out"/>
+    <opm:appearance id="a_inc1" thing="inc1"/>
+    <opm:appearance id="a_inc1_arg1" thing="inc1_arg1"/>
+    <opm:appearance id="a_inc1_out" thing="inc1_out"/>
+    <opm:appearance id="a_client" thing="client"/>
+    <opm:suppressed_link ref="l_client_inc0"/>
+    <!-- SD1: only the counter, without the system frame, the other processes and the ports. -->
+    <opm:diagram id="sd1" name="SD1" refinement="view">
+      <opm:appearance id="a1_counter0" thing="counter0"/>
+      <opm:appearance id="a1_increment0" thing="increment0"/>
+      <opm:appearance id="a1_get0" thing="get0"/>
+    </opm:diagram>
+  </opm:diagram>
+</opm:model>

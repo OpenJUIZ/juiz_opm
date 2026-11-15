@@ -665,6 +665,9 @@ impl<'a, 'input: 'a> Reader<'a, 'input> {
         for x in &c.children {
             match x.tag_name().name() {
                 "appearance" => d.appearances.push(self.appearance(*x)?),
+                "suppressed_link" => d
+                    .suppressed_links
+                    .push(self.reference(*x, "suppressed_link")?),
                 "diagram" => d.children.push(self.diagram(*x, false)?),
                 other => {
                     return Err(self.err(*x, format!("opm:{} is not allowed in opm:diagram", other)))

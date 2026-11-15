@@ -189,6 +189,7 @@ in-zooming は「Thing の中身と、中の Process の順序」というモデ
 | refinement | 1 | `root` / `in_zoom` / `unfold` / `view` | この図の作り方 |
 | refinee | 0..1 | ref(Thing) | in_zoom・unfold のとき必須。in_zoom なら InZoom を持つ Thing |
 | appearances | * | Appearance | この図に出すもの |
+| suppressed_links | * | ref(Link) | 両端が出ていても、この図では描かないリンク([0011](../docs/decisions/0011-abbreviated-diagram.md)) |
 
 Appearance:
 
@@ -199,7 +200,8 @@ Appearance:
 | suppressed_states | * | ref(State) | この図で隠す State |
 | layout | 0..1 | x・y・幅・高さ | 配置。なければ描く道具が決める |
 
-- リンクの Appearance は持たない。両端が出ている図には、そのリンクを出す。
+- リンクの Appearance は持たない。両端が出ている図には、そのリンクを出す。ただし `suppressed_links` に挙げたリンクは出さない。
+- 図の描き方(略式図)は [diagram.md](diagram.md) で決める。
 - OPD とその配置は往復の範囲外(§10)。juiz の道具は OPD を自動で作るが、OPCAT や OPCloud から読んだ図は保つ。
 
 ## 8. コアの整形式の規則
@@ -266,6 +268,8 @@ juiz の要素になる Thing には役割を付ける。役割のない Thing �
 | juiz:path | node | 1 | 文字列 | 式の木の中の位置(`body.img` など、composition.md §6) |
 | juiz:translation, juiz:rotation | transform | 0..1 | juiz_std.geometry.Transform の形 | 省略は 0 と回転なし |
 | juiz:writers | transform | * | Container の名前か ID | `set_transform` で書いてよい Container |
+| juiz:params | container, composite_container, process, container_process | 0..1 | JSON のオブジェクト | 作るときに conf で渡す値(`initial_value: 3` など)。conf の決まったキー以外のもの |
+| juiz:default | value(value_kind が input のとき) | 0..1 | JSON の値 | 引数の既定値。conf ではなく manifest から来る |
 | juiz:status | 何にでも(リンクにも) | 0..1 | `released` / `merged` / `in_progress` / `planned` / `defect` | 実装状況(opm-mapping.md §5)。省略は released |
 | juiz:refs | 何にでも | * | `juiz#123` のような issue / PR の参照 | 実装状況の根拠 |
 
@@ -282,6 +286,7 @@ juiz の要素になる Thing には役割を付ける。役割のない Thing �
 | juiz:slot_name | composite_container からの aggregation | 1 | 文字列 | スロット名 |
 | juiz:reference | pose からの instrument(event) | 0..1 | Container の名前 | pose_listener の基準 |
 | juiz:initial | 同上 | 0..1 | 真偽 | pose_listener の `initial` |
+| juiz:on_update | 同上 | 0..1 | 真偽 | pose_listener の `on_update`(transformations.md §8.3) |
 | juiz:end | transform からの tagged | 1 | `source` / `destination` | Transform の始点か終点か |
 
 ### 9.5 juiz の概念ごとの形
@@ -358,23 +363,23 @@ conf のキーとの対応:
 | conf のキー | メタモデル |
 | --- | --- |
 | `name` | role system の Object |
-| `processes:` | role process の Thing、`p_apply` は juiz:applied、`publishes` / `subscribes` は topic へのリンク、`use_memo` は juiz:use_memo |
-| `containers:`、その `processes` | role container の Object と role container_process の Thing、持ち主への effect か instrument |
+| `processes:` | role process の Thing、`p_apply` は juiz:applied、`publishes` / `subscribes` は topic へのリンク、`use_memo` は juiz:use_memo、それ以外のキーは juiz:params |
+| `containers:`、その `processes` | role container の Object と role container_process の Thing、持ち主への effect か instrument。決まったキー以外は juiz:params |
 | `connections:` | instrument(juiz:connection、juiz:arg、juiz:connection_name)と、push なら invocation |
 | `ecs:` | role ec の Object(`auto_start` は initial の State)、role ec_cycle の Process、invocation(juiz:order) |
 | `composites:` | role composite の Thing と InZoom、node・value・slot |
 | `composite_containers:` | role composite_container の Object と aggregation(juiz:slot_name) |
 | `transforms:` | role transform の Object と tagged 2 本 |
-| `pose_listeners:` | role pose の Object と instrument(event) |
+| `pose_listeners:` | role pose の Object と instrument(event)。`reference`・`initial`・`on_update` は juiz:reference・juiz:initial・juiz:on_update |
 | `subsystems:` | system から system への aggregation |
 | `plugins:`、`option:`、`brokers:` | 持たない |
 
-引数名・引数の並び・データ型は conf になく manifest にあるので、conf から作るときはプラグインの manifest か profile_full を併せて読む(Step 7)。
+引数名・引数の並び・データ型・引数の既定値(juiz:default)は conf になく manifest にあるので、conf から作るときはプラグインの manifest か profile_full を併せて読む(Step 7)。
 
 ## 11. この Step で決めないこと
 
 - OPL の語と文の並び、名前の引用の仕方(Step 3)。juiz の名前(`talker0`)をそのまま OPL の名前に使えるか。→ [opl.md](opl.md) で決めた(引用すれば使える)。
-- 上の階層の図の「まとめた線」を導く規則と、描画の形(Step 6)。
+- 上の階層の図の「まとめた線」を導く規則(Step 6)。描画の形は [diagram.md](diagram.md)([0011](../docs/decisions/0011-abbreviated-diagram.md))で決めた。
 - 同じ名前の Process と Container がある System で OPM の名前をどう分けるか(Step 7。juiz:id があれば juiz 側は区別できる)。
 - Topic のメッセージを consumption にするか([0002](../docs/decisions/0002-open-points.md) の 2。今は instrument の event)。
 - Composite のスロットを持つ Composite を子にする形(juiz 側も未対応、composition.md §13)。

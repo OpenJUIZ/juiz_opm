@@ -40,6 +40,8 @@ OPM は「もの(Object)」と「こと(Process)」の 2 種類だけで系を�
 
 中心の対応は「Process は OPM の Process、Container は OPM の Object」。引数と戻り値も Object として図に出し、Process 同士を直接つながないのが OPM の流儀。用語は juiz の [MOTIVATION.md](https://github.com/OpenJUIZ/juiz/blob/main/MOTIVATION.md) と [docs/spec/](https://github.com/OpenJUIZ/juiz/tree/main/docs/spec) に合わせている。
 
+この表は最初の案で、モデルの形は [metamodel.md](metamodel.md) §9、図の描き方は [diagram.md](diagram.md) が正本である。
+
 | juiz | OPM での表し方 | OPL の例 | 補足 |
 | --- | --- | --- | --- |
 | Process(純粋) | Process(楕円) | Increment is a process. | 冪等なので effect リンクを持たない |
@@ -64,7 +66,7 @@ OPM は「もの(Object)」と「こと(Process)」の 2 種類だけで系を�
 | ネームスペース・ID | 属性 | Arm exhibits Namespace. | 普段は描かず、名前に robot1/arm と書く |
 | ContainerPose | Container の属性 | Arm exhibits Pose. | 全 Container が持つので必要な時だけ描く |
 | Transform | 親と子を結ぶ Object(値を持つため) | Base-Arm Transform relates Base to Arm. | 値が要らない図なら名前付きの構造リンクでよい |
-| Anchor | Container の特殊化 | World is an Anchor. Anchor is a Container. | 更新は Pose Update が木の Pose を affect |
+| Anchor | `juiz:type` が `periodic_anchor` / `static_anchor` の Container(metamodel §9.3) | World is an object [role: container, type: static_anchor]. | 更新は Pose Update が木の Pose を affect |
 
 ## 4. 例
 
@@ -112,6 +114,8 @@ OPM には実装状況の記法がないので、塗りの色で表す。破線�
 | 不具合あり | 薄い赤 | issue 番号 |
 
 ## 6. 描画(Graphviz)
+
+この節の「要素を 1 つずつ描く」描き方は [0011](../docs/decisions/0011-abbreviated-diagram.md) で略式図([diagram.md](diagram.md))に置き換えた。下は最初の案として残す。
 
 OPM の線の端は Graphviz の矢印の形でほぼ表せ、`dot -Tsvg` ですぐ画像になる。
 

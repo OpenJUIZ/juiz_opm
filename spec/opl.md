@@ -370,8 +370,8 @@ juiz の注釈は、その要素を書く文の末尾の `[...]` に書く。
 | --- | --- | --- |
 | 1 つの語 | `role`、`id`、`name`、`namespace`、`type`、`datatype`、`value_kind`、`path`、`arg`、`connection`、`connection_name`、`slot_name`、`reference`、`end`、`status` | atom 1 つ。空白・`,`・`[`・`]`・`{`・`}`・`"` を含むなら引用する |
 | 数 | `rate`、`arg_index`、`order` | atom 1 つ(`10`、`0.5`) |
-| 真偽 | `use_memo`、`initial` | `true` / `false` |
-| JSON | `value`、`applied` | JSON の値 1 つ(`"COLOR_BGR2GRAY"`、`3`、`[1, 2]`、`{"a": 1}`)。JSON の文字列は JSON の引用であり、OPL の引用ではない |
+| 真偽 | `use_memo`、`initial`、`on_update` | `true` / `false` |
+| JSON | `value`、`applied`、`params`、`default` | JSON の値 1 つ(`"COLOR_BGR2GRAY"`、`3`、`[1, 2]`、`{"a": 1}`)。JSON の文字列は JSON の引用であり、OPL の引用ではない |
 | 並び | `writers`、`refs` | atom を空白で区切って並べる(`refs: juiz#376 juiz#418`) |
 | 成分 | `translation` | 数 3 つ(x y z、`translation: 0.1 0 0.5`) |
 | 成分 | `rotation` | 数 4 つ(x y z w、`rotation: 0 0 0 1`) |
@@ -491,7 +491,7 @@ metamodel §9.5 の形を OPL で書くと次のとおり(注釈は要点だけ)
 
 | もの | OPL から XML にしたとき | XML から OPL にしたとき |
 | --- | --- | --- |
-| OPD(`<opm:diagram>`)、Appearance、配置 | 書かない | 落とし、落としたことを知らせる |
+| OPD(`<opm:diagram>`)、Appearance、`suppressed_link`、配置 | 書かない | 落とし、落としたことを知らせる |
 | juiz 以外の名前空間の属性と要素 | 書かない | 落とし、落としたことを知らせる |
 | modifier・経路ラベル・多重度・注釈・description のある links を持つ Fan | | 誤りにする |
 | modifier と多重度を両方持つリンク | | 誤りにする |
@@ -535,6 +535,7 @@ Step 2 の XML の例を書き起こしたもの。id を書かない形で、XM
 | [capture_filter.opl](../examples/opl/capture_filter.opl) | [capture_filter.opm.xml](../examples/xml/capture_filter.opm.xml) | Container、push 接続、p_apply、main_loop_ec |
 | [composite.opl](../examples/opl/composite.opl) | [composite.opm.xml](../examples/xml/composite.opm.xml) | Composite の型(InZoom、node、const、expose) |
 | [coffee_making.opl](../examples/opl/coffee_making.opl) | [coffee_making.opm.xml](../examples/xml/coffee_making.opm.xml) | juiz の注釈のないコア(agent、consumption、状態変化、XOR の Fan、tagged、duration、並行の step) |
+| [tutorial.opl](../examples/opl/tutorial.opl) | [tutorial.opm.xml](../examples/xml/tutorial.opm.xml) | チュートリアル 3 章。Container と ContainerProcess、params、引数の default、外からの call。XML の OPD は略式図の描く範囲の例([diagram.md](diagram.md) §2) |
 
 capture_filter.opl の一部を id を書く形で書くと次のとおり。
 
