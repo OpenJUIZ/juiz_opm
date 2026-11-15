@@ -1,6 +1,6 @@
 # 0008 juiz-OPL の言い回しを Dori の入門書に合わせる
 
-- 状態: 採用(案。ISO 19450 の本文か Dov Dori 先生の返事で見直す)
+- 状態: 採用(案。ISO 19450 の本文で見直す。Dori 先生の返事は待たない([0010](0010-settle-without-dori-reply.md)))
 - 日付: 2026-11-07
 - 置き換えるもの: [0007](0007-opl-grammar.md) の 4(modifier の文)のうち condition の consumption の後半と、[spec/opl.md](../../spec/opl.md) の Step 3 時点の InZoom・Fan・例外リンク・initial と final・多重度の形
 

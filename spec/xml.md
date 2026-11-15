@@ -4,7 +4,7 @@
 - 関連: [metamodel.md](metamodel.md)(この形式が写す表)、[0004](../docs/decisions/0004-xml-interchange.md)(XML にする決定)
 - スキーマ: [schema/opm.xsd](schema/opm.xsd)(コアと図)、[schema/juiz.xsd](schema/juiz.xsd)(juiz 拡張)
 - 例: [examples/xml/](../examples/xml/)
-- 仮置き: §12 の点は Dov Dori 先生の返事次第で変える
+- §12 の点は [0010](../docs/decisions/0010-settle-without-dori-reply.md) で今の形に決めた
 
 ## 1. 目的と範囲
 
@@ -263,15 +263,14 @@ python3 scripts/validate_xml.py
 - `format_version` は形式の版で、今は `0.1` だけを受ける。
 - 名前空間 URI の `v0` は、0.x の間は互換性のない変更をしてよいことを表す。形式を固めたら `v1` にし、以後は互換性のない変更のときだけ URI を変える。
 
-## 12. 仮置き(Dori 先生の返事次第)
+## 12. 仮置きから決めたこと
 
-2026-11-06 時点で、OPM の XML 交換形式の発表や計画があるかを Dov Dori 先生に問い合わせている([0004](../docs/decisions/0004-xml-interchange.md))。既存の形式があれば、次の点はそちらに合わせて変える。
+2026-11-06 に、OPM の XML 交換形式の発表や計画があるかを Dov Dori 先生に問い合わせた([0004](../docs/decisions/0004-xml-interchange.md))。返事がないまま、次の点は今の形で決めた([0010](../docs/decisions/0010-settle-without-dori-reply.md))。後で既存の形式が分かったら、置き換えではなく変換を足すかを新しい決定で決める。
 
 - 名前空間 URI と、コアを juiz_opm 独自の名前空間に置くこと。
 - 要素名・属性名(ISO 19450 の用語の綴り)と、リンクを種類ごとの要素に分けること。
 - 図(OPD)と配置の持ち方。
 
-メタモデル(metamodel.md)と juiz の注釈の中身は、形式が変わっても変えない見込み。
 
 ## 13. この Step で決めないこと
 

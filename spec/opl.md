@@ -4,7 +4,7 @@
 - 関連: [metamodel.md](metamodel.md)(この文法が写す表)、[xml.md](xml.md)(同じモデルの XML)、[0002](../docs/decisions/0002-open-points.md) の 5(英語の OPL を正本にする)
 - 例: [examples/opl/](../examples/opl/)(Step 2 の XML の例 3 つを書き起こしたもの)
 - 言い回しの参照: D. Dori, *Model-Based Systems Engineering with OPM and SysML*, Springer, 2016(ISBN 978-1-4939-3295-5。以下「入門書」)
-- 仮置き: §13 の点は ISO 19450 の本文か Dov Dori 先生の返事で変える
+- 仮置き: §13 の点は ISO 19450 の本文で変える([0010](../docs/decisions/0010-settle-without-dori-reply.md))
 
 ## 1. 目的と範囲
 
@@ -587,8 +587,8 @@ Filter requires Image {id: l_image_filter} [arg: img, arg_index: 0, connection: 
 - condition の agent(`A handles P if A exists, otherwise P is skipped.`)と、State を指定した condition の instrument の後半(入門書の本文には `Message Creating occurs if Crash Severity is ...` までの形しかない)。
 - undertime の例外の動詞(`falls short of`。入門書の本文の説明の言い回しから取った)。
 - duration の書き方(入門書は図で示し、OPL の文がない。今は `{duration_...}`)と経路ラベル(`Following path`)。
-- ISO 19450 の本文(OPL の形式文法の附属書があるとされる)か Dov Dori 先生の返事で分かったら、それに合わせ、今の形は入力の別名として残す。
-- `{...}` と `[...]`: 交換形式の決め方(xml.md §12)が Dori 先生の返事で変わっても、OPL の注釈の書き方は変えない見込み。名前空間を OPL に書く方法(§10.2 で落としているもの)は、必要になったら決める。
+- ISO 19450 の本文(OPL の形式文法の附属書があるとされる)で分かったら、それに合わせ、今の形は入力の別名として残す。
+- `{...}` と `[...]`: 交換形式の名前は xml.md §12 で決めた。OPL の注釈の書き方はそれと独立に保つ。名前空間を OPL に書く方法(§10.2 で落としているもの)は、必要になったら決める。
 
 ## 14. この Step で決めないこと
 

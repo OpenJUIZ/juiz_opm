@@ -25,12 +25,12 @@ Specifications and tools for describing, exchanging and drawing juiz system mode
 
 道具(Rust の workspace、`crates/` に置く。今あるのは opm_model だけ):
 
-| クレート | 役割 |
-| --- | --- |
-| opm_model | OPM のメタモデル、交換用 XML の読み書き、コアの規則の検査(OPCAT の OPX の書き出しは Step 9) |
-| opm_opl | OPL の解析と正規形での出力 |
-| opm_graph | DOT / SVG の描画(コマンド `opl_graph`) |
-| juiz_opm | juiz 拡張と juiz の conf との相互変換 |
+| クレート | 役割 | 状態 |
+| --- | --- | --- |
+| opm_model | OPM のメタモデル、交換用 XML の読み書き、コアの規則の検査(OPCAT の OPX の書き出しは Step 9) | あり(Step 4) |
+| opm_opl | OPL の解析と正規形での出力 | 予定(Step 5) |
+| opm_graph | DOT / SVG の描画(コマンド `opl_graph`) | 予定(Step 6) |
+| juiz_opm | juiz 拡張と juiz の conf との相互変換 | 予定(Step 7) |
 
 ## ライセンス
 
