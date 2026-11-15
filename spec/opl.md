@@ -52,7 +52,7 @@ Capture invokes Filter.
 Water can be cold, hot, or "almost boiling".
 ```
 
-- juiz の名前(`talker0`)は、引用すれば OPM の名前にそのまま使える。OPM の名前を `Talker 0` のように付け直すかどうかは、conf から作るときの決めごと(Step 7)で、文法は縛らない。
+- juiz の名前(`talker0`)は、引用すれば OPM の名前にそのまま使える。OPM の名前を `Talker 0` のように付け直すかどうかは、conf から作るときの決めごと([conf.md](conf.md) §4.1。juiz の名前をそのまま使う)で、文法は縛らない。
 - 名前の比較は、引用を外し、bare の名前では語の間の空白を 1 つにしてから行う。`"Camera"` と `Camera` は同じ名前である。
 - Thing の名前の最初の語が `Model`、`State`、`Following`、`Either`、`Exactly`、`At` のときは、bare で書けても引用する(見出しと、大文字で始まる文頭の語と区別するため)。
 
@@ -594,7 +594,7 @@ Filter requires Image {id: l_image_filter} [arg: img, arg_index: 0, connection: 
 ## 14. この Step で決めないこと
 
 - 解析器の誤りの報告の形、警告と誤りの区別、コメントを `fmt` で残すか(Step 5)。→ §15 で決めた(コメントは残さない)。
-- conf から作るときの OPM の名前の付け方と、同じ名前の Process と Container の分け方(Step 7。metamodel §11)。
+- conf から作るときの OPM の名前の付け方と、同じ名前の Process と Container の分け方(Step 7。metamodel §11)。→ [conf.md](conf.md) §4.1 で決めた。
 - 日本語の文を読み書きの対象にするか(今は §5 の読みを置くだけ)。
 - OPD ごとの OPL と、上の階層の図のまとめた線(Step 6)。
 
@@ -607,7 +607,7 @@ Filter requires Image {id: l_image_filter} [arg: img, arg_index: 0, connection: 
 1. 字句(§3)。`{...}` と `[...]` は中の値の形(§7.3)ごと読む。字句の誤りは最初の 1 つで止まる。
 2. 文法(§4)。誤った文は報告し、次の `.` から読み直す。1 回で文の誤りをすべて報告するため。O5、O10、O11 は文を読むときに見る。
 3. モデルへ(§5〜§7)。宣言を全部読んでから名前を照らし合わせ(O1)、O2〜O4、O6〜O9、O12 を見る。id のない要素には §10.4 の id を作る。リンクと Fan の id は、正規形の文の順(Fan の links は Fan の文の端の順)で作る。
-4. `check` では、O の誤りがなければ、さらに opm_model の C1〜C12 を見る。juiz の J1〜J13 は Step 7 で見る。
+4. `check` では、O の誤りがなければ、さらに opm_model の C1〜C12 を見る。juiz の J1〜J13 は juiz_opm の `check` が見る([conf.md](conf.md) §6)。
 
 ### 15.2 報告の形
 

@@ -1,0 +1,4 @@
+"s" is an object [role: system, name: s].
+"p0" is a process [role: process, name: p0, type: t].
+"p0" yields "p0 out".
+"p0 out" is an object [role: value, value_kind: output].

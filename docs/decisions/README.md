@@ -24,3 +24,4 @@
 | [0012](0012-opm-opl-crate.md) | opm_opl は opm_model の型に読み、正規形の文の順で id を作る | 採用(案) |
 | [0013](0013-opm-graph-crate.md) | opm_graph は DOT を自前で書き、配置と SVG は Graphviz に任せる。Step 6 は 6a と 6b に分ける | 採用(案) |
 | [0014](0014-abbreviated-renderer.md) | 略式図は記号にまとめてから Graphviz で配置し、SVG は opm_graph が描く | 採用(案) |
+| [0015](0015-conf-round-trip.md) | conf との往復は conf だけで閉じ、正規形どうしを文字列で比べる | 採用(案) |

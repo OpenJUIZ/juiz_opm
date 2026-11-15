@@ -1,0 +1,5 @@
+"s" is an object [role: system, name: s].
+"s" consists of "a".
+"a" is an object [role: container, name: a, type: t].
+"a" exhibits "a pose".
+"a pose" is an object [role: pose].

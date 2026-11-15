@@ -6,7 +6,7 @@ Specifications and tools for describing, exchanging and drawing juiz system mode
 
 ## 状態
 
-仕様づくりと道具づくりの段階です。交換形式の XML スキーマと検証スクリプト、juiz-OPL の文法、交換形式を読み書きして検査する opm_model クレート、juiz-OPL を読み書きして検査する opm_opl クレート、モデルを図にする opm_graph クレートがあります。
+仕様づくりと道具づくりの段階です。交換形式の XML スキーマと検証スクリプト、juiz-OPL の文法、交換形式を読み書きして検査する opm_model クレート、juiz-OPL を読み書きして検査する opm_opl クレート、モデルを図にする opm_graph クレート、juiz の conf と相互に変換する juiz_opm クレートがあります。
 
 ## 構成
 
@@ -22,6 +22,9 @@ Specifications and tools for describing, exchanging and drawing juiz system mode
 | [crates/opm_model/](crates/opm_model/) | メタモデルの型、交換形式の読み書き、コアの規則の検査 |
 | [crates/opm_opl/](crates/opm_opl/) | juiz-OPL の読み書きと検査、XML との変換(コマンド `opm_opl`) |
 | [crates/opm_graph/](crates/opm_graph/) | モデルを略式図(SVG / PNG)や OPM の形の DOT にする(コマンド `opm_graph`) |
+| [spec/conf.md](spec/conf.md) | juiz の conf との往復(読み方、正規形、写し方、往復テスト) |
+| [crates/juiz_opm/](crates/juiz_opm/) | juiz の conf との相互変換と juiz の規則の検査(コマンド `juiz_opm`) |
+| [tests/conf/](tests/conf/) | サンプル 4 リポジトリの conf と、そこから書いた juiz-OPL |
 | [tests/opl/](tests/opl/) | OPL の文の形をすべて使う例と、誤りの例 |
 | [docs/decisions/](docs/decisions/) | 決めたことの記録(1 件 1 ファイル) |
 | [docs/research/](docs/research/) | 先行例の調査(OPCAT の保存形式など) |
@@ -34,7 +37,7 @@ Specifications and tools for describing, exchanging and drawing juiz system mode
 | opm_model | OPM のメタモデル、交換用 XML の読み書き、コアの規則の検査(OPCAT の OPX の書き出しは Step 9) | あり(Step 4) |
 | opm_opl | OPL の解析・検査・正規形での出力、XML との変換(コマンド `opm_opl`) | あり(Step 5) |
 | opm_graph | 略式図の SVG / PNG と、OPM の形の DOT の描画(コマンド `opm_graph`) | あり(Step 6) |
-| juiz_opm | juiz 拡張と juiz の conf との相互変換 | 予定(Step 7) |
+| juiz_opm | juiz の conf と juiz-OPL・XML の相互変換、juiz の規則 J1〜J13 の検査(コマンド `juiz_opm`) | あり(Step 7) |
 
 ## ライセンス
 

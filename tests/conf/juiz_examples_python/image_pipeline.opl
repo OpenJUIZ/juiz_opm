@@ -1,0 +1,62 @@
+Model "image_pipeline".
+
+"binarize0" is a process [role: process, name: binarize0, type: image_binarize_python, use_memo: false].
+"binarize0" yields "binarize0 out".
+"binarize0" requires "resize0 out" [arg: img, arg_index: 0, connection: pull].
+
+"binarize0 out" is an object [role: value, value_kind: output].
+
+"image_pipeline" is an object [role: system, name: image_pipeline].
+"image_pipeline" exhibits "binarize0".
+"image_pipeline" exhibits "load0".
+"image_pipeline" exhibits "pipeline0".
+"image_pipeline" exhibits "ratio0".
+"image_pipeline" exhibits "resize0".
+
+"image_pipeline_python" is a process {description: "画像を読み込んで縮小・二値化し、白い画素の割合を返す"} [role: composite, type: image_pipeline_python].
+"image_pipeline_python" zooms into "image_pipeline_python body.img.img.img", "image_pipeline_python body.img.img", "image_pipeline_python body.img", and "image_pipeline_python body", in that sequence, as well as "image_pipeline_python body.img out", "image_pipeline_python body.img.img out", and "image_pipeline_python body.img.img.img out".
+
+"image_pipeline_python body" is a process [role: node, type: image_white_ratio_python, path: body].
+"image_pipeline_python body" yields "image_pipeline_python out".
+"image_pipeline_python body" requires "image_pipeline_python body.img out" [arg: img, arg_index: 0].
+
+"image_pipeline_python body.img" is a process [role: node, type: image_binarize_python, path: body.img].
+"image_pipeline_python body.img" yields "image_pipeline_python body.img out".
+"image_pipeline_python body.img" requires "image_pipeline_python body.img.img out" [arg: img, arg_index: 0].
+
+"image_pipeline_python body.img out" is an object [role: value, value_kind: intermediate].
+
+"image_pipeline_python body.img.img" is a process [role: node, type: image_resize_python, path: body.img.img].
+"image_pipeline_python body.img.img" yields "image_pipeline_python body.img.img out".
+"image_pipeline_python body.img.img" requires "image_pipeline_python body.img.img.img out" [arg: img, arg_index: 0].
+
+"image_pipeline_python body.img.img out" is an object [role: value, value_kind: intermediate].
+
+"image_pipeline_python body.img.img.img" is a process [role: node, type: image_load_python, path: body.img.img.img].
+"image_pipeline_python body.img.img.img" yields "image_pipeline_python body.img.img.img out".
+
+"image_pipeline_python body.img.img.img out" is an object [role: value, value_kind: intermediate].
+
+"image_pipeline_python out" is an object [role: value, value_kind: output].
+
+"load0" is a process [role: process, name: load0, type: image_load_python, use_memo: false].
+"load0" yields "load0 out".
+
+"load0 out" is an object [role: value, value_kind: output].
+
+"pipeline0" is a process [role: process, name: pipeline0, type: image_pipeline_python].
+"pipeline0" yields "pipeline0 out".
+
+"pipeline0 out" is an object [role: value, value_kind: output].
+
+"ratio0" is a process [role: process, name: ratio0, type: image_white_ratio_python, use_memo: false].
+"ratio0" yields "ratio0 out".
+"ratio0" requires "binarize0 out" [arg: img, arg_index: 0, connection: pull].
+
+"ratio0 out" is an object [role: value, value_kind: output].
+
+"resize0" is a process [role: process, name: resize0, type: image_resize_python, use_memo: false].
+"resize0" yields "resize0 out".
+"resize0" requires "load0 out" [arg: img, arg_index: 0, connection: pull].
+
+"resize0 out" is an object [role: value, value_kind: output].

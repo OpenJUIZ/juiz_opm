@@ -1,0 +1,9 @@
+Model "test_system".
+
+"decrement0" is a process [role: process, name: decrement0, type: decrement_process].
+"decrement0" yields "decrement0 out".
+
+"decrement0 out" is an object [role: value, value_kind: output].
+
+"test_system" is an object [role: system, name: test_system].
+"test_system" exhibits "decrement0".

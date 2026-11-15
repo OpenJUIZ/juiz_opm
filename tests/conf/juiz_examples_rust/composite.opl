@@ -1,0 +1,46 @@
+Model "composite".
+
+"composite" is an object [role: system, name: composite].
+"composite" exhibits "inc_twice0".
+"composite" exhibits "plus_one0".
+
+"inc_twice" is a process {description: "1 を 2 回足す"} [role: composite, type: inc_twice].
+"inc_twice" zooms into "inc_twice body.arg1" and "inc_twice body", in that sequence, as well as "inc_twice body.arg1 out".
+
+"inc_twice body" is a process [role: node, type: increment_process, path: body].
+"inc_twice body" yields "inc_twice out".
+"inc_twice body" requires "inc_twice body.arg1 out" [arg: arg1, arg_index: 0].
+
+"inc_twice body.arg1" is a process [role: node, type: increment_process, path: body.arg1].
+"inc_twice body.arg1" yields "inc_twice body.arg1 out".
+
+"inc_twice body.arg1 out" is an object [role: value, value_kind: intermediate].
+
+"inc_twice out" is an object [role: value, value_kind: output].
+
+"inc_twice0" is a process [role: process, name: inc_twice0, type: inc_twice, params: {"trace":true}].
+"inc_twice0" yields "inc_twice0 out".
+
+"inc_twice0 out" is an object [role: value, value_kind: output].
+
+"plus_one" is a process {description: "2 足して 1 引く"} [role: composite, type: plus_one].
+"plus_one" zooms into "plus_one body.arg1" and "plus_one body", in that sequence, as well as "plus_one body.arg1 out".
+
+"plus_one body" is a process [role: node, type: decrement_process, path: body].
+"plus_one body" yields "plus_one out".
+"plus_one body" requires "plus_one body.arg1 out" [arg: arg1, arg_index: 0].
+
+"plus_one body.arg1" is a process [role: node, type: inc_twice, path: body.arg1].
+"plus_one body.arg1" yields "plus_one body.arg1 out".
+"plus_one body.arg1" requires "plus_one x" [arg: arg1, arg_index: 0].
+
+"plus_one body.arg1 out" is an object [role: value, value_kind: intermediate].
+
+"plus_one out" is an object [role: value, value_kind: output].
+
+"plus_one x" is an object [role: value, name: x, value_kind: input].
+
+"plus_one0" is a process [role: process, name: plus_one0, type: plus_one].
+"plus_one0" yields "plus_one0 out".
+
+"plus_one0 out" is an object [role: value, value_kind: output].
