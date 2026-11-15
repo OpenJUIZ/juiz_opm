@@ -349,7 +349,7 @@ juiz の要素になる Thing には役割を付ける。役割のない Thing �
 | J13 | role のある Thing は consumption、agent、例外リンク、Fan を持たない |
 
 - J8 は、environmental の role container(別の System の Container。juiz:id に ID を持つ、spec/conf.md §4.2)を数えない。
-- J1〜J13 は juiz_opm の `check` が検査する(spec/conf.md §6)。J10 はプラグインの型名の一覧が要るので、モデルだけからは検査しない。
+- J1〜J13 は juiz_opm の `check` が検査する(spec/conf.md §6)。J10 はプラグインの型名の一覧が要るので、モデルだけからは検査せず、動いている System のスナップショットと照らす(`check_with_system`、spec/system.md §5)。
 
 ## 10. 往復の範囲
 
@@ -379,7 +379,7 @@ conf のキーとの対応:
 
 conf にある `description`(Composite など)は Thing の description に写して往復させる([0015](../docs/decisions/0015-conf-round-trip.md) の 8)。写し方の詳細と正規形は [conf.md](conf.md)。
 
-つながっていない引数・引数の並び・データ型・引数の既定値(juiz:default)・readonly は conf になく manifest にある。conf から作るモデルにはこれらを出さず、Step 8 で profile_full から書き出すときに埋める([0015](../docs/decisions/0015-conf-round-trip.md) の 2、conf.md §8)。
+つながっていない引数・引数の並び・データ型・引数の既定値(juiz:default)・readonly は conf になく manifest にある。conf から作るモデルにはこれらを出さず、動いている System のスナップショットから埋める([0016](../docs/decisions/0016-system-snapshot.md)、[system.md](system.md) §4)。
 
 ## 11. この Step で決めないこと
 

@@ -5,24 +5,58 @@
 //!
 //! - [`conf`]: the conf in the round-trip range, read as juiz reads it and written in the
 //!   canonical form.
-//! - [`to_model`] / [`to_conf`]: conf → model and model → conf.
-//! - [`check`]: the juiz rules J1 to J13 (spec/metamodel.md §9.6).
+//! - [`to_model()`] / [`to_conf()`]: conf → model and model → conf.
+//! - [`check()`]: the juiz rules J1 to J13 (spec/metamodel.md §9.6); J10 with
+//!   [`check_with_system`].
+//! - [`system`]: a running System (spec/system.md): its snapshot, its conf, and what its
+//!   manifests add to the model ([`to_model_with`]).
 
 pub mod check;
 pub mod conf;
 pub mod from_model;
+pub mod system;
 pub mod to_model;
 
-pub use check::check;
+pub use check::{check, check_with_system};
 pub use conf::{Conf, Notes};
 pub use from_model::to_conf;
-pub use to_model::to_model;
+pub use system::SystemInfo;
+pub use to_model::{to_model, to_model_with};
 
 /// conf text → model, with what reading did not carry.
 pub fn model_of_conf(text: &str) -> Result<(opm_model::Model, Notes), Notes> {
     let (conf, mut notes) = Conf::read(text);
     let Some(conf) = conf else { return Err(notes) };
     match to_model(&conf) {
+        Ok(m) => Ok((m, notes)),
+        Err(e) => {
+            notes.errors.extend(e);
+            Err(notes)
+        }
+    }
+}
+
+/// A snapshot of a running System (spec/system.md) → its conf and the model of the conf with
+/// what the System adds. `name` names the System.
+pub fn model_of_snapshot(
+    snapshot: &serde_json::Value,
+    name: &str,
+) -> Result<(Conf, opm_model::Model, Notes), String> {
+    let (conf, notes) = system::conf_of_snapshot(snapshot, name)?;
+    let info = SystemInfo::from_snapshot(snapshot)?;
+    let model = to_model_with(&conf, Some(&info)).map_err(|e| e.join("\n"))?;
+    Ok((conf, model, notes))
+}
+
+/// conf text and a snapshot of the System it runs as → the model of the conf with what the
+/// System adds (spec/system.md §4).
+pub fn model_of_conf_with(
+    text: &str,
+    info: &SystemInfo,
+) -> Result<(opm_model::Model, Notes), Notes> {
+    let (conf, mut notes) = Conf::read(text);
+    let Some(conf) = conf else { return Err(notes) };
+    match to_model_with(&conf, Some(info)) {
         Ok(m) => Ok((m, notes)),
         Err(e) => {
             notes.errors.extend(e);

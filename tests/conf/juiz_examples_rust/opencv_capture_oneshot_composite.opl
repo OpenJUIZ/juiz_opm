@@ -10,13 +10,13 @@ Model "opencv_capture_oneshot_composite".
 "capture_save body" is a process [role: node, type: filesystem_imwrite, path: body].
 "capture_save body" affects "capture_save fs".
 "capture_save body" yields "capture_save out".
-"capture_save body" requires "capture_save body.img out" [arg: img, arg_index: 0].
-"capture_save body" requires "capture_save path" [arg: file_name, arg_index: 1].
+"capture_save body" requires "capture_save body.img out" [arg: img, arg_index: 1].
+"capture_save body" requires "capture_save path" [arg: file_name, arg_index: 0].
 
 "capture_save body.img" is a process [role: node, type: cv_cvt_color, path: body.img].
 "capture_save body.img" yields "capture_save body.img out".
-"capture_save body.img" requires "capture_save body.img.code" [arg: code, arg_index: 1].
-"capture_save body.img" requires "capture_save body.img.img out" [arg: img, arg_index: 0].
+"capture_save body.img" requires "capture_save body.img.code" [arg: code, arg_index: 0].
+"capture_save body.img" requires "capture_save body.img.img out" [arg: img, arg_index: 1].
 
 "capture_save body.img out" is an object [role: value, value_kind: intermediate].
 

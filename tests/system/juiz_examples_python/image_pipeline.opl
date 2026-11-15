@@ -1,0 +1,98 @@
+Model "image_pipeline".
+
+"binarize0" is a process [role: process, id: core://core/process/binarize0::image_binarize_python, name: binarize0, type: image_binarize_python, use_memo: false].
+"binarize0" yields "binarize0 out".
+"binarize0" requires "binarize0 threshold" [arg: threshold, arg_index: 1].
+"binarize0" requires "resize0 out" [arg: img, arg_index: 0, connection: pull].
+
+"binarize0 out" is an object [role: value, value_kind: output].
+
+"binarize0 threshold" is an object [role: value, value_kind: input, default: 128].
+
+"image_pipeline" is an object [role: system, name: image_pipeline].
+"image_pipeline" exhibits "binarize0".
+"image_pipeline" exhibits "load0".
+"image_pipeline" exhibits "pipeline0".
+"image_pipeline" exhibits "ratio0".
+"image_pipeline" exhibits "resize0".
+
+"image_pipeline_python" is a process [role: composite, type: image_pipeline_python].
+"image_pipeline_python" zooms into "image_pipeline_python body.img.img.img", "image_pipeline_python body.img.img", "image_pipeline_python body.img", and "image_pipeline_python body", in that sequence, as well as "image_pipeline_python body.img out", "image_pipeline_python body.img.img out", and "image_pipeline_python body.img.img.img out".
+
+"image_pipeline_python body" is a process [role: node, type: image_white_ratio_python, path: body].
+"image_pipeline_python body" yields "image_pipeline_python out".
+"image_pipeline_python body" requires "image_pipeline_python body.img out" [arg: img, arg_index: 0].
+
+"image_pipeline_python body.img" is a process [role: node, type: image_binarize_python, path: body.img].
+"image_pipeline_python body.img" yields "image_pipeline_python body.img out".
+"image_pipeline_python body.img" requires "image_pipeline_python body.img.img out" [arg: img, arg_index: 0].
+"image_pipeline_python body.img" requires "image_pipeline_python threshold" [arg: threshold, arg_index: 1].
+
+"image_pipeline_python body.img out" is an object [role: value, value_kind: intermediate].
+
+"image_pipeline_python body.img.img" is a process [role: node, type: image_resize_python, path: body.img.img].
+"image_pipeline_python body.img.img" yields "image_pipeline_python body.img.img out".
+"image_pipeline_python body.img.img" requires "image_pipeline_python body.img.img.img out" [arg: img, arg_index: 0].
+"image_pipeline_python body.img.img" requires "image_pipeline_python height" [arg: height, arg_index: 2].
+"image_pipeline_python body.img.img" requires "image_pipeline_python width" [arg: width, arg_index: 1].
+
+"image_pipeline_python body.img.img out" is an object [role: value, value_kind: intermediate].
+
+"image_pipeline_python body.img.img.img" is a process [role: node, type: image_load_python, path: body.img.img.img].
+"image_pipeline_python body.img.img.img" yields "image_pipeline_python body.img.img.img out".
+"image_pipeline_python body.img.img.img" requires "image_pipeline_python path" [arg: path, arg_index: 0].
+
+"image_pipeline_python body.img.img.img out" is an object [role: value, value_kind: intermediate].
+
+"image_pipeline_python height" is an object [role: value, name: height, value_kind: input].
+
+"image_pipeline_python out" is an object [role: value, value_kind: output].
+
+"image_pipeline_python path" is an object [role: value, name: path, value_kind: input].
+
+"image_pipeline_python threshold" is an object [role: value, name: threshold, value_kind: input].
+
+"image_pipeline_python width" is an object [role: value, name: width, value_kind: input].
+
+"load0" is a process [role: process, id: core://core/process/load0::image_load_python, name: load0, type: image_load_python, use_memo: false].
+"load0" yields "load0 out".
+"load0" requires "load0 path" [arg: path, arg_index: 0].
+
+"load0 out" is an object [role: value, value_kind: output].
+
+"load0 path" is an object [role: value, value_kind: input, default: "images/sample.png"].
+
+"pipeline0" is a process [role: process, id: core://core/process/pipeline0::image_pipeline_python, name: pipeline0, type: image_pipeline_python, use_memo: false].
+"pipeline0" yields "pipeline0 out".
+"pipeline0" requires "pipeline0 height" [arg: height, arg_index: 2].
+"pipeline0" requires "pipeline0 path" [arg: path, arg_index: 0].
+"pipeline0" requires "pipeline0 threshold" [arg: threshold, arg_index: 3].
+"pipeline0" requires "pipeline0 width" [arg: width, arg_index: 1].
+
+"pipeline0 height" is an object [role: value, value_kind: input, default: 240].
+
+"pipeline0 out" is an object [role: value, value_kind: output].
+
+"pipeline0 path" is an object [role: value, value_kind: input, default: "images/sample.png"].
+
+"pipeline0 threshold" is an object [role: value, value_kind: input, default: 128].
+
+"pipeline0 width" is an object [role: value, value_kind: input, default: 320].
+
+"ratio0" is a process [role: process, id: core://core/process/ratio0::image_white_ratio_python, name: ratio0, type: image_white_ratio_python, use_memo: false].
+"ratio0" yields "ratio0 out".
+"ratio0" requires "binarize0 out" [arg: img, arg_index: 0, connection: pull].
+
+"ratio0 out" is an object [role: value, value_kind: output].
+
+"resize0" is a process [role: process, id: core://core/process/resize0::image_resize_python, name: resize0, type: image_resize_python, use_memo: false].
+"resize0" yields "resize0 out".
+"resize0" requires "load0 out" [arg: img, arg_index: 0, connection: pull].
+"resize0" requires "resize0 height" [arg: height, arg_index: 2].
+"resize0" requires "resize0 width" [arg: width, arg_index: 1].
+
+"resize0 height" is an object [role: value, value_kind: input, default: 240].
+
+"resize0 out" is an object [role: value, value_kind: output].
+
+"resize0 width" is an object [role: value, value_kind: input, default: 320].

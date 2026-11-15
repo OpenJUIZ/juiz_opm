@@ -521,6 +521,7 @@ impl Conf {
             .sort_by(|a, b| (&a.namespace, &a.name).cmp(&(&b.namespace, &b.name)));
         for c in &mut self.composites {
             c.containers.sort();
+            canonical_node(&mut c.body);
         }
         self.composites = order_composites(std::mem::take(&mut self.composites));
         self.connections.sort_by(|a, b| {
@@ -1274,6 +1275,20 @@ fn write_pose_listener(p: &PoseListener) -> Json {
         o.insert("on_update".into(), b.into());
     }
     Json::Object(o)
+}
+
+/// The canonical form of an expression tree (spec/conf.md §3): the arguments of a call by name
+/// (juiz calls a node with the arguments in the order of the child's manifest, whatever the
+/// order in the conf), and without `{expose: x}` for an argument named x with no default (juiz
+/// exposes an argument that is not written under its own name).
+fn canonical_node(n: &mut Node) {
+    if let Node::Call { args, .. } = n {
+        args.retain(|(k, a)| !matches!(a, Node::Expose { name, default: None } if name == k));
+        for (_, a) in args.iter_mut() {
+            canonical_node(a);
+        }
+        args.sort_by(|a, b| a.0.cmp(&b.0));
+    }
 }
 
 #[cfg(test)]

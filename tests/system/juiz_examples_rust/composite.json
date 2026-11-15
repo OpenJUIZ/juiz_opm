@@ -1,0 +1,405 @@
+{
+ "composites": [
+  {
+   "arguments": [
+    {
+     "default": 0,
+     "description": {
+      "text": "Default description for argument arg1"
+     },
+     "name": "arg1",
+     "type_name": "Int"
+    }
+   ],
+   "broker_name": "core",
+   "broker_type_name": "core",
+   "composition": {
+    "body": {
+     "args": {
+      "arg1": {
+       "args": {
+        "arg1": {
+         "expose": "arg1"
+        }
+       },
+       "process": "increment_process"
+      }
+     },
+     "process": "increment_process"
+    },
+    "containers": {}
+   },
+   "container_name": null,
+   "container_type": null,
+   "description": {
+    "text": "1 を 2 回足す"
+   },
+   "factory": "composite_process_factory",
+   "language": "rust",
+   "name": null,
+   "namespace": "",
+   "outputs": null,
+   "publishes": [],
+   "subscribes": {},
+   "type_name": "inc_twice",
+   "use_memo": false
+  },
+  {
+   "arguments": [
+    {
+     "default": 0,
+     "description": {
+      "text": "Default description for argument arg1"
+     },
+     "name": "x",
+     "type_name": "Int"
+    }
+   ],
+   "broker_name": "core",
+   "broker_type_name": "core",
+   "composition": {
+    "body": {
+     "args": {
+      "arg1": {
+       "args": {
+        "arg1": {
+         "expose": "x"
+        }
+       },
+       "process": "inc_twice"
+      }
+     },
+     "process": "decrement_process"
+    },
+    "containers": {}
+   },
+   "container_name": null,
+   "container_type": null,
+   "description": {
+    "text": "2 足して 1 引く"
+   },
+   "factory": "composite_process_factory",
+   "language": "rust",
+   "name": null,
+   "namespace": "",
+   "outputs": null,
+   "publishes": [],
+   "subscribes": {},
+   "type_name": "plus_one",
+   "use_memo": false
+  }
+ ],
+ "connections": [],
+ "format": "juiz_opm/system/0",
+ "pose_listeners": [],
+ "system": {
+  "broker_name": "core",
+  "broker_type_name": "core",
+  "class_name": "broker_proxy",
+  "core_store": {
+   "broker_factories": {
+    "http": {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "broker_factory",
+     "identifier": "core://core/broker_factory/http::http",
+     "name": "http",
+     "type_name": "http"
+    },
+    "local": {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "broker_factory",
+     "identifier": "core://core/broker_factory/local::local",
+     "name": "local",
+     "type_name": "local"
+    }
+   },
+   "broker_proxies": [],
+   "brokers": [
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "description": {
+      "text": ""
+     },
+     "name": "127.0.0.1:8000",
+     "type_name": "http"
+    },
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "description": {
+      "text": ""
+     },
+     "name": "local",
+     "type_name": "local"
+    }
+   ],
+   "container_factories": [],
+   "container_process_factories": [],
+   "container_processes": [],
+   "containers": [],
+   "ec_factories": {
+    "main_loop_ec": {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "execution_context_factory",
+     "identifier": "core://core/execution_context_factory/main_loop_ec::main_loop_ec",
+     "name": "main_loop_ec",
+     "type_name": "main_loop_ec"
+    }
+   },
+   "ecs": {},
+   "process_factories": [
+    {
+     "arguments": [
+      {
+       "default": 0,
+       "description": {
+        "text": "Default description for argument arg1"
+       },
+       "name": "arg1",
+       "type_name": "Int"
+      }
+     ],
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process_factory",
+     "composition": {
+      "body": {
+       "args": {
+        "arg1": {
+         "args": {
+          "arg1": {
+           "expose": "arg1"
+          }
+         },
+         "process": "increment_process"
+        }
+       },
+       "process": "increment_process"
+      },
+      "containers": {}
+     },
+     "identifier": "core://core/process_factory/inc_twice::inc_twice",
+     "language": "rust",
+     "name": "inc_twice",
+     "type_name": "inc_twice"
+    },
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process_factory",
+     "given_process_factory": {
+      "arguments": [
+       {
+        "default": 0,
+        "description": {
+         "text": "Default description for argument arg1"
+        },
+        "name": "arg1",
+        "type_name": "Int"
+       }
+      ],
+      "broker_name": "core",
+      "broker_type_name": "core",
+      "class_name": "process_factory",
+      "identifier": "core://core/process_factory/increment_process::increment_process",
+      "language": "rust",
+      "name": "increment_process",
+      "type_name": "increment_process"
+     },
+     "identifier": "core://core/process_factory/increment_process::increment_process",
+     "language": "rust",
+     "name": "increment_process",
+     "plugin": {
+      "abi": "c",
+      "path": "./target/debug/libincrement_process.so"
+     },
+     "type_name": "increment_process"
+    },
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process_factory",
+     "given_process_factory": {
+      "arguments": [
+       {
+        "default": 1,
+        "description": {
+         "text": "The output will be 'arg1 - 1'."
+        },
+        "name": "arg1",
+        "type_name": "Int"
+       }
+      ],
+      "broker_name": "core",
+      "broker_type_name": "core",
+      "class_name": "process_factory",
+      "identifier": "core://core/process_factory/decrement_process::decrement_process",
+      "language": "rust",
+      "name": "decrement_process",
+      "type_name": "decrement_process"
+     },
+     "identifier": "core://core/process_factory/decrement_process::decrement_process",
+     "language": "rust",
+     "name": "decrement_process",
+     "plugin": {
+      "abi": "c",
+      "path": "./target/debug/libdecrement_process.so"
+     },
+     "type_name": "decrement_process"
+    },
+    {
+     "arguments": [
+      {
+       "default": 0,
+       "description": {
+        "text": "Default description for argument arg1"
+       },
+       "name": "x",
+       "type_name": "Int"
+      }
+     ],
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process_factory",
+     "composition": {
+      "body": {
+       "args": {
+        "arg1": {
+         "args": {
+          "arg1": {
+           "expose": "x"
+          }
+         },
+         "process": "inc_twice"
+        }
+       },
+       "process": "decrement_process"
+      },
+      "containers": {}
+     },
+     "identifier": "core://core/process_factory/plus_one::plus_one",
+     "language": "rust",
+     "name": "plus_one",
+     "type_name": "plus_one"
+    }
+   ],
+   "processes": [
+    {
+     "arguments": [
+      {
+       "default": 0,
+       "description": {
+        "text": "Default description for argument arg1"
+       },
+       "name": "arg1",
+       "type_name": "Int"
+      }
+     ],
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process",
+     "composition": {
+      "body": {
+       "args": {
+        "arg1": {
+         "args": {
+          "arg1": {
+           "expose": "arg1"
+          }
+         },
+         "process": "increment_process"
+        }
+       },
+       "process": "increment_process"
+      },
+      "containers": {}
+     },
+     "container_name": null,
+     "container_type": null,
+     "description": {
+      "text": "1 を 2 回足す"
+     },
+     "factory": "composite_process_factory",
+     "identifier": "core://core/process/inc_twice0::inc_twice",
+     "language": "rust",
+     "name": "inc_twice0",
+     "namespace": "",
+     "outputs": null,
+     "publishes": [],
+     "subscribes": {},
+     "type_name": "inc_twice",
+     "use_memo": false
+    },
+    {
+     "arguments": [
+      {
+       "default": 0,
+       "description": {
+        "text": "Default description for argument arg1"
+       },
+       "name": "x",
+       "type_name": "Int"
+      }
+     ],
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process",
+     "composition": {
+      "body": {
+       "args": {
+        "arg1": {
+         "args": {
+          "arg1": {
+           "expose": "x"
+          }
+         },
+         "process": "inc_twice"
+        }
+       },
+       "process": "decrement_process"
+      },
+      "containers": {}
+     },
+     "container_name": null,
+     "container_type": null,
+     "description": {
+      "text": "2 足して 1 引く"
+     },
+     "factory": "composite_process_factory",
+     "identifier": "core://core/process/plus_one0::plus_one",
+     "language": "rust",
+     "name": "plus_one0",
+     "namespace": "",
+     "outputs": null,
+     "publishes": [],
+     "subscribes": {},
+     "type_name": "plus_one",
+     "use_memo": false
+    }
+   ],
+   "topics": []
+  },
+  "identifier": "core://core/broker_proxy/core::core",
+  "mastersystem": [],
+  "name": "core",
+  "subsystems": [],
+  "system_store": {
+   "broker_factories": [
+    "http",
+    "local"
+   ],
+   "broker_proxies": [],
+   "brokers": [
+    "http",
+    "local"
+   ],
+   "uuid": "35ee924f-0a02-4c3b-8541-b6037eeca2e3"
+  },
+  "type_name": "core"
+ },
+ "transforms": []
+}

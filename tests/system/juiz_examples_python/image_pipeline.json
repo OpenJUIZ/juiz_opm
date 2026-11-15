@@ -1,0 +1,728 @@
+{
+ "composites": [
+  {
+   "arguments": [
+    {
+     "default": "images/sample.png",
+     "description": {
+      "text": ""
+     },
+     "name": "path",
+     "type_name": "String"
+    },
+    {
+     "default": 320,
+     "description": {
+      "text": ""
+     },
+     "name": "width",
+     "type_name": "Int"
+    },
+    {
+     "default": 240,
+     "description": {
+      "text": ""
+     },
+     "name": "height",
+     "type_name": "Int"
+    },
+    {
+     "default": 128,
+     "description": {
+      "text": ""
+     },
+     "name": "threshold",
+     "type_name": "Int"
+    }
+   ],
+   "broker_name": "core",
+   "broker_type_name": "core",
+   "composition": {
+    "body": {
+     "args": {
+      "img": {
+       "args": {
+        "img": {
+         "args": {
+          "height": {
+           "expose": "height"
+          },
+          "img": {
+           "args": {
+            "path": {
+             "expose": "path"
+            }
+           },
+           "process": "image_load_python"
+          },
+          "width": {
+           "expose": "width"
+          }
+         },
+         "process": "image_resize_python"
+        },
+        "threshold": {
+         "expose": "threshold"
+        }
+       },
+       "process": "image_binarize_python"
+      }
+     },
+     "process": "image_white_ratio_python"
+    },
+    "containers": {}
+   },
+   "container_name": null,
+   "container_type": null,
+   "description": {
+    "text": "画像を読み込んで縮小・二値化し、白い画素の割合を返す"
+   },
+   "factory": "composite_process_factory",
+   "language": "python",
+   "name": null,
+   "namespace": "",
+   "outputs": {
+    "default_value": "",
+    "enum_type": "Primitive",
+    "type_name": "Float"
+   },
+   "publishes": [],
+   "subscribes": {},
+   "type_name": "image_pipeline_python",
+   "use_memo": false
+  }
+ ],
+ "connections": [
+  {
+   "arg_name": "img",
+   "connection_type": "Pull",
+   "destination_process_id": {
+    "broker_name": "core",
+    "broker_type_name": "core",
+    "class_name": "process",
+    "container_name": null,
+    "name": "ratio0",
+    "namespace": "",
+    "type_name": "image_white_ratio_python"
+   },
+   "source_process_id": {
+    "broker_name": "core",
+    "broker_type_name": "core",
+    "class_name": "process",
+    "container_name": null,
+    "name": "binarize0",
+    "namespace": "",
+    "type_name": "image_binarize_python"
+   }
+  },
+  {
+   "arg_name": "img",
+   "connection_type": "Pull",
+   "destination_process_id": {
+    "broker_name": "core",
+    "broker_type_name": "core",
+    "class_name": "process",
+    "container_name": null,
+    "name": "resize0",
+    "namespace": "",
+    "type_name": "image_resize_python"
+   },
+   "source_process_id": {
+    "broker_name": "core",
+    "broker_type_name": "core",
+    "class_name": "process",
+    "container_name": null,
+    "name": "load0",
+    "namespace": "",
+    "type_name": "image_load_python"
+   }
+  },
+  {
+   "arg_name": "img",
+   "connection_type": "Pull",
+   "destination_process_id": {
+    "broker_name": "core",
+    "broker_type_name": "core",
+    "class_name": "process",
+    "container_name": null,
+    "name": "binarize0",
+    "namespace": "",
+    "type_name": "image_binarize_python"
+   },
+   "source_process_id": {
+    "broker_name": "core",
+    "broker_type_name": "core",
+    "class_name": "process",
+    "container_name": null,
+    "name": "resize0",
+    "namespace": "",
+    "type_name": "image_resize_python"
+   }
+  }
+ ],
+ "format": "juiz_opm/system/0",
+ "pose_listeners": [],
+ "system": {
+  "broker_name": "core",
+  "broker_type_name": "core",
+  "class_name": "broker_proxy",
+  "core_store": {
+   "broker_factories": {
+    "http": {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "broker_factory",
+     "identifier": "core://core/broker_factory/http::http",
+     "name": "http",
+     "type_name": "http"
+    },
+    "local": {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "broker_factory",
+     "identifier": "core://core/broker_factory/local::local",
+     "name": "local",
+     "type_name": "local"
+    }
+   },
+   "broker_proxies": [],
+   "brokers": [
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "description": {
+      "text": ""
+     },
+     "name": "127.0.0.1:8000",
+     "type_name": "http"
+    },
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "description": {
+      "text": ""
+     },
+     "name": "local",
+     "type_name": "local"
+    }
+   ],
+   "container_factories": [],
+   "container_process_factories": [],
+   "container_processes": [],
+   "containers": [],
+   "ec_factories": {
+    "main_loop_ec": {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "execution_context_factory",
+     "identifier": "core://core/execution_context_factory/main_loop_ec::main_loop_ec",
+     "name": "main_loop_ec",
+     "type_name": "main_loop_ec"
+    }
+   },
+   "ecs": {},
+   "process_factories": [
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process_factory",
+     "given_process_factory": {
+      "arguments": [
+       {
+        "default": "images/sample.png",
+        "description": {
+         "text": ""
+        },
+        "name": "path",
+        "type_name": "String"
+       }
+      ],
+      "broker_name": "core",
+      "broker_type_name": "core",
+      "class_name": "process_factory",
+      "identifier": "core://core/process_factory/image_load_python::image_load_python",
+      "language": "python",
+      "name": "image_load_python",
+      "type_name": "image_load_python"
+     },
+     "identifier": "core://core/process_factory/image_load_python::image_load_python",
+     "language": "python",
+     "name": "image_load_python",
+     "plugin": {
+      "path": "./process/image_load_python.py"
+     },
+     "type_name": "image_load_python"
+    },
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process_factory",
+     "given_process_factory": {
+      "arguments": [
+       {
+        "default": null,
+        "description": {
+         "text": ""
+        },
+        "name": "img",
+        "type_name": "Image"
+       }
+      ],
+      "broker_name": "core",
+      "broker_type_name": "core",
+      "class_name": "process_factory",
+      "identifier": "core://core/process_factory/image_white_ratio_python::image_white_ratio_python",
+      "language": "python",
+      "name": "image_white_ratio_python",
+      "type_name": "image_white_ratio_python"
+     },
+     "identifier": "core://core/process_factory/image_white_ratio_python::image_white_ratio_python",
+     "language": "python",
+     "name": "image_white_ratio_python",
+     "plugin": {
+      "path": "./process/image_white_ratio_python.py"
+     },
+     "type_name": "image_white_ratio_python"
+    },
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process_factory",
+     "given_process_factory": {
+      "arguments": [
+       {
+        "default": null,
+        "description": {
+         "text": ""
+        },
+        "name": "img",
+        "type_name": "Image"
+       },
+       {
+        "default": 320,
+        "description": {
+         "text": ""
+        },
+        "name": "width",
+        "type_name": "Int"
+       },
+       {
+        "default": 240,
+        "description": {
+         "text": ""
+        },
+        "name": "height",
+        "type_name": "Int"
+       }
+      ],
+      "broker_name": "core",
+      "broker_type_name": "core",
+      "class_name": "process_factory",
+      "identifier": "core://core/process_factory/image_resize_python::image_resize_python",
+      "language": "python",
+      "name": "image_resize_python",
+      "type_name": "image_resize_python"
+     },
+     "identifier": "core://core/process_factory/image_resize_python::image_resize_python",
+     "language": "python",
+     "name": "image_resize_python",
+     "plugin": {
+      "path": "./process/image_resize_python.py"
+     },
+     "type_name": "image_resize_python"
+    },
+    {
+     "arguments": [
+      {
+       "default": "images/sample.png",
+       "description": {
+        "text": ""
+       },
+       "name": "path",
+       "type_name": "String"
+      },
+      {
+       "default": 320,
+       "description": {
+        "text": ""
+       },
+       "name": "width",
+       "type_name": "Int"
+      },
+      {
+       "default": 240,
+       "description": {
+        "text": ""
+       },
+       "name": "height",
+       "type_name": "Int"
+      },
+      {
+       "default": 128,
+       "description": {
+        "text": ""
+       },
+       "name": "threshold",
+       "type_name": "Int"
+      }
+     ],
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process_factory",
+     "composition": {
+      "body": {
+       "args": {
+        "img": {
+         "args": {
+          "img": {
+           "args": {
+            "height": {
+             "expose": "height"
+            },
+            "img": {
+             "args": {
+              "path": {
+               "expose": "path"
+              }
+             },
+             "process": "image_load_python"
+            },
+            "width": {
+             "expose": "width"
+            }
+           },
+           "process": "image_resize_python"
+          },
+          "threshold": {
+           "expose": "threshold"
+          }
+         },
+         "process": "image_binarize_python"
+        }
+       },
+       "process": "image_white_ratio_python"
+      },
+      "containers": {}
+     },
+     "identifier": "core://core/process_factory/image_pipeline_python::image_pipeline_python",
+     "language": "python",
+     "name": "image_pipeline_python",
+     "type_name": "image_pipeline_python"
+    },
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process_factory",
+     "given_process_factory": {
+      "arguments": [
+       {
+        "default": null,
+        "description": {
+         "text": ""
+        },
+        "name": "img",
+        "type_name": "Image"
+       },
+       {
+        "default": 128,
+        "description": {
+         "text": ""
+        },
+        "name": "threshold",
+        "type_name": "Int"
+       }
+      ],
+      "broker_name": "core",
+      "broker_type_name": "core",
+      "class_name": "process_factory",
+      "identifier": "core://core/process_factory/image_binarize_python::image_binarize_python",
+      "language": "python",
+      "name": "image_binarize_python",
+      "type_name": "image_binarize_python"
+     },
+     "identifier": "core://core/process_factory/image_binarize_python::image_binarize_python",
+     "language": "python",
+     "name": "image_binarize_python",
+     "plugin": {
+      "path": "./process/image_binarize_python.py"
+     },
+     "type_name": "image_binarize_python"
+    }
+   ],
+   "processes": [
+    {
+     "arguments": [
+      {
+       "default": "images/sample.png",
+       "description": {
+        "text": ""
+       },
+       "name": "path",
+       "type_name": "String"
+      }
+     ],
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process",
+     "container_name": null,
+     "container_type": null,
+     "description": {
+      "text": ""
+     },
+     "factory": "process_factory",
+     "identifier": "core://core/process/load0::image_load_python",
+     "language": "rust",
+     "name": "load0",
+     "namespace": "",
+     "outputs": {
+      "default_value": "",
+      "enum_type": "Primitive",
+      "type_name": "Array"
+     },
+     "publishes": [],
+     "subscribes": {},
+     "type_name": "image_load_python",
+     "use_memo": false
+    },
+    {
+     "arguments": [
+      {
+       "default": null,
+       "description": {
+        "text": ""
+       },
+       "name": "img",
+       "type_name": "Image"
+      },
+      {
+       "default": 128,
+       "description": {
+        "text": ""
+       },
+       "name": "threshold",
+       "type_name": "Int"
+      }
+     ],
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process",
+     "container_name": null,
+     "container_type": null,
+     "description": {
+      "text": ""
+     },
+     "factory": "process_factory",
+     "identifier": "core://core/process/binarize0::image_binarize_python",
+     "language": "rust",
+     "name": "binarize0",
+     "namespace": "",
+     "outputs": {
+      "default_value": "",
+      "enum_type": "Primitive",
+      "type_name": "Array"
+     },
+     "publishes": [],
+     "subscribes": {},
+     "type_name": "image_binarize_python",
+     "use_memo": false
+    },
+    {
+     "arguments": [
+      {
+       "default": null,
+       "description": {
+        "text": ""
+       },
+       "name": "img",
+       "type_name": "Image"
+      },
+      {
+       "default": 320,
+       "description": {
+        "text": ""
+       },
+       "name": "width",
+       "type_name": "Int"
+      },
+      {
+       "default": 240,
+       "description": {
+        "text": ""
+       },
+       "name": "height",
+       "type_name": "Int"
+      }
+     ],
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process",
+     "container_name": null,
+     "container_type": null,
+     "description": {
+      "text": ""
+     },
+     "factory": "process_factory",
+     "identifier": "core://core/process/resize0::image_resize_python",
+     "language": "rust",
+     "name": "resize0",
+     "namespace": "",
+     "outputs": {
+      "default_value": "",
+      "enum_type": "Primitive",
+      "type_name": "Array"
+     },
+     "publishes": [],
+     "subscribes": {},
+     "type_name": "image_resize_python",
+     "use_memo": false
+    },
+    {
+     "arguments": [
+      {
+       "default": "images/sample.png",
+       "description": {
+        "text": ""
+       },
+       "name": "path",
+       "type_name": "String"
+      },
+      {
+       "default": 320,
+       "description": {
+        "text": ""
+       },
+       "name": "width",
+       "type_name": "Int"
+      },
+      {
+       "default": 240,
+       "description": {
+        "text": ""
+       },
+       "name": "height",
+       "type_name": "Int"
+      },
+      {
+       "default": 128,
+       "description": {
+        "text": ""
+       },
+       "name": "threshold",
+       "type_name": "Int"
+      }
+     ],
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process",
+     "composition": {
+      "body": {
+       "args": {
+        "img": {
+         "args": {
+          "img": {
+           "args": {
+            "height": {
+             "expose": "height"
+            },
+            "img": {
+             "args": {
+              "path": {
+               "expose": "path"
+              }
+             },
+             "process": "image_load_python"
+            },
+            "width": {
+             "expose": "width"
+            }
+           },
+           "process": "image_resize_python"
+          },
+          "threshold": {
+           "expose": "threshold"
+          }
+         },
+         "process": "image_binarize_python"
+        }
+       },
+       "process": "image_white_ratio_python"
+      },
+      "containers": {}
+     },
+     "container_name": null,
+     "container_type": null,
+     "description": {
+      "text": "画像を読み込んで縮小・二値化し、白い画素の割合を返す"
+     },
+     "factory": "composite_process_factory",
+     "identifier": "core://core/process/pipeline0::image_pipeline_python",
+     "language": "python",
+     "name": "pipeline0",
+     "namespace": "",
+     "outputs": {
+      "default_value": "",
+      "enum_type": "Primitive",
+      "type_name": "Float"
+     },
+     "publishes": [],
+     "subscribes": {},
+     "type_name": "image_pipeline_python",
+     "use_memo": false
+    },
+    {
+     "arguments": [
+      {
+       "default": null,
+       "description": {
+        "text": ""
+       },
+       "name": "img",
+       "type_name": "Image"
+      }
+     ],
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process",
+     "container_name": null,
+     "container_type": null,
+     "description": {
+      "text": ""
+     },
+     "factory": "process_factory",
+     "identifier": "core://core/process/ratio0::image_white_ratio_python",
+     "language": "rust",
+     "name": "ratio0",
+     "namespace": "",
+     "outputs": {
+      "default_value": "",
+      "enum_type": "Primitive",
+      "type_name": "Float"
+     },
+     "publishes": [],
+     "subscribes": {},
+     "type_name": "image_white_ratio_python",
+     "use_memo": false
+    }
+   ],
+   "topics": []
+  },
+  "identifier": "core://core/broker_proxy/core::core",
+  "mastersystem": [],
+  "name": "core",
+  "subsystems": [],
+  "system_store": {
+   "broker_factories": [
+    "http",
+    "local"
+   ],
+   "broker_proxies": [],
+   "brokers": [
+    "http",
+    "local"
+   ],
+   "uuid": "f7d80a50-3b10-4044-b3e7-f2155cfc5b4e"
+  },
+  "type_name": "core"
+ },
+ "transforms": []
+}

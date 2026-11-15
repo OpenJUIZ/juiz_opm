@@ -1,0 +1,268 @@
+{
+ "composites": [],
+ "connections": [
+  {
+   "arg_name": "arg1",
+   "connection_type": "Push",
+   "destination_process_id": {
+    "broker_name": "core",
+    "broker_type_name": "core",
+    "class_name": "process",
+    "container_name": null,
+    "name": "listener0",
+    "namespace": "",
+    "type_name": "listener_python"
+   },
+   "source_process_id": {
+    "broker_name": "core",
+    "broker_type_name": "core",
+    "class_name": "process",
+    "container_name": null,
+    "name": "talker0",
+    "namespace": "",
+    "type_name": "talker_python"
+   }
+  }
+ ],
+ "format": "juiz_opm/system/0",
+ "pose_listeners": [],
+ "system": {
+  "broker_name": "core",
+  "broker_type_name": "core",
+  "class_name": "broker_proxy",
+  "core_store": {
+   "broker_factories": {
+    "http": {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "broker_factory",
+     "identifier": "core://core/broker_factory/http::http",
+     "name": "http",
+     "type_name": "http"
+    },
+    "local": {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "broker_factory",
+     "identifier": "core://core/broker_factory/local::local",
+     "name": "local",
+     "type_name": "local"
+    }
+   },
+   "broker_proxies": [],
+   "brokers": [
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "description": {
+      "text": ""
+     },
+     "name": "local",
+     "type_name": "local"
+    },
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "description": {
+      "text": ""
+     },
+     "name": "127.0.0.1:8000",
+     "type_name": "http"
+    }
+   ],
+   "container_factories": [],
+   "container_process_factories": [],
+   "container_processes": [],
+   "containers": [],
+   "ec_factories": {
+    "main_loop_ec": {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "execution_context_factory",
+     "identifier": "core://core/execution_context_factory/main_loop_ec::main_loop_ec",
+     "name": "main_loop_ec",
+     "type_name": "main_loop_ec"
+    }
+   },
+   "ecs": {
+    "core://core/execution_context/ec0::main_loop_ec": {
+     "auto_start": true,
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "execution_context",
+     "identifier": "core://core/execution_context/ec0::main_loop_ec",
+     "name": "ec0",
+     "namespace": "",
+     "rate": 1.0,
+     "state": "STARTED",
+     "targets": [
+      {
+       "broker_name": "core",
+       "broker_type_name": "core",
+       "class_name": "process",
+       "container_name": null,
+       "name": "talker0",
+       "namespace": "",
+       "type_name": "talker_python"
+      }
+     ],
+     "type_name": "main_loop_ec"
+    }
+   },
+   "process_factories": [
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process_factory",
+     "given_process_factory": {
+      "arguments": [
+       {
+        "default": "Hello, Juiz!",
+        "description": {
+         "text": ""
+        },
+        "name": "arg1",
+        "type_name": "String"
+       }
+      ],
+      "broker_name": "core",
+      "broker_type_name": "core",
+      "class_name": "process_factory",
+      "identifier": "core://core/process_factory/listener_python::listener_python",
+      "language": "python",
+      "name": "listener_python",
+      "type_name": "listener_python"
+     },
+     "identifier": "core://core/process_factory/listener_python::listener_python",
+     "language": "python",
+     "name": "listener_python",
+     "plugin": {
+      "path": "./process/listener_python.py"
+     },
+     "type_name": "listener_python"
+    },
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process_factory",
+     "given_process_factory": {
+      "arguments": [
+       {
+        "default": "Hello, World!",
+        "description": {
+         "text": ""
+        },
+        "name": "message",
+        "type_name": "String"
+       }
+      ],
+      "broker_name": "core",
+      "broker_type_name": "core",
+      "class_name": "process_factory",
+      "identifier": "core://core/process_factory/talker_python::talker_python",
+      "language": "python",
+      "name": "talker_python",
+      "type_name": "talker_python"
+     },
+     "identifier": "core://core/process_factory/talker_python::talker_python",
+     "language": "python",
+     "name": "talker_python",
+     "plugin": {
+      "path": "./process/talker_python.py"
+     },
+     "type_name": "talker_python"
+    }
+   ],
+   "processes": [
+    {
+     "arguments": [
+      {
+       "default": "Hello, Juiz!",
+       "description": {
+        "text": ""
+       },
+       "name": "arg1",
+       "type_name": "String",
+       "value": "Hello, World!"
+      }
+     ],
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process",
+     "container_name": null,
+     "container_type": null,
+     "description": {
+      "text": "受け取った文字列を表示する"
+     },
+     "factory": "process_factory",
+     "identifier": "core://core/process/listener0::listener_python",
+     "language": "rust",
+     "name": "listener0",
+     "namespace": "",
+     "outputs": {
+      "default_value": "",
+      "enum_type": "Primitive",
+      "type_name": "String"
+     },
+     "publishes": [],
+     "subscribes": {},
+     "type_name": "listener_python",
+     "use_memo": false
+    },
+    {
+     "arguments": [
+      {
+       "default": "Hello, World!",
+       "description": {
+        "text": ""
+       },
+       "name": "message",
+       "type_name": "String"
+      }
+     ],
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process",
+     "container_name": null,
+     "container_type": null,
+     "description": {
+      "text": "文字列 message (既定は \"Hello, World!\") を出力する"
+     },
+     "factory": "process_factory",
+     "identifier": "core://core/process/talker0::talker_python",
+     "language": "rust",
+     "name": "talker0",
+     "namespace": "",
+     "outputs": {
+      "default_value": "",
+      "enum_type": "Primitive",
+      "type_name": "String"
+     },
+     "publishes": [],
+     "subscribes": {},
+     "type_name": "talker_python",
+     "use_memo": false
+    }
+   ],
+   "topics": []
+  },
+  "identifier": "core://core/broker_proxy/core::core",
+  "mastersystem": [],
+  "name": "core",
+  "subsystems": [],
+  "system_store": {
+   "broker_factories": [
+    "http",
+    "local"
+   ],
+   "broker_proxies": [],
+   "brokers": [
+    "local",
+    "http"
+   ],
+   "uuid": "7f94929e-bf0e-4cea-bfe5-be74fa5ae4ac"
+  },
+  "type_name": "core"
+ },
+ "transforms": []
+}

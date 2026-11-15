@@ -15,12 +15,21 @@ use serde_json::{Map, Value as Json};
 use crate::conf::{
     join, parse_identifier, split, Composite, Conf, ConnectionType, Node, Process, ProcessRef,
 };
+use crate::system::{ArgInfo, SystemInfo};
 
 /// Build the model of a conf. The ids are those that juiz-OPL gives (the model is written as
 /// OPL and read back), so the same conf always gives the same model. Errors are references that
 /// do not resolve.
 pub fn to_model(conf: &Conf) -> Result<Model, Vec<String>> {
+    to_model_with(conf, None)
+}
+
+/// [`to_model`] with what a running System adds (spec/system.md §4): ids, the order of the
+/// arguments, the arguments nothing feeds with their defaults and data types, the data type of
+/// the output, and readonly ContainerProcesses.
+pub fn to_model_with(conf: &Conf, info: Option<&SystemInfo>) -> Result<Model, Vec<String>> {
     let mut b = Builder::new(conf);
+    b.info = info;
     b.build();
     if !b.errors.is_empty() {
         return Err(b.errors);
@@ -46,6 +55,7 @@ struct Arg {
 
 struct Builder<'a> {
     conf: &'a Conf,
+    info: Option<&'a SystemInfo>,
     model: Model,
     next: usize,
     used: HashSet<String>,
@@ -93,6 +103,7 @@ impl<'a> Builder<'a> {
         model.name = Some(conf.name.clone());
         Builder {
             conf,
+            info: None,
             model,
             next: 0,
             used: HashSet::new(),
@@ -106,6 +117,20 @@ impl<'a> Builder<'a> {
             poses: HashMap::new(),
             invocations: HashSet::new(),
         }
+    }
+
+    /// The juiz ID of a container, EC or transform of the running System.
+    fn juiz_id(&self, key: &str) -> Option<String> {
+        self.info?.ids.get(key).cloned()
+    }
+
+    fn process_info(&self, full: &str) -> Option<&'a crate::system::ProcessInfo> {
+        self.info?.processes.get(full)
+    }
+
+    /// The arguments of a process type, in the order of its manifest.
+    fn type_args(&self, type_name: &str) -> Option<&'a [ArgInfo]> {
+        self.info?.process_types.get(type_name).map(Vec::as_slice)
     }
 
     fn id(&mut self) -> String {
@@ -201,12 +226,13 @@ impl<'a> Builder<'a> {
             }
             params(t, &c.params);
             t.description = c.description.clone();
+            if let Some(j) = self.juiz_id(&full) {
+                attr(&mut self.thing_mut(&id).extensions, "id", j);
+            }
             self.containers.insert(full, id.clone());
             self.link(LinkKind::Aggregation, &sys, &id);
             for p in &c.processes {
-                let pid = self.instance(p, "container_process");
-                self.link(LinkKind::Effect, &pid, &id);
-                self.link(LinkKind::Exhibition, &sys, &pid);
+                self.container_process(p, &id);
             }
         }
 
@@ -219,6 +245,9 @@ impl<'a> Builder<'a> {
             }
             params(t, &c.params);
             t.description = c.description.clone();
+            if let Some(j) = self.juiz_id(&full) {
+                attr(&mut self.thing_mut(&id).extensions, "id", j);
+            }
             self.containers.insert(full.clone(), id.clone());
             self.link(LinkKind::Aggregation, &sys, &id);
             for (slot, target) in &c.slots {
@@ -234,9 +263,7 @@ impl<'a> Builder<'a> {
                 }
             }
             for p in &c.processes {
-                let pid = self.instance(p, "container_process");
-                self.link(LinkKind::Effect, &pid, &id);
-                self.link(LinkKind::Exhibition, &sys, &pid);
+                self.container_process(p, &id);
             }
         }
 
@@ -296,12 +323,35 @@ impl<'a> Builder<'a> {
             self.errors
                 .push(format!("two processes are named {:?}", full));
         }
+        let pinfo = self.process_info(&full);
+        if let Some(j) = pinfo.and_then(|i| i.id.clone()) {
+            attr(&mut self.thing_mut(&id).extensions, "id", j);
+        }
         let (out, t) = self.object(&format!("{} out", name), "value");
         attr(&mut t.extensions, "value_kind", "output");
+        if let Some(d) = pinfo.and_then(|i| i.output_datatype.clone()) {
+            attr(&mut t.extensions, "datatype", d);
+        }
         self.link(LinkKind::Result, &id, &out);
         self.outputs.insert(id.clone(), out);
         self.args.insert(id.clone(), Vec::new());
         id
+    }
+
+    /// A ContainerProcess of the container `owner`: it writes the container (effect), or only
+    /// reads it (instrument) when the running System says it is readonly.
+    fn container_process(&mut self, p: &Process, owner: &str) {
+        let pid = self.instance(p, "container_process");
+        let readonly = self
+            .process_info(&join(&p.namespace, &p.name))
+            .is_some_and(|i| i.readonly);
+        if readonly {
+            self.link(LinkKind::Instrument, owner, &pid);
+        } else {
+            self.link(LinkKind::Effect, &pid, owner);
+        }
+        let sys = self.system.clone();
+        self.link(LinkKind::Exhibition, &sys, &pid);
     }
 
     fn add_arg(&mut self, process: &str, arg: &str, link: String) {
@@ -368,17 +418,47 @@ impl<'a> Builder<'a> {
     /// values.
     fn settle_args(&mut self) {
         for (p, pid) in self.all_instances() {
+            let manifest: &[ArgInfo] = self
+                .process_info(&join(&p.namespace, &p.name))
+                .map(|i| i.args.as_slice())
+                .unwrap_or(&[]);
+            // The arguments nothing feeds: those of p_apply, and with a running System those of
+            // the manifest.
+            let mut unfed: Vec<(&str, Option<&ArgInfo>)> = Vec::new();
             for (arg, _) in &p.p_apply {
+                unfed.push((arg, manifest.iter().find(|a| &a.name == arg)));
+            }
+            for a in manifest {
+                if !p.p_apply.iter().any(|(x, _)| x == &a.name) {
+                    unfed.push((&a.name, Some(a)));
+                }
+            }
+            for (arg, info) in unfed {
                 let known = self.args[&pid].iter().any(|(a, _)| a == arg);
                 if !known {
                     let pname = self.thing_mut(&pid).name.clone();
                     let (vid, t) = self.object(&format!("{} {}", pname, arg), "value");
                     attr(&mut t.extensions, "value_kind", "input");
+                    if let Some(i) = info {
+                        if let Some(d) = &i.default {
+                            json_elem(&mut t.extensions, "default", d);
+                        }
+                        if let Some(d) = &i.datatype {
+                            attr(&mut t.extensions, "datatype", d.clone());
+                        }
+                    }
                     let lid = self.link(LinkKind::Instrument, &vid, &pid).id.clone();
                     self.add_arg(&pid, arg, lid);
                 }
             }
-            let args = std::mem::take(self.args.get_mut(&pid).unwrap());
+            let mut args = std::mem::take(self.args.get_mut(&pid).unwrap());
+            // The order of the manifest; the arguments it does not know after them.
+            args.sort_by_key(|(a, _)| {
+                manifest
+                    .iter()
+                    .position(|m| &m.name == a)
+                    .unwrap_or(usize::MAX)
+            });
             for (k, (arg, a)) in args.iter().enumerate() {
                 let applied = p.p_apply.iter().find(|(x, _)| x == arg).map(|(_, v)| v);
                 for (i, lid) in a.links.iter().enumerate() {
@@ -424,6 +504,7 @@ impl<'a> Builder<'a> {
 
     fn ec(&mut self, e: &crate::conf::Ec) {
         let full = join(&e.namespace, &e.name);
+        let jid = self.juiz_id(&full);
         let (id, t) = self.object(&full, "ec");
         attr(&mut t.extensions, "name", e.name.clone());
         if !e.namespace.is_empty() {
@@ -436,6 +517,9 @@ impl<'a> Builder<'a> {
         params(t, &e.params);
         t.description = e.description.clone();
         let name = t.name.clone();
+        if let Some(j) = jid {
+            attr(&mut t.extensions, "id", j);
+        }
         let mut stopped = State::new(format!("{}-stopped", id), "stopped");
         let mut started = State::new(format!("{}-started", id), "started");
         if e.auto_start {
@@ -523,6 +607,9 @@ impl<'a> Builder<'a> {
             attr(&mut t.extensions, "writers", tr.writers.join(" "));
         }
         params(t, &tr.params);
+        if let Some(j) = self.juiz_id(&format!("{}|{}", tr.source, tr.destination)) {
+            attr(&mut self.thing_mut(&id).extensions, "id", j);
+        }
         let sys = self.system.clone();
         self.link(LinkKind::Aggregation, &sys, &id);
         for (end, tag) in [(src, "source"), (dst, "destination")] {
@@ -630,6 +717,28 @@ impl<'a> Builder<'a> {
         let (id, t) = self.process(&format!("{} {}", cname, path), "node");
         attr(&mut t.extensions, "type", process.clone());
         attr(&mut t.extensions, "path", path.to_string());
+        // With the manifest of the child: its order, and the arguments the conf leaves out are
+        // exposed under their own names (juiz composition.md §3).
+        let mut args: Vec<(String, Node)> = args.clone();
+        if let Some(manifest) = self.type_args(process) {
+            for m in manifest {
+                if !args.iter().any(|(a, _)| a == &m.name) {
+                    args.push((
+                        m.name.clone(),
+                        Node::Expose {
+                            name: m.name.clone(),
+                            default: None,
+                        },
+                    ));
+                }
+            }
+            args.sort_by_key(|(a, _)| {
+                manifest
+                    .iter()
+                    .position(|m| &m.name == a)
+                    .unwrap_or(usize::MAX)
+            });
+        }
         for (k, (arg, a)) in args.iter().enumerate() {
             let apath = format!("{}.{}", path, arg);
             let src = match a {

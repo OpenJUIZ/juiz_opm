@@ -1,0 +1,89 @@
+Model "transformations_robot".
+
+"base0" is an object [role: container, id: core://core/container/base0::mobile_base, name: base0, type: mobile_base].
+"base0" exhibits "base0 pose".
+
+"base0 pose" is an object [role: pose].
+
+"base0-pantilt0 transform" is an object [role: transform, id: transform://core://core/container/base0::mobile_base|core://core/container/pantilt0::pantilt, translation: 0.1 0 0.3].
+"base0-pantilt0 transform" destination "pantilt0" [end: destination].
+"base0-pantilt0 transform" source "base0" [end: source].
+
+"camera0" is an object [role: container, id: core://core/container/camera0::camera, name: camera0, type: camera].
+
+"camera_pose0" is a process [role: container_process, id: core://core/container_process/camera_pose0::camera_pose:camera0, name: camera_pose0, type: camera_pose, use_memo: false].
+"camera_pose0" yields "camera_pose0 out".
+"camera_pose0" requires "camera0".
+"camera_pose0" requires "camera_pose0 reference" [arg: reference, arg_index: 0].
+
+"camera_pose0 out" is an object [role: value, value_kind: output].
+
+"camera_pose0 reference" is an object [role: value, value_kind: input, default: "map"].
+
+"map" is an environmental object [role: container, id: http://127.0.0.1:8000/container/map::periodic_anchor, name: map, type: periodic_anchor].
+
+"map-odom transform" is an object [role: transform, id: transform://http://127.0.0.1:8000/container/map::periodic_anchor|core://core/container/odom::static_anchor, translation: 1 2 0].
+"map-odom transform" destination "odom" [end: destination].
+"map-odom transform" source "map" [end: source].
+
+"move0" is a process [role: container_process, id: core://core/container_process/move0::mobile_base_move:base0, name: move0, type: mobile_base_move, use_memo: false].
+"move0" affects "base0".
+"move0" yields "move0 out".
+"move0" requires "move0 dt" [arg: dt, arg_index: 2].
+"move0" requires "move0 omega" [arg: omega, arg_index: 1].
+"move0" requires "move0 reference" [arg: reference, arg_index: 3].
+"move0" requires "move0 vx" [arg: vx, arg_index: 0].
+
+"move0 dt" is an object [role: value, value_kind: input, default: 1.0].
+
+"move0 omega" is an object [role: value, value_kind: input, default: 0.0].
+
+"move0 out" is an object [role: value, value_kind: output].
+
+"move0 reference" is an object [role: value, value_kind: input, default: "odom"].
+
+"move0 vx" is an object [role: value, value_kind: input, default: 0.0].
+
+"odom" is an object [role: container, id: core://core/container/odom::static_anchor, name: odom, type: static_anchor].
+
+"odom-base0 transform" is an object [role: transform, id: transform://core://core/container/odom::static_anchor|core://core/container/base0::mobile_base].
+"odom-base0 transform" destination "base0" [end: destination].
+"odom-base0 transform" source "odom" [end: source].
+
+"pan0" is a process [role: container_process, id: core://core/container_process/pan0::pantilt_set_pan:pantilt0, name: pan0, type: pantilt_set_pan, use_memo: false].
+"pan0" affects "pantilt0".
+"pan0" yields "pan0 out".
+"pan0" requires "pan0 pan" [arg: pan, arg_index: 0].
+"pan0" requires "pan0 reference" [arg: reference, arg_index: 1].
+
+"pan0 out" is an object [role: value, value_kind: output].
+
+"pan0 pan" is an object [role: value, value_kind: input, default: 0.0].
+
+"pan0 reference" is an object [role: value, value_kind: input, default: "base0"].
+
+"pantilt0" is an object [role: container, id: core://core/container/pantilt0::pantilt, name: pantilt0, type: pantilt].
+
+"pantilt0-camera0 transform" is an object [role: transform, id: transform://core://core/container/pantilt0::pantilt|core://core/container/camera0::camera, translation: 0.05 0 0.02].
+"pantilt0-camera0 transform" destination "camera0" [end: destination].
+"pantilt0-camera0 transform" source "pantilt0" [end: source].
+
+"print0" is a process [role: process, id: core://core/process/print0::pose_print, name: print0, type: pose_print, use_memo: false].
+"print0" yields "print0 out".
+"base0 pose" initiates "print0", which requires "base0 pose" [arg: pose, arg_index: 0, reference: odom].
+
+"print0 out" is an object [role: value, value_kind: output].
+
+"transformations_robot" is an object [role: system, name: transformations_robot].
+"transformations_robot" consists of "base0".
+"transformations_robot" consists of "base0-pantilt0 transform".
+"transformations_robot" consists of "camera0".
+"transformations_robot" consists of "map-odom transform".
+"transformations_robot" consists of "odom".
+"transformations_robot" consists of "odom-base0 transform".
+"transformations_robot" consists of "pantilt0".
+"transformations_robot" consists of "pantilt0-camera0 transform".
+"transformations_robot" exhibits "camera_pose0".
+"transformations_robot" exhibits "move0".
+"transformations_robot" exhibits "pan0".
+"transformations_robot" exhibits "print0".

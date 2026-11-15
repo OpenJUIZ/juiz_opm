@@ -32,8 +32,8 @@ Model "control_loop".
 
 "follow_target body.velocity" is a process [role: node, type: p_control, path: body.velocity].
 "follow_target body.velocity" yields "follow_target body.velocity out".
-"follow_target body.velocity" requires "follow_target body.velocity.gain" [arg: gain, arg_index: 1].
-"follow_target body.velocity" requires "follow_target body.velocity.measured out" [arg: measured, arg_index: 0].
+"follow_target body.velocity" requires "follow_target body.velocity.gain" [arg: gain, arg_index: 0].
+"follow_target body.velocity" requires "follow_target body.velocity.measured out" [arg: measured, arg_index: 1].
 
 "follow_target body.velocity out" is an object [role: value, value_kind: intermediate].
 

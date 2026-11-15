@@ -38,15 +38,15 @@ conf を比べるときの形。`juiz_opm fmt-conf` が書く。juiz が読ん�
    - `processes`・`containers`・`composite_containers`・`ecs` はネームスペース、名前の順。Container の `processes` は名前の順。
    - `composites` は、使う Composite を先に(juiz は先に定義した Composite しか子に使えない)、その他は型名の順。
    - `connections` は受け手、引数名、送り手、接続名の順。`transforms` は始点、終点の順。`pose_listeners` は Container、Process、引数名の順。`subsystems` は型名、名前の順。
-   - `publishes`・`subscribes`・`p_apply`・スロットは名前の順。
-   - `bind` の順、Composite のノードの `args` の順、params のキーの順は保つ(前の 2 つは意味を持つ)。
+   - `publishes`・`subscribes`・`p_apply`・スロット・Composite のノードの `args` は名前の順(juiz はノードを子の manifest の引数の順で呼び、conf の順を使わない。[0016](../docs/decisions/0016-system-snapshot.md) の 4)。
+   - `bind` の順、params のキーの順は保つ(`bind` は意味を持つ)。
 3. 項目の中のキーの順は、`type_name`、`name`、`namespace`、`description`、その項目の決まったキー、params の順(Container と CompositeContainer は `processes` を最後)。
 4. 書き方をそろえる:
    - Process の参照は `{type_name, name, namespace, container_name}`。ContainerProcess を指すときは `container_name` を必ず書く。
    - `connection_type` は `Push` / `Pull`。EC の `auto_start` は常に書く。
    - Topic 名とスロットの先は、書く項目のネームスペースからの相対(同じネームスペースなら名前だけ、違えば `/` 始まりの絶対)。
    - `rate` と `translation`・`rotation` の成分は浮動小数(`1.0`)で書く。`translation`・`rotation` は書いてあれば省いた成分を既定値(0、`w` は 1)で埋める。
-   - `expose` は既定値がなければ名前だけ、あれば `{name, default}`。
+   - `expose` は既定値がなければ名前だけ、あれば `{name, default}`。引数と同じ名前で既定値の無い `expose`(`arg: {expose: arg}`)は書かない(juiz は書いてない引数をその名前で公開する)。
 
 ## 4. conf → モデル
 
@@ -118,7 +118,7 @@ metamodel.md §9.6 の J1〜J13 を `juiz_opm check` が検査する。役割の
 - 注釈の名前と値も見る(`error[juiz]`): 要素の種類(Thing、State、リンク)に付かない juiz の注釈と、role・value_kind・connection・end・status の範囲外の値(xml.md §8)。
 
 - J8 は、environmental の role container(別の System の Container、§4.2)を数えない。
-- J10 はプラグインの型名の一覧が要るので、モデルだけからは検査しない(Step 8 で profile_full を読むときに見る)。
+- J10 はプラグインの型名の一覧が要るので、モデルだけからは検査しない。`check --system <snapshot.json>` で動いている System の型名と照らす([system.md](system.md) §5)。
 - J11 は木の規則のうち「終点は 1 つの Transform の終点にしかならない」と「循環しない」を見る。
 
 ## 7. 往復テスト
@@ -134,7 +134,7 @@ metamodel.md §9.6 の J1〜J13 を `juiz_opm check` が検査する。役割の
 
 ## 8. conf だけでは分からないこと
 
-次は plugin の manifest にあり、conf には無い。conf から作るモデルには出さず、Step 8(動いている System の profile_full から書き出す)で埋める。
+次は plugin の manifest にあり、conf には無い。conf から作るモデルには出さない。動いている System のスナップショットと併せて読めば(`from-conf --system`)埋まる([system.md](system.md) §4)。
 
 - つながっていない引数と、その既定値(juiz:default)。conf に出てくる引数だけがモデルに出る。
 - 引数の宣言順(juiz:arg_index)。§4.2 の順で代わりにする。

@@ -1,0 +1,12 @@
+Model "test_system".
+
+"increment0" is a process [role: process, id: core://core/process/increment0::increment_process, name: increment0, type: increment_process, use_memo: false].
+"increment0" yields "increment0 out".
+"increment0" requires "increment0 arg1" [arg: arg1, arg_index: 0].
+
+"increment0 arg1" is an object [role: value, value_kind: input, default: 0].
+
+"increment0 out" is an object [role: value, value_kind: output].
+
+"test_system" is an object [role: system, name: test_system].
+"test_system" exhibits "increment0".

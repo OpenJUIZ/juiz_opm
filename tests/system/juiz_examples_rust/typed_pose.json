@@ -1,0 +1,696 @@
+{
+ "composites": [],
+ "connections": [
+  {
+   "arg_name": "pose",
+   "connection_type": "Push",
+   "destination_process_id": {
+    "broker_name": "core",
+    "broker_type_name": "core",
+    "class_name": "process",
+    "container_name": null,
+    "name": "print0",
+    "namespace": "",
+    "type_name": "pose_print_python"
+   },
+   "source_process_id": {
+    "broker_name": "core",
+    "broker_type_name": "core",
+    "class_name": "process",
+    "container_name": null,
+    "name": "move0",
+    "namespace": "",
+    "type_name": "pose_move"
+   }
+  },
+  {
+   "arg_name": "twist",
+   "connection_type": "Pull",
+   "destination_process_id": {
+    "broker_name": "core",
+    "broker_type_name": "core",
+    "class_name": "process",
+    "container_name": null,
+    "name": "move0",
+    "namespace": "",
+    "type_name": "pose_move"
+   },
+   "source_process_id": {
+    "broker_name": "core",
+    "broker_type_name": "core",
+    "class_name": "process",
+    "container_name": null,
+    "name": "twist0",
+    "namespace": "",
+    "type_name": "twist_python"
+   }
+  }
+ ],
+ "format": "juiz_opm/system/0",
+ "pose_listeners": [],
+ "system": {
+  "broker_name": "core",
+  "broker_type_name": "core",
+  "class_name": "broker_proxy",
+  "core_store": {
+   "broker_factories": {
+    "http": {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "broker_factory",
+     "identifier": "core://core/broker_factory/http::http",
+     "name": "http",
+     "type_name": "http"
+    },
+    "local": {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "broker_factory",
+     "identifier": "core://core/broker_factory/local::local",
+     "name": "local",
+     "type_name": "local"
+    }
+   },
+   "broker_proxies": [],
+   "brokers": [
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "description": {
+      "text": ""
+     },
+     "name": "local",
+     "type_name": "local"
+    },
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "description": {
+      "text": ""
+     },
+     "name": "127.0.0.1:8000",
+     "type_name": "http"
+    }
+   ],
+   "container_factories": [],
+   "container_process_factories": [],
+   "container_processes": [],
+   "containers": [],
+   "ec_factories": {
+    "main_loop_ec": {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "execution_context_factory",
+     "identifier": "core://core/execution_context_factory/main_loop_ec::main_loop_ec",
+     "name": "main_loop_ec",
+     "type_name": "main_loop_ec"
+    }
+   },
+   "ecs": {},
+   "process_factories": [
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process_factory",
+     "given_process_factory": {
+      "arguments": [
+       {
+        "default": 0.5,
+        "description": {
+         "text": ""
+        },
+        "name": "linear",
+        "type_name": "Float"
+       },
+       {
+        "default": 0.0,
+        "description": {
+         "text": ""
+        },
+        "name": "angular",
+        "type_name": "Float"
+       }
+      ],
+      "broker_name": "core",
+      "broker_type_name": "core",
+      "class_name": "process_factory",
+      "identifier": "core://core/process_factory/twist_python::twist_python",
+      "language": "python",
+      "name": "twist_python",
+      "type_name": "twist_python"
+     },
+     "identifier": "core://core/process_factory/twist_python::twist_python",
+     "language": "python",
+     "name": "twist_python",
+     "plugin": {
+      "path": "./python/twist_python.py"
+     },
+     "type_name": "twist_python"
+    },
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process_factory",
+     "given_process_factory": {
+      "arguments": [
+       {
+        "default": null,
+        "description": {
+         "text": ""
+        },
+        "name": "pose",
+        "schema": {
+         "avro": {
+          "doc": "平面上の姿勢",
+          "fields": [
+           {
+            "default": {
+             "x": 0.0,
+             "y": 0.0
+            },
+            "name": "position",
+            "type": {
+             "doc": "平面上の点 [m]",
+             "fields": [
+              {
+               "default": 0.0,
+               "name": "x",
+               "type": "double"
+              },
+              {
+               "default": 0.0,
+               "name": "y",
+               "type": "double"
+              }
+             ],
+             "name": "Point2D",
+             "namespace": "examples.geometry",
+             "type": "record"
+            }
+           },
+           {
+            "default": 0.0,
+            "doc": "向き [rad]",
+            "name": "theta",
+            "type": "double"
+           },
+           {
+            "default": "map",
+            "doc": "座標系の名前",
+            "name": "frame_id",
+            "type": "string"
+           }
+          ],
+          "name": "Pose2D",
+          "namespace": "examples.geometry",
+          "type": "record"
+         },
+         "fingerprint": "sha256:123b8c15cda217478b331e2133a5de7c5aafb8075d0ca203e8a7e7e50797cf9b",
+         "name": "examples.geometry.Pose2D"
+        },
+        "type_name": "Object"
+       }
+      ],
+      "broker_name": "core",
+      "broker_type_name": "core",
+      "class_name": "process_factory",
+      "identifier": "core://core/process_factory/pose_print_python::pose_print_python",
+      "language": "python",
+      "name": "pose_print_python",
+      "type_name": "pose_print_python"
+     },
+     "identifier": "core://core/process_factory/pose_print_python::pose_print_python",
+     "language": "python",
+     "name": "pose_print_python",
+     "plugin": {
+      "path": "./python/pose_print_python.py"
+     },
+     "type_name": "pose_print_python"
+    },
+    {
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process_factory",
+     "given_process_factory": {
+      "arguments": [
+       {
+        "default": {},
+        "description": {
+         "text": "Default description for argument pose"
+        },
+        "name": "pose",
+        "schema": {
+         "avro": {
+          "doc": "平面上の姿勢",
+          "fields": [
+           {
+            "default": {
+             "x": 0.0,
+             "y": 0.0
+            },
+            "name": "position",
+            "type": {
+             "doc": "平面上の点 [m]",
+             "fields": [
+              {
+               "default": 0.0,
+               "name": "x",
+               "type": "double"
+              },
+              {
+               "default": 0.0,
+               "name": "y",
+               "type": "double"
+              }
+             ],
+             "name": "Point2D",
+             "namespace": "examples.geometry",
+             "type": "record"
+            }
+           },
+           {
+            "default": 0.0,
+            "doc": "向き [rad]",
+            "name": "theta",
+            "type": "double"
+           },
+           {
+            "default": "map",
+            "doc": "座標系の名前",
+            "name": "frame_id",
+            "type": "string"
+           }
+          ],
+          "name": "Pose2D",
+          "namespace": "examples.geometry",
+          "type": "record"
+         },
+         "fingerprint": "sha256:123b8c15cda217478b331e2133a5de7c5aafb8075d0ca203e8a7e7e50797cf9b",
+         "name": "examples.geometry.Pose2D"
+        },
+        "type_name": "Object"
+       },
+       {
+        "default": {},
+        "description": {
+         "text": "Default description for argument twist"
+        },
+        "name": "twist",
+        "schema": {
+         "avro": {
+          "doc": "平面上の速度",
+          "fields": [
+           {
+            "default": 0.0,
+            "doc": "前向きの速さ [m/s]",
+            "name": "linear",
+            "type": "double"
+           },
+           {
+            "default": 0.0,
+            "doc": "回る速さ [rad/s]",
+            "name": "angular",
+            "type": "double"
+           }
+          ],
+          "name": "Twist2D",
+          "namespace": "examples.geometry",
+          "type": "record"
+         },
+         "fingerprint": "sha256:115b9e0f7b27c487a3af04922d19364cc387e3116468e90f22034c4f51a9fe71",
+         "name": "examples.geometry.Twist2D"
+        },
+        "type_name": "Object"
+       },
+       {
+        "default": 1.0,
+        "description": {
+         "text": "Default description for argument dt"
+        },
+        "name": "dt",
+        "type_name": "Float"
+       }
+      ],
+      "broker_name": "core",
+      "broker_type_name": "core",
+      "class_name": "process_factory",
+      "identifier": "core://core/process_factory/pose_move::pose_move",
+      "language": "rust",
+      "name": "pose_move",
+      "type_name": "pose_move"
+     },
+     "identifier": "core://core/process_factory/pose_move::pose_move",
+     "language": "rust",
+     "name": "pose_move",
+     "plugin": {
+      "abi": "c",
+      "path": "./target/debug/libpose_move.so"
+     },
+     "type_name": "pose_move"
+    }
+   ],
+   "processes": [
+    {
+     "arguments": [
+      {
+       "default": {},
+       "description": {
+        "text": "Default description for argument pose"
+       },
+       "name": "pose",
+       "schema": {
+        "avro": {
+         "doc": "平面上の姿勢",
+         "fields": [
+          {
+           "default": {
+            "x": 0.0,
+            "y": 0.0
+           },
+           "name": "position",
+           "type": {
+            "doc": "平面上の点 [m]",
+            "fields": [
+             {
+              "default": 0.0,
+              "name": "x",
+              "type": "double"
+             },
+             {
+              "default": 0.0,
+              "name": "y",
+              "type": "double"
+             }
+            ],
+            "name": "Point2D",
+            "namespace": "examples.geometry",
+            "type": "record"
+           }
+          },
+          {
+           "default": 0.0,
+           "doc": "向き [rad]",
+           "name": "theta",
+           "type": "double"
+          },
+          {
+           "default": "map",
+           "doc": "座標系の名前",
+           "name": "frame_id",
+           "type": "string"
+          }
+         ],
+         "name": "Pose2D",
+         "namespace": "examples.geometry",
+         "type": "record"
+        },
+        "fingerprint": "sha256:123b8c15cda217478b331e2133a5de7c5aafb8075d0ca203e8a7e7e50797cf9b",
+        "name": "examples.geometry.Pose2D"
+       },
+       "type_name": "Object"
+      },
+      {
+       "default": {},
+       "description": {
+        "text": "Default description for argument twist"
+       },
+       "name": "twist",
+       "schema": {
+        "avro": {
+         "doc": "平面上の速度",
+         "fields": [
+          {
+           "default": 0.0,
+           "doc": "前向きの速さ [m/s]",
+           "name": "linear",
+           "type": "double"
+          },
+          {
+           "default": 0.0,
+           "doc": "回る速さ [rad/s]",
+           "name": "angular",
+           "type": "double"
+          }
+         ],
+         "name": "Twist2D",
+         "namespace": "examples.geometry",
+         "type": "record"
+        },
+        "fingerprint": "sha256:115b9e0f7b27c487a3af04922d19364cc387e3116468e90f22034c4f51a9fe71",
+        "name": "examples.geometry.Twist2D"
+       },
+       "type_name": "Object"
+      },
+      {
+       "default": 1.0,
+       "description": {
+        "text": "Default description for argument dt"
+       },
+       "name": "dt",
+       "type_name": "Float"
+      }
+     ],
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process",
+     "container_name": null,
+     "container_type": null,
+     "description": {
+      "text": "Moves the pose by the twist for dt seconds."
+     },
+     "factory": "process_factory",
+     "identifier": "core://core/process/move0::pose_move",
+     "language": "rust",
+     "name": "move0",
+     "namespace": "",
+     "output_schema": {
+      "avro": {
+       "doc": "平面上の姿勢",
+       "fields": [
+        {
+         "default": {
+          "x": 0.0,
+          "y": 0.0
+         },
+         "name": "position",
+         "type": {
+          "doc": "平面上の点 [m]",
+          "fields": [
+           {
+            "default": 0.0,
+            "name": "x",
+            "type": "double"
+           },
+           {
+            "default": 0.0,
+            "name": "y",
+            "type": "double"
+           }
+          ],
+          "name": "Point2D",
+          "namespace": "examples.geometry",
+          "type": "record"
+         }
+        },
+        {
+         "default": 0.0,
+         "doc": "向き [rad]",
+         "name": "theta",
+         "type": "double"
+        },
+        {
+         "default": "map",
+         "doc": "座標系の名前",
+         "name": "frame_id",
+         "type": "string"
+        }
+       ],
+       "name": "Pose2D",
+       "namespace": "examples.geometry",
+       "type": "record"
+      },
+      "fingerprint": "sha256:123b8c15cda217478b331e2133a5de7c5aafb8075d0ca203e8a7e7e50797cf9b",
+      "name": "examples.geometry.Pose2D"
+     },
+     "outputs": {
+      "default_value": null,
+      "enum_type": "Primitive",
+      "type_name": "Object"
+     },
+     "publishes": [],
+     "subscribes": {},
+     "type_name": "pose_move",
+     "use_memo": false
+    },
+    {
+     "arguments": [
+      {
+       "default": 0.5,
+       "description": {
+        "text": ""
+       },
+       "name": "linear",
+       "type_name": "Float"
+      },
+      {
+       "default": 0.0,
+       "description": {
+        "text": ""
+       },
+       "name": "angular",
+       "type_name": "Float"
+      }
+     ],
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process",
+     "container_name": null,
+     "container_type": null,
+     "description": {
+      "text": "速度 (前向き linear [m/s]、回転 angular [rad/s]) を出力する"
+     },
+     "factory": "process_factory",
+     "identifier": "core://core/process/twist0::twist_python",
+     "language": "rust",
+     "name": "twist0",
+     "namespace": "",
+     "output_schema": {
+      "avro": {
+       "doc": "平面上の速度",
+       "fields": [
+        {
+         "default": 0.0,
+         "doc": "前向きの速さ [m/s]",
+         "name": "linear",
+         "type": "double"
+        },
+        {
+         "default": 0.0,
+         "doc": "回る速さ [rad/s]",
+         "name": "angular",
+         "type": "double"
+        }
+       ],
+       "name": "Twist2D",
+       "namespace": "examples.geometry",
+       "type": "record"
+      },
+      "fingerprint": "sha256:115b9e0f7b27c487a3af04922d19364cc387e3116468e90f22034c4f51a9fe71",
+      "name": "examples.geometry.Twist2D"
+     },
+     "outputs": {
+      "default_value": "",
+      "enum_type": "Primitive",
+      "type_name": "Object"
+     },
+     "publishes": [],
+     "subscribes": {},
+     "type_name": "twist_python",
+     "use_memo": false
+    },
+    {
+     "arguments": [
+      {
+       "default": null,
+       "description": {
+        "text": ""
+       },
+       "name": "pose",
+       "schema": {
+        "avro": {
+         "doc": "平面上の姿勢",
+         "fields": [
+          {
+           "default": {
+            "x": 0.0,
+            "y": 0.0
+           },
+           "name": "position",
+           "type": {
+            "doc": "平面上の点 [m]",
+            "fields": [
+             {
+              "default": 0.0,
+              "name": "x",
+              "type": "double"
+             },
+             {
+              "default": 0.0,
+              "name": "y",
+              "type": "double"
+             }
+            ],
+            "name": "Point2D",
+            "namespace": "examples.geometry",
+            "type": "record"
+           }
+          },
+          {
+           "default": 0.0,
+           "doc": "向き [rad]",
+           "name": "theta",
+           "type": "double"
+          },
+          {
+           "default": "map",
+           "doc": "座標系の名前",
+           "name": "frame_id",
+           "type": "string"
+          }
+         ],
+         "name": "Pose2D",
+         "namespace": "examples.geometry",
+         "type": "record"
+        },
+        "fingerprint": "sha256:123b8c15cda217478b331e2133a5de7c5aafb8075d0ca203e8a7e7e50797cf9b",
+        "name": "examples.geometry.Pose2D"
+       },
+       "type_name": "Object"
+      }
+     ],
+     "broker_name": "core",
+     "broker_type_name": "core",
+     "class_name": "process",
+     "container_name": null,
+     "container_type": null,
+     "description": {
+      "text": "受け取った姿勢を表示し、その文字列を返す"
+     },
+     "factory": "process_factory",
+     "identifier": "core://core/process/print0::pose_print_python",
+     "language": "rust",
+     "name": "print0",
+     "namespace": "",
+     "outputs": {
+      "default_value": "",
+      "enum_type": "Primitive",
+      "type_name": "String"
+     },
+     "publishes": [],
+     "subscribes": {},
+     "type_name": "pose_print_python",
+     "use_memo": false
+    }
+   ],
+   "topics": []
+  },
+  "identifier": "core://core/broker_proxy/core::core",
+  "mastersystem": [],
+  "name": "core",
+  "subsystems": [],
+  "system_store": {
+   "broker_factories": [
+    "http",
+    "local"
+   ],
+   "broker_proxies": [],
+   "brokers": [
+    "local",
+    "http"
+   ],
+   "uuid": "e12593bb-460e-46f7-a783-9f5019d2e8e2"
+  },
+  "type_name": "core"
+ },
+ "transforms": []
+}
