@@ -60,7 +60,8 @@ fn examples_round_trip() {
 
 #[test]
 fn examples_warnings() {
-    // Only the EC cycle of capture_filter changes nothing (C8, metamodel §8).
+    // Only the EC cycle of capture_filter and the client of tutorial change nothing
+    // (C8, metamodel §8).
     let mut warnings = Vec::new();
     for path in xml_files("examples/xml") {
         let m = read::from_path(&path).unwrap();
@@ -68,7 +69,13 @@ fn examples_warnings() {
             warnings.push(format!("{} {} {}", name(&path), d.rule, d.id));
         }
     }
-    assert_eq!(warnings, vec!["capture_filter.opm.xml C8 ec_cycle"]);
+    assert_eq!(
+        warnings,
+        vec![
+            "capture_filter.opm.xml C8 ec_cycle",
+            "tutorial.opm.xml C8 client"
+        ]
+    );
 }
 
 #[test]
@@ -89,6 +96,18 @@ fn juiz_annotations_are_kept() {
     let applied = code.extensions.element(JUIZ_NS, "applied").unwrap();
     assert_eq!(applied.text(), "\"COLOR_BGR2GRAY\"");
     assert_eq!(m.prefixes, vec![("juiz".to_string(), JUIZ_NS.to_string())]);
+}
+
+#[test]
+fn tutorial_diagram_choices() {
+    // The author leaves elements out on purpose (spec/diagram.md §4).
+    let m = read::from_path(repo().join("examples/xml/tutorial.opm.xml")).unwrap();
+    let sd = m.diagram.as_ref().unwrap();
+    assert_eq!(sd.suppressed_links, vec!["l_client_inc0".to_string()]);
+    assert_eq!(sd.children[0].appearances.len(), 3);
+    let counter = m.thing("counter0").unwrap();
+    let params = counter.extensions.element(JUIZ_NS, "params").unwrap();
+    assert_eq!(params.text(), r#"{"initial_value":3}"#);
 }
 
 #[test]
@@ -119,7 +138,7 @@ fn invalid_expectation(file: &str) -> Option<Option<Rule>> {
     Some(match file {
         "child_diagram_without_refinement.xml" => None,
         "modifier_on_result.xml" => None,
-        "duplicate_id.xml" | "missing_ref.xml" => Some(Rule::C1),
+        "duplicate_id.xml" | "missing_ref.xml" | "suppressed_link_missing.xml" => Some(Rule::C1),
         "duplicate_state_name.xml" | "duplicate_thing_name.xml" => Some(Rule::C2),
         "instrument_to_object.xml" => Some(Rule::C3),
         "effect_from_object.xml" => Some(Rule::C5),

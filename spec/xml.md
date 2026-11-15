@@ -40,7 +40,7 @@
 | 文字 | `[A-Za-z_][A-Za-z0-9_.-]*`。ASCII だけにし、URI の末尾にそのまま使えるようにする |
 | 一意 | 文書(= モデル)の中で一意。XSD の `xs:ID` で検査する |
 | 付ける要素 | `model`、Thing、State、リンク、`fan`、`in_zoom`、`diagram`、`appearance` |
-| 参照 | 属性(`source`、`target`、`from_state`、`refinee`、`thing`)か、`ref` 属性を持つ子要素(`link_ref`、`member`、`part`、`suppressed_state`)。参照先の種類は XSD の keyref で検査する |
+| 参照 | 属性(`source`、`target`、`from_state`、`refinee`、`thing`)か、`ref` 属性を持つ子要素(`link_ref`、`member`、`part`、`suppressed_state`、`suppressed_link`)。参照先の種類は XSD の keyref で検査する |
 | 名前との関係 | id は名前から作らなくてよい。名前を変えても id は変えない |
 
 RDF へ写すときは、モデルごとの基底 URI に id をつなぐ(基底 URI の決め方は RDF を扱う Step で決める)。
@@ -152,15 +152,16 @@ OPD の木は要素の木で表す。`<opm:model>` の直下の `<opm:diagram>` 
 | OPD(根) | `<opm:model>` の子の `<opm:diagram id name>`。`refinement` は書かない(`root`) |
 | OPD(子) | `<opm:diagram>` の子の `<opm:diagram id name refinement refinee>`。`refinement` は `in_zoom` / `unfold` / `view` で必須 |
 | Appearance | `<opm:appearance id thing>`。子に `<opm:suppressed_state ref/>`(0 個以上)と `<opm:layout x y width height/>`(0..1) |
+| suppressed_links | `<opm:diagram>` の子の `<opm:suppressed_link ref/>`(0 個以上)。`ref` はリンクの id |
 
-`<opm:diagram>` の中は、`<opm:appearance>` を先に、子の `<opm:diagram>` を後に置く。
+`<opm:diagram>` の中は、`<opm:appearance>`、`<opm:suppressed_link>`、子の `<opm:diagram>` の順に置く。
 
 ## 7. juiz の注釈(metamodel §9)
 
 ### 7.1 書き方
 
 - 値が 1 つの文字・数・真偽の注釈は、juiz の名前空間の属性にする(`juiz:role="container"`)。
-- 構造のある値は、juiz の名前空間の子要素にする。今は `juiz:value`・`juiz:applied`(JSON の文字列)と `juiz:translation`・`juiz:rotation` の 4 つ。子要素は `<opm:description>` の後、自分の子(`<opm:state>` など)の前に置く。
+- 構造のある値は、juiz の名前空間の子要素にする。今は `juiz:value`・`juiz:applied`・`juiz:params`・`juiz:default`(JSON の文字列)と `juiz:translation`・`juiz:rotation` の 6 つ。子要素は `<opm:description>` の後、自分の子(`<opm:state>` など)の前に置く。
 - 値が複数の注釈(`juiz:writers`、`juiz:refs`)は空白区切りの並びにする。並べる値は空白を含まない。
 
 ### 7.2 一覧
@@ -183,6 +184,8 @@ Thing に付けるもの(metamodel §9.2、§9.3):
 | juiz:translation | 子要素 `<juiz:translation x y z/>` | 省略した成分は 0 |
 | juiz:rotation | 子要素 `<juiz:rotation x y z w/>` | 省略した成分は x・y・z が 0、w が 1 |
 | juiz:writers | 属性(並び) | Container の名前か ID |
+| juiz:params | 子要素 `<juiz:params>` | JSON のオブジェクトの文字列 |
+| juiz:default | 子要素 `<juiz:default>` | JSON の文字列 |
 | juiz:status | 属性(リンクにも付く) | `released` / `merged` / `in_progress` / `planned` / `defect` |
 | juiz:refs | 属性(並び、リンクにも付く) | `juiz#123` の形 |
 
@@ -199,6 +202,7 @@ Thing に付けるもの(metamodel §9.2、§9.3):
 | juiz:slot_name | 属性 | スロット名 |
 | juiz:reference | 属性 | Container の名前 |
 | juiz:initial | 属性 | 真偽 |
+| juiz:on_update | 属性 | 真偽 |
 | juiz:end | 属性 | `source` / `destination` |
 
 `juiz:translation` と `juiz:rotation` の `x` などは名前空間なしの属性である(要素が既に juiz の名前空間にあるため)。
@@ -319,7 +323,7 @@ metamodel §8 の表で書き切れていない点は、近い規則で見る。
 | effect 以外に付いた from_state・to_state | C5 |
 | aggregation 以外の ordered、tagged 以外の tag・backward_tag、tag のない tagged、State を端にする構造リンク | C6 |
 | 空の step、Object を開く InZoom の steps、自分を中に含む InZoom | C9 |
-| 根の OPD の refinement と refinee、Appearance の隠す State がその Thing の State であること | C10 |
+| 根の OPD の refinement と refinee、Appearance の隠す State がその Thing の State であること、suppressed_link の参照先がリンクであること | C10 |
 | Fan に同じリンクが 2 度、構造リンクを束ねた Fan | C11 |
 | Fan のリンクの「Process 側の端」 | consumption・instrument・agent は target、ほかは source |
 

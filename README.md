@@ -16,6 +16,7 @@ Specifications and tools for describing, exchanging and drawing juiz system mode
 | [spec/metamodel.md](spec/metamodel.md) | モデルが持つもの(要素、状態、リンク、図の階層、juiz の拡張)の表 |
 | [spec/xml.md](spec/xml.md)、[spec/schema/](spec/schema/) | 交換形式の XML とその XSD |
 | [spec/opl.md](spec/opl.md) | juiz-OPL の文法(EBNF)、整形式の規則、正規形、XML との対応 |
+| [spec/diagram.md](spec/diagram.md)、[spec/diagram/](spec/diagram/) | 略式図の描き方と、手で描いた見本 |
 | [examples/xml/](examples/xml/)、[examples/opl/](examples/opl/) | 交換形式の例と、その juiz-OPL の書き起こし |
 | [scripts/validate_xml.py](scripts/validate_xml.py) | 例と tests/xml/ を XSD で検査する |
 | [crates/opm_model/](crates/opm_model/) | メタモデルの型、交換形式の読み書き、コアの規則の検査 |

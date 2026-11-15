@@ -541,7 +541,8 @@ impl Writer {
             }
         }
         attrs.opt("refinee", &d.refinee);
-        let has_body = !d.appearances.is_empty() || !d.children.is_empty();
+        let has_body =
+            !d.appearances.is_empty() || !d.suppressed_links.is_empty() || !d.children.is_empty();
         self.element(
             depth,
             "diagram",
@@ -552,6 +553,11 @@ impl Writer {
             |w| {
                 for a in &d.appearances {
                     w.appearance(depth + 1, a);
+                }
+                for l in &d.suppressed_links {
+                    let mut x = Attrs::default();
+                    x.add("ref", l.clone());
+                    w.empty(depth + 1, "suppressed_link", &x);
                 }
                 for c in &d.children {
                     w.diagram(depth + 1, c);

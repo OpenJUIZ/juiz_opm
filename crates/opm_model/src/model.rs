@@ -425,6 +425,8 @@ pub struct Diagram {
     pub refinement: Refinement,
     pub refinee: Option<String>,
     pub appearances: Vec<Appearance>,
+    /// Links not drawn on this OPD although both ends appear (metamodel §7.2).
+    pub suppressed_links: Vec<String>,
     pub children: Vec<Diagram>,
     pub description: Option<String>,
     pub extensions: Extensions,
@@ -438,6 +440,7 @@ impl Diagram {
             refinement,
             refinee: None,
             appearances: Vec::new(),
+            suppressed_links: Vec::new(),
             children: Vec::new(),
             description: None,
             extensions: Extensions::default(),

@@ -736,6 +736,16 @@ impl<'m> Checker<'m> {
     }
 
     fn c10_walk(&mut self, d: &'m Diagram) {
+        for l in &d.suppressed_links {
+            match self.resolve(&d.id, "suppressed_link", l) {
+                Some(Target::Link(_)) | None => {}
+                Some(t) => self.error(
+                    Rule::C10,
+                    &d.id,
+                    format!("suppressed_link {:?} is {}, not a link", l, t.describe()),
+                ),
+            }
+        }
         for c in &d.children {
             if c.refinement == Refinement::Root {
                 self.error(Rule::C10, &c.id, "only the root diagram is the root");
@@ -1023,6 +1033,18 @@ mod tests {
             "{}",
             r
         );
+    }
+
+    #[test]
+    fn c10_suppressed_link() {
+        let mut m = base();
+        let mut d = Diagram::new("sd", "SD", Refinement::Root);
+        d.suppressed_links.push("l_res".into());
+        m.diagram = Some(d.clone());
+        assert_eq!(rules(&m), Vec::<Rule>::new());
+        d.suppressed_links = vec!["p".into()];
+        m.diagram = Some(d);
+        assert_eq!(rules(&m), vec![Rule::C10]);
     }
 
     #[test]
