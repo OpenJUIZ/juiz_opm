@@ -60,7 +60,8 @@ fn examples_round_trip() {
 
 #[test]
 fn examples_warnings() {
-    // Only the EC cycle of capture_filter and the client of tutorial change nothing
+    // Only the EC cycles of capture_filter and talker_listener and the client of tutorial
+    // change nothing
     // (C8, metamodel §8).
     let mut warnings = Vec::new();
     for path in xml_files("examples/xml") {
@@ -73,6 +74,7 @@ fn examples_warnings() {
         warnings,
         vec![
             "capture_filter.opm.xml C8 ec_cycle",
+            "talker_listener.opm.xml C8 ec0_cycle",
             "tutorial.opm.xml C8 client"
         ]
     );

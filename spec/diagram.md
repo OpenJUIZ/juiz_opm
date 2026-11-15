@@ -22,6 +22,8 @@ juiz のモデルを人が読む図の描き方を決める。図は 1 種類で
 5. Appearance の `suppressed_states` に挙げた State は描かない。
 6. 省くのは作成者の自由である。ただし、描いたものはモデルどおりでなければならない。§3 の記号は、その組がモデルに揃っているときだけ使う。揃っていない組は、記号にまとめずに OPM の形で描く。
 7. 省いたことを図に示す記号は持たない。
+8. リンクの端の Thing が描かれていなくても、それを中に持つ InZoom の refinee が描かれていれば、端をその refinee に移して描く(上の階層の図の「まとめた線」、metamodel §7.1)。描かれている最も内側の refinee に移し、同じになった線は 1 本にし、両端が同じ refinee になった線は描かない。状態を指定した effect は、端を移したら状態を外す([0013](../docs/decisions/0013-opm-graph-crate.md))。
+9. `suppressed_states` の State を端に取るリンクは、その Object に付けて描く。
 
 例: [examples/xml/tutorial.opm.xml](../examples/xml/tutorial.opm.xml) の SD は Client から inc0 への call を `suppressed_links` で省き、SD1 は counter0 とその ContainerProcess だけを描く(System の枠と引数・戻り値のポートも省く)。
 
@@ -117,6 +119,5 @@ Step 6 の前に手で描いたもの。配置は Graphviz、形は SVG で描�
 ## 5. この文書で決めないこと
 
 - 注記とラベルを線と重ならないように置く規則(Step 6)。
-- 上の階層の図の「まとめた線」(metamodel §7.1)の描き方(Step 6)。
 - System をまたぐ Transform(juiz の transformations.md §19)。メタモデルにまだ持たない。
 - `suppressed_links` と Appearance を OPL に書く方法。今は書かない(図の層は OPL に書かない、opl.md §1)。

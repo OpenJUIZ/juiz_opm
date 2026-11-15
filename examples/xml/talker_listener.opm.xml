@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  The tutorial's chapter 4 (talker_listener.conf): a talker and a listener joined by a push
+  connection, and a main loop EC that invokes the talker once a second.
+    ecs: [ec0 (main_loop_ec, rate 1, bind talker0)]
+    processes: [talker0 (talker_python), listener0 (listener_python)]
+    connections: [con0: talker0 -> listener0.arg1, push]
+-->
+<opm:model xmlns:opm="https://openjuiz.github.io/ns/opm/v0" xmlns:juiz="https://openjuiz.github.io/ns/juiz/v0" format_version="0.1" id="opm-model" name="talker_listener">
+  <opm:things>
+    <opm:object id="ec0" name="ec0" juiz:role="ec" juiz:name="ec0" juiz:type="main_loop_ec" juiz:rate="1">
+      <opm:state id="ec0.stopped" name="stopped"/>
+      <opm:state id="ec0.started" name="started" initial="true"/>
+    </opm:object>
+    <opm:process id="ec0_cycle" name="ec0 cycle" juiz:role="ec_cycle"/>
+    <opm:process id="listener0" name="listener0" juiz:role="process" juiz:name="listener0" juiz:type="listener_python"/>
+    <opm:object id="listener0_out" name="listener0 out" juiz:role="value" juiz:value_kind="output"/>
+    <opm:process id="talker0" name="talker0" juiz:role="process" juiz:name="talker0" juiz:type="talker_python"/>
+    <opm:object id="talker0_out" name="talker0 out" juiz:role="value" juiz:value_kind="output"/>
+    <opm:object id="talker_listener" name="talker_listener" juiz:role="system" juiz:name="talker_listener"/>
+  </opm:things>
+  <opm:links>
+    <opm:instrument id="instrument-ec0.started-ec0_cycle" source="ec0.started" target="ec0_cycle" modifier="condition"/>
+    <opm:invocation id="invocation-ec0_cycle-talker0" source="ec0_cycle" target="talker0" juiz:order="0"/>
+    <opm:invocation id="invocation-ec0_cycle-ec0_cycle" source="ec0_cycle" target="ec0_cycle"/>
+    <opm:result id="result-listener0-listener0_out" source="listener0" target="listener0_out"/>
+    <opm:instrument id="instrument-talker0_out-listener0" source="talker0_out" target="listener0" juiz:arg="arg1" juiz:arg_index="0" juiz:connection="push" juiz:connection_name="con0"/>
+    <opm:result id="result-talker0-talker0_out" source="talker0" target="talker0_out"/>
+    <opm:invocation id="invocation-talker0-listener0" source="talker0" target="listener0"/>
+    <opm:aggregation id="aggregation-talker_listener-ec0" source="talker_listener" target="ec0"/>
+    <opm:exhibition id="exhibition-talker_listener-listener0" source="talker_listener" target="listener0"/>
+    <opm:exhibition id="exhibition-talker_listener-talker0" source="talker_listener" target="talker0"/>
+  </opm:links>
+</opm:model>
