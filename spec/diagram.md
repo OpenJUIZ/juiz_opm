@@ -116,6 +116,10 @@ Step 6 の前に手で描いたもの。配置は Graphviz、形は SVG で描�
 | [diagram/many_args.svg](diagram/many_args.svg) | 引数が多い Process、p_apply の注記、pull 接続 |
 | [diagram/transformations.svg](diagram/transformations.svg) | juiz の transformations.md §11 の conf。Anchor、Transform、Pose 通知 |
 
+## 4.1 道具
+
+[crates/opm_graph](../crates/opm_graph/) がこの規則で描く。§3 の表の読み方を補ったところは [0014](../docs/decisions/0014-abbreviated-renderer.md) の 4 にある。
+
 ## 5. この文書で決めないこと
 
 - 注記とラベルを線と重ならないように置く規則(Step 6)。

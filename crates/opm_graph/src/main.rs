@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT OR Apache-2.0
 // Copyright (c) ysuga
 
-//! `opm_graph`: draw an OPM model (juiz-OPL or the interchange XML) as DOT, SVG or PNG.
+//! `opm_graph`: draw an OPM model (juiz-OPL or the interchange XML) as the abbreviated
+//! diagram (SVG or PNG), or as DOT in the OPM form.
 
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
@@ -11,8 +12,10 @@ usage:
   opm_graph [-T dot|svg|png] [--diagram <name>] [-o <out>] <file.opl | file.xml>
 
   Draws every OPD of the model (root first), or the whole model when it has no OPD.
-  -T          output format (default dot). svg and png run Graphviz `dot`
-              (or the command in OPM_GRAPH_DOT).
+  -T          output format (default svg). svg and png are the abbreviated diagram
+              (spec/diagram.md); dot is the OPM form as Graphviz DOT. All run Graphviz
+              `dot` (or OPM_GRAPH_DOT) but dot; png also runs rsvg-convert
+              (or OPM_GRAPH_RSVG).
   --diagram   draw only the OPD of this name (SD, SD1, ...)
   -o          output file for one picture, or a directory for several
               (named <model file>.<OPD name>.<format>, or <model file>.<format>
@@ -36,7 +39,7 @@ fn main() -> ExitCode {
 
 fn run(args: Vec<String>) -> Result<(), (u8, String)> {
     let usage = |m: String| (2u8, m);
-    let mut format = "dot".to_string();
+    let mut format = "svg".to_string();
     let mut diagram = None;
     let mut out = None;
     let mut file = None;
@@ -66,19 +69,31 @@ fn run(args: Vec<String>) -> Result<(), (u8, String)> {
     }
     let file = file.ok_or_else(|| usage("no model file".into()))?;
     let model = opm_graph::read_model(&file).map_err(|m| (1, m))?;
-    let mut pictures = opm_graph::draw(&model);
+    // (name, is an OPD, text): DOT in the OPM form, or the abbreviated diagram in SVG
+    let mut pictures: Vec<(String, bool, String)> = if format == "dot" {
+        opm_graph::draw(&model)
+            .into_iter()
+            .map(|p| (p.name, p.opd, p.dot))
+            .collect()
+    } else {
+        opm_graph::draw_svg(&model)
+            .map_err(|m| (1, m))?
+            .into_iter()
+            .map(|p| (p.name, p.opd, p.svg))
+            .collect()
+    };
     if let Some(d) = &diagram {
-        pictures.retain(|p| &p.name == d);
+        pictures.retain(|p| &p.0 == d);
         if pictures.is_empty() {
             return Err((1, format!("no OPD named {:?}", d)));
         }
     }
 
-    let bytes = |dot: &str| -> Result<Vec<u8>, (u8, String)> {
-        if format == "dot" {
-            Ok(dot.as_bytes().to_vec())
+    let bytes = |text: &str| -> Result<Vec<u8>, (u8, String)> {
+        if format == "png" {
+            opm_graph::svg::svg_to_png(text).map_err(|m| (1, m))
         } else {
-            opm_graph::svg::render(dot, &format).map_err(|m| (1, m))
+            Ok(text.as_bytes().to_vec())
         }
     };
     let write = |p: &Path, b: &[u8]| {
@@ -89,14 +104,14 @@ fn run(args: Vec<String>) -> Result<(), (u8, String)> {
         (None, 1) => {
             use std::io::Write;
             std::io::stdout()
-                .write_all(&bytes(&pictures[0].dot)?)
+                .write_all(&bytes(&pictures[0].2)?)
                 .map_err(|e| (2, e.to_string()))
         }
         (None, _) => Err(usage(format!(
             "the model has {} OPDs; give -o <directory> or --diagram",
             pictures.len()
         ))),
-        (Some(o), 1) if !Path::new(&o).is_dir() => write(Path::new(&o), &bytes(&pictures[0].dot)?),
+        (Some(o), 1) if !Path::new(&o).is_dir() => write(Path::new(&o), &bytes(&pictures[0].2)?),
         (Some(o), _) => {
             let dir = Path::new(&o);
             std::fs::create_dir_all(dir).map_err(|e| (2, format!("{}: {}", o, e)))?;
@@ -110,13 +125,13 @@ fn run(args: Vec<String>) -> Result<(), (u8, String)> {
                 .or_else(|| stem.strip_suffix(".opl"))
                 .unwrap_or(&stem)
                 .to_string();
-            for p in &pictures {
-                let name = if p.opd {
-                    format!("{}.{}.{}", stem, safe(&p.name), format)
+            for (name, opd, text) in &pictures {
+                let name = if *opd {
+                    format!("{}.{}.{}", stem, safe(name), format)
                 } else {
                     format!("{}.{}", stem, format)
                 };
-                write(&dir.join(name), &bytes(&p.dot)?)?;
+                write(&dir.join(name), &bytes(text)?)?;
             }
             Ok(())
         }

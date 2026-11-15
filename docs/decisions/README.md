@@ -23,3 +23,4 @@
 | [0011](0011-abbreviated-diagram.md) | 図は juiz の略式図 1 種類にし、何を描くかは図の作成者が選ぶ | 採用(案。Step 6 で見直す) |
 | [0012](0012-opm-opl-crate.md) | opm_opl は opm_model の型に読み、正規形の文の順で id を作る | 採用(案) |
 | [0013](0013-opm-graph-crate.md) | opm_graph は DOT を自前で書き、配置と SVG は Graphviz に任せる。Step 6 は 6a と 6b に分ける | 採用(案) |
+| [0014](0014-abbreviated-renderer.md) | 略式図は記号にまとめてから Graphviz で配置し、SVG は opm_graph が描く | 採用(案) |
