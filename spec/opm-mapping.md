@@ -38,7 +38,7 @@ OPM は「もの(Object)」と「こと(Process)」の 2 種類だけで系を�
 
 ## 3. 対応表
 
-中心の対応は「Process は OPM の Process、Container は OPM の Object」。引数と戻り値も Object として図に出し、Process 同士を直接つながないのが OPM の流儀。用語は juiz の MOTIVATION.md と docs/spec/ に合わせている。
+中心の対応は「Process は OPM の Process、Container は OPM の Object」。引数と戻り値も Object として図に出し、Process 同士を直接つながないのが OPM の流儀。用語は juiz の [MOTIVATION.md](https://github.com/OpenJUIZ/juiz/blob/main/MOTIVATION.md) と [docs/spec/](https://github.com/OpenJUIZ/juiz/tree/main/docs/spec) に合わせている。
 
 | juiz | OPM での表し方 | OPL の例 | 補足 |
 | --- | --- | --- | --- |
@@ -150,5 +150,5 @@ juiz-OPL と juiz の構成の間は、扱う範囲と正規形を決めれば�
 
 1. 文法(EBNF)、整形式の規則、正規形を仕様に書く。
 2. 往復テスト: OPL→モデル→OPL、conf→OPL→conf、OPL→conf→OPL が、正規化した上で一致すること。
-3. サンプル 4 リポジトリの conf と、動いている System の profile_full をすべて通す。
+3. サンプル 4 リポジトリ([juiz_examples_rust](https://github.com/OpenJUIZ/juiz_examples_rust)、[juiz_examples_python](https://github.com/OpenJUIZ/juiz_examples_python)、[juiz_examples_cpp](https://github.com/OpenJUIZ/juiz_examples_cpp)、[juiz_examples_haskell](https://github.com/OpenJUIZ/juiz_examples_haskell))の conf と、動いている System の profile_full をすべて通す。
 4. 乱数で作ったモデルでの性質テスト(proptest)。
