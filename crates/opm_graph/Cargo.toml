@@ -1,0 +1,19 @@
+[package]
+name = "opm_graph"
+description = "Draw OPM (ISO 19450) models of juiz_opm as diagrams: Graphviz DOT, and SVG through Graphviz"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+readme = "README.md"
+keywords = ["opm", "iso19450", "mbse", "juiz", "graphviz"]
+categories = ["visualization", "command-line-utilities"]
+
+[dependencies]
+opm_model = { path = "../opm_model" }
+opm_opl = { path = "../opm_opl" }
+
+[[bin]]
+name = "opm_graph"
+path = "src/main.rs"
