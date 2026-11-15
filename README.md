@@ -21,7 +21,7 @@ Specifications and tools for describing, exchanging and drawing juiz system mode
 | [scripts/validate_xml.py](scripts/validate_xml.py) | 例と tests/xml/ を XSD で検査する |
 | [crates/opm_model/](crates/opm_model/) | メタモデルの型、交換形式の読み書き、コアの規則の検査 |
 | [crates/opm_opl/](crates/opm_opl/) | juiz-OPL の読み書きと検査、XML との変換(コマンド `opm_opl`) |
-| [crates/opm_graph/](crates/opm_graph/) | モデルを DOT / SVG / PNG の図にする(コマンド `opm_graph`) |
+| [crates/opm_graph/](crates/opm_graph/) | モデルを略式図(SVG / PNG)や OPM の形の DOT にする(コマンド `opm_graph`) |
 | [tests/opl/](tests/opl/) | OPL の文の形をすべて使う例と、誤りの例 |
 | [docs/decisions/](docs/decisions/) | 決めたことの記録(1 件 1 ファイル) |
 | [docs/research/](docs/research/) | 先行例の調査(OPCAT の保存形式など) |
@@ -33,7 +33,7 @@ Specifications and tools for describing, exchanging and drawing juiz system mode
 | --- | --- | --- |
 | opm_model | OPM のメタモデル、交換用 XML の読み書き、コアの規則の検査(OPCAT の OPX の書き出しは Step 9) | あり(Step 4) |
 | opm_opl | OPL の解析・検査・正規形での出力、XML との変換(コマンド `opm_opl`) | あり(Step 5) |
-| opm_graph | DOT / SVG の描画(コマンド `opm_graph`)。OPM の形と実装状況の色まで。juiz の略式の記号は Step 6b | あり(Step 6a) |
+| opm_graph | 略式図の SVG / PNG と、OPM の形の DOT の描画(コマンド `opm_graph`) | あり(Step 6) |
 | juiz_opm | juiz 拡張と juiz の conf との相互変換 | 予定(Step 7) |
 
 ## ライセンス

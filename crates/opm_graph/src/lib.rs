@@ -5,11 +5,13 @@
 //!
 //! - [`view`]: what one picture shows (§2): the Things and links of one OPD, or of the whole
 //!   model when it has no OPD.
+//! - [`abbrev`]: a view gathered into the symbols of the abbreviated diagram (§3).
+//! - [`layout`]: Graphviz places the symbols; [`draw`] writes the SVG.
 //! - [`dot`]: a view as Graphviz DOT, in the OPM form (§3.11) with the status colors (§3.10).
-//! - [`svg`]: DOT to SVG through the Graphviz `dot` command.
+//!   Views without juiz elements are drawn from it.
+//! - [`svg`]: the outside commands (Graphviz `dot`, `rsvg-convert`).
 //!
-//! The juiz symbols of the abbreviated diagram (§3.1 to §3.9) come in Step 6b. Until then every
-//! model is drawn in the OPM form, as a model without juiz annotations is.
+//! [`draw_svg`] draws the abbreviated diagram; [`draw`] gives the DOT in the OPM form.
 //!
 //! ```
 //! let text = r#"<opm:model xmlns:opm="https://openjuiz.github.io/ns/opm/v0"
@@ -26,7 +28,10 @@
 //! assert!(pictures[0].dot.contains("t0 -> t1 [arrowhead=normal]"));
 //! ```
 
+pub mod abbrev;
 pub mod dot;
+pub mod draw;
+pub mod layout;
 pub mod svg;
 pub mod view;
 
@@ -51,6 +56,49 @@ pub fn draw(model: &Model) -> Vec<Picture> {
             name: v.name(),
             opd: v.diagram.is_some(),
             dot: dot::to_dot(v),
+        })
+        .collect()
+}
+
+/// Draw one view as the abbreviated diagram (spec/diagram.md §3) in SVG. Graphviz `dot`
+/// places the symbols.
+///
+/// A view without any juiz element has nothing to gather, so it is the OPM form (§3.11); it is
+/// drawn from [`dot::to_dot`] by Graphviz, which draws the OPM shapes better (decision 0014).
+pub fn abbreviated_svg(view: &view::View) -> Result<String, String> {
+    let juiz = view
+        .things
+        .iter()
+        .any(|t| t.extensions.attribute(opm_model::JUIZ_NS, "role").is_some());
+    if !juiz {
+        return svg::to_svg(&dot::to_dot(view));
+    }
+    let scene = abbrev::build(view);
+    let sizes = draw::sizes(&scene);
+    let dot = layout::layout_dot(&scene, &sizes, &|id| draw::frame_label(&scene, id));
+    let place = layout::place(&dot, &scene)?;
+    Ok(draw::to_svg(&scene, &place))
+}
+
+/// One abbreviated diagram in SVG.
+#[derive(Debug, Clone, PartialEq)]
+pub struct Drawing {
+    /// As [`Picture::name`].
+    pub name: String,
+    pub opd: bool,
+    pub svg: String,
+}
+
+/// Every OPD of the model as the abbreviated diagram in SVG, root first (see [`draw`]).
+pub fn draw_svg(model: &Model) -> Result<Vec<Drawing>, String> {
+    view::views(model)
+        .iter()
+        .map(|v| {
+            Ok(Drawing {
+                name: v.name(),
+                opd: v.diagram.is_some(),
+                svg: abbreviated_svg(v)?,
+            })
         })
         .collect()
 }

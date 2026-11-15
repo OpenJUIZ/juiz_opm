@@ -1,26 +1,26 @@
 # opm_graph
 
-OPM のモデル(交換形式の XML か juiz-OPL)を図にする。OPD ごとに 1 枚の Graphviz の DOT を書き、`dot` コマンドで SVG や PNG にする。
+OPM のモデル(交換形式の XML か juiz-OPL)を略式図にする。OPD ごとに 1 枚。
 
 - 図の描き方: [spec/diagram.md](../../spec/diagram.md)
-- 決定: [docs/decisions/0013](../../docs/decisions/0013-opm-graph-crate.md)
+- 決定: [docs/decisions/0013](../../docs/decisions/0013-opm-graph-crate.md)(クレート、描く範囲、OPM の形)、[0014](../../docs/decisions/0014-abbreviated-renderer.md)(略式図の描き方)
 
-今(Step 6a)は描く範囲(§2)、OPM の形(§3.11)、実装状況の色(§3.10)を描く。juiz の略式の記号(§3.1〜§3.9)は Step 6b で足す。
+モデルの要素の組を記号(ポート、接続、Container、EC、System の枠、Transform など)にまとめ、Graphviz に配置させてから SVG を書く。juiz の要素がない図は、OPM の形の DOT を Graphviz が描く。
 
 ```rust
-let model = opm_graph::read_model("examples/xml/coffee_making.opm.xml".as_ref())?;
-for picture in opm_graph::draw(&model) {
-    let svg = opm_graph::svg::to_svg(&picture.dot)?; // Graphviz の dot を呼ぶ
-    std::fs::write(format!("{}.svg", picture.name), svg)?;
+let model = opm_graph::read_model("examples/xml/talker_listener.opm.xml".as_ref())?;
+for d in opm_graph::draw_svg(&model)? {  // Graphviz の dot を呼ぶ
+    std::fs::write(format!("{}.svg", d.name), d.svg)?;
 }
+let dot = &opm_graph::draw(&model)[0].dot; // OPM の形の DOT
 ```
 
-コマンド(SVG と PNG には [Graphviz](https://graphviz.org/) が要る):
+コマンド([Graphviz](https://graphviz.org/) が要る。PNG には librsvg の `rsvg-convert` も要る):
 
 ```sh
-cargo run -p opm_graph -- examples/xml/talker_listener.opm.xml              # DOT を標準出力に
-cargo run -p opm_graph -- -T svg -o out/ examples/xml/coffee_making.opm.xml  # SD, SD1, SD2 の 3 枚
-cargo run -p opm_graph -- -T png --diagram SD1 -o sd1.png examples/xml/tutorial.opm.xml
+cargo run -p opm_graph -- examples/xml/talker_listener.opm.xml > tl.svg     # 略式図の SVG
+cargo run -p opm_graph -- -T png -o out/ examples/xml/tutorial.opm.xml      # SD と SD1 の 2 枚
+cargo run -p opm_graph -- -T dot --diagram SD1 examples/xml/coffee_making.opm.xml  # OPM の形の DOT
 ```
 
 ## ライセンス
