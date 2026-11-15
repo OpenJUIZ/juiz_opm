@@ -1,0 +1,96 @@
+Model "All Forms" {description: "Each sentence form of juiz-OPL once."}.
+
+A is an object.
+A can be s1, s2, or "almost done".
+A is initially s1 and finally s2 or "almost done".
+State s1 of A is default [status: planned].
+State s2 of A {description: "the second state"}.
+
+Alice is an environmental physical object.
+
+Animal is an object.
+Dog is an Animal.
+
+B is an object.
+B is located in C, and C contains B.
+
+Battery is an object.
+
+Bob is an environmental physical object.
+
+C is an object.
+
+Camera 2 is a physical object.
+Camera 2 consists of 2 to 4 Lens.
+Camera 2 consists of 2 to many Screw.
+Camera 2 consists of 3 Leg.
+Camera 2 consists of an optional Strap.
+Camera 2 consists of at least one Battery {ordered: true}.
+Camera 2 consists of optional Filter.
+Camera 2 exhibits Weight.
+
+Dog is an object.
+Rex is an instance of Dog.
+
+Filter is an object.
+
+Leg is an object.
+
+Lens is an object.
+
+"Model Train" is an object.
+
+P is a process {duration_min: 1, duration_expected: 2.5, duration_max: 4, duration_unit: s}.
+P consumes s1 A.
+P occurs if B exists, in which case P consumes B, otherwise P is skipped.
+P changes A from s1 to s2.
+P yields either X or Y.
+Alice handles P.
+Bob initiates and handles P.
+P requires C [arg: c, arg_index: 0, connection: push, connection_name: "c,p"].
+P invokes Q.
+P invokes itself.
+R occurs if duration of P exceeds 4 s.
+
+Q is a process {duration_min: 2, duration_max: 9, duration_unit: min}.
+Q consumes exactly one of B, C, or X.
+A initiates Q, which changes A from s2.
+Q occurs if A is s1, in which case Q changes A from s1 to "almost done", otherwise Q is skipped.
+Following path p1, Q yields Y.
+Either Alice or Bob handles Q.
+Q occurs if A is s2, otherwise Q is skipped.
+R occurs if duration of Q falls short of 2 min.
+
+R is a process.
+R zooms into P, parallel Q and S, and T, in that sequence, as well as X.
+
+Rex is an object.
+
+S is a process.
+A initiates S, which affects A.
+S affects A.
+S occurs if A exists, in which case S affects A, otherwise S is skipped.
+s2 A handles S if A is s2, otherwise S is skipped.
+S requires at least one of B or C.
+s1 A initiates S, which requires s1 A.
+
+Sarah is a physical object.
+Sarah and "Model Train" are family.
+
+Screw is an object.
+
+Strap is an object.
+
+T is a process.
+s1 A initiates T, which consumes s1 A.
+T changes A to s2.
+
+U is a process.
+U zooms into nothing, as well as A and B.
+
+Weight is an object.
+
+X is an object [role: value, datatype: juiz.Image, value: {"a":[1,2]}, rate: 0.5, use_memo: true, translation: 0.1 0 0.5, rotation: 0 0 0 1, writers: arm base, params: {"initial_value":3}, default: "x y", status: in_progress, refs: juiz#376 juiz#418].
+X zooms into Y.
+
+Y is an object.

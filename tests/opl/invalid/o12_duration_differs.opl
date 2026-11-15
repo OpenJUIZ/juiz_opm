@@ -1,0 +1,3 @@
+P is a process {duration_max: 5, duration_unit: min}.
+Q is a process.
+Q occurs if duration of P exceeds 6 min.

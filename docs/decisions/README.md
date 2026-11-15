@@ -21,3 +21,4 @@
 | [0009](0009-opm-model-crate.md) | opm_model はコアと図だけを型にし、他の名前空間は解釈せずに保って書き戻す | 採用(案。XML の名前は 0010 で決めた) |
 | [0010](0010-settle-without-dori-reply.md) | Dori 先生の返事を待たず、交換形式の名前は今の形で決める | 採用 |
 | [0011](0011-abbreviated-diagram.md) | 図は juiz の略式図 1 種類にし、何を描くかは図の作成者が選ぶ | 採用(案。Step 6 で見直す) |
+| [0012](0012-opm-opl-crate.md) | opm_opl は opm_model の型に読み、正規形の文の順で id を作る | 採用(案) |
