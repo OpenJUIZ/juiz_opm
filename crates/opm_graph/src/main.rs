@@ -10,12 +10,16 @@ use std::process::ExitCode;
 const USAGE: &str = "\
 usage:
   opm_graph [-T dot|svg|png] [--diagram <name>] [-o <out>] <file.opl | file.xml>
+  opm_graph -T opx|opz [-o <out>] <file.opl | file.xml>
 
   Draws every OPD of the model (root first), or the whole model when it has no OPD.
   -T          output format (default svg). svg and png are the abbreviated diagram
               (spec/diagram.md); dot is the OPM form as Graphviz DOT. All run Graphviz
               `dot` (or OPM_GRAPH_DOT) but dot; png also runs rsvg-convert
               (or OPM_GRAPH_RSVG).
+              opx writes the whole model, every OPD, as one OPCAT file to open in
+              OPCAT or OPCloud (spec/opx.md); opz is the same gzipped. What OPX
+              cannot hold is reported on stderr.
   --diagram   draw only the OPD of this name (SD, SD1, ...)
   -o          output file for one picture, or a directory for several
               (named <model file>.<OPD name>.<format>, or <model file>.<format>
@@ -64,11 +68,34 @@ fn run(args: Vec<String>) -> Result<(), (u8, String)> {
             _ => file = Some(PathBuf::from(a)),
         }
     }
-    if !["dot", "svg", "png"].contains(&format.as_str()) {
+    if !["dot", "svg", "png", "opx", "opz"].contains(&format.as_str()) {
         return Err(usage(format!("unknown format {:?}", format)));
     }
     let file = file.ok_or_else(|| usage("no model file".into()))?;
     let model = opm_graph::read_model(&file).map_err(|m| (1, m))?;
+    if format == "opx" || format == "opz" {
+        if diagram.is_some() {
+            return Err(usage("--diagram does not go with -T opx / opz".into()));
+        }
+        let opx = opm_graph::opx::to_opx(&model, &opm_graph::opx::Options::now());
+        for n in &opx.notes {
+            eprintln!("opm_graph: note: {}", n);
+        }
+        let bytes = if format == "opz" {
+            opm_graph::opx::gzip(&opx.xml)
+        } else {
+            opx.xml.into_bytes()
+        };
+        return match out {
+            Some(o) => std::fs::write(&o, bytes).map_err(|e| (2, format!("{}: {}", o, e))),
+            None => {
+                use std::io::Write;
+                std::io::stdout()
+                    .write_all(&bytes)
+                    .map_err(|e| (2, e.to_string()))
+            }
+        };
+    }
     // (name, is an OPD, text): DOT in the OPM form, or the abbreviated diagram in SVG
     let mut pictures: Vec<(String, bool, String)> = if format == "dot" {
         opm_graph::draw(&model)

@@ -10,6 +10,7 @@
 //! - [`dot`]: a view as Graphviz DOT, in the OPM form (§3.11) with the status colors (§3.10).
 //!   Views without juiz elements are drawn from it.
 //! - [`svg`]: the outside commands (Graphviz `dot`, `rsvg-convert`).
+//! - [`opx`]: the whole model as an OPCAT file (OPX), to open in OPCAT or OPCloud.
 //!
 //! [`draw_svg`] draws the abbreviated diagram; [`draw`] gives the DOT in the OPM form.
 //!
@@ -32,6 +33,7 @@ pub mod abbrev;
 pub mod dot;
 pub mod draw;
 pub mod layout;
+pub mod opx;
 pub mod svg;
 pub mod view;
 

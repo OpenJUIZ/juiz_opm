@@ -14,7 +14,7 @@
 | 6b | opm_graph: 略式図([spec/diagram.md](../spec/diagram.md)、0011)の juiz の記号(ポート、Container、EC、System、Transform など) | 済み(0014) |
 | 7 | juiz_opm: juiz の conf との往復と往復テスト、サンプル 4 リポジトリの題材 | 済み(0015。manifest にしかない注釈は Step 8 に回した) |
 | 8 | 動いている System からの書き出し(profile_full)。conf に無い引数・引数の順・readonly・データ型・juiz:id を埋め、J10 を検査する([spec/system.md](../spec/system.md)) | 済み(0016。cpp・haskell のスナップショットは後に回した) |
-| 9 | OPX の書き出しと OPCloud での確認 | 未着手 |
+| 9 | OPX の書き出しと OPCloud での確認 | 書き出しは済み(0017)。OPCAT で読めることを確認。OPCloud は契約が要るので未確認 |
 | 10 | Claude 用の skill、juiz 本体の `juiz opl`、公式サイト | 未着手 |
 
 題材づくり(サンプル 4 リポジトリ(spec/opm-mapping.md §7)の conf を手で juiz-OPL に書き起こす)は Step 1〜3 と並行してよい。
