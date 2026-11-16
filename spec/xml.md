@@ -281,7 +281,7 @@ python3 scripts/validate_xml.py
 - OPL の文法と、XML との相互変換の規則(Step 3)。→ [opl.md](opl.md) §10。
 - 検査器の誤りの書き方と、警告と誤りの区別の細目(Step 4)。→ §14 で決めた。
 - RDF の基底 URI と語彙(RDF を扱う Step)。
-- OPCAT の OPX との対応(Step 9)。
+- OPCAT の OPX との対応(Step 9)。→ [opx.md](opx.md)。
 
 ## 14. 読み書きと検査の実装(opm_model、Step 4)
 

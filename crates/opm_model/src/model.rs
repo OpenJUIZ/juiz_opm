@@ -301,7 +301,7 @@ impl LinkKind {
 }
 
 /// metamodel §6.1 modifier.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Modifier {
     Event,
     Condition,

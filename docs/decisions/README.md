@@ -26,3 +26,4 @@
 | [0014](0014-abbreviated-renderer.md) | 略式図は記号にまとめてから Graphviz で配置し、SVG は opm_graph が描く | 採用(案) |
 | [0015](0015-conf-round-trip.md) | conf との往復は conf だけで閉じ、正規形どうしを文字列で比べる | 採用(案) |
 | [0016](0016-system-snapshot.md) | 動いている System はスナップショットにしてから書き出し、manifest にしかないものを足す | 採用(案) |
+| [0017](0017-opx-export.md) | OPX は opm_graph が書き出し、OPD の無いモデルには OPD を作ってから書く | 採用(案。OPCloud で確かめて見直す) |

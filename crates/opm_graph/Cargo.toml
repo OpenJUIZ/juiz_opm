@@ -13,7 +13,11 @@ categories = ["visualization", "command-line-utilities"]
 [dependencies]
 opm_model = { path = "../opm_model" }
 opm_opl = { path = "../opm_opl" }
+flate2 = "1"
 
 [[bin]]
 name = "opm_graph"
 path = "src/main.rs"
+
+[dev-dependencies]
+roxmltree = "0.21"

@@ -135,7 +135,7 @@ State を端に取るリンク(状態を指定した consumption など)は、so
 - 状態変化は 1 本の effect に `from_state` と `to_state` を付けて持つ(ISO の input link と output link の組を 1 本にまとめる)。どちらかだけでもよい。1 つの文(P changes A from s1 to s2.)が 1 本のリンクに対応する。
 - 状態を指定した consumption・result・instrument・agent は、source / target に State を書く。
 - invocation は source と target が同じ Process でもよい。ISO 19450:2024 §9.5.2.5.2 の self-invocation link(図では戻りの矢印、OPL は「P invokes itself.」)で、繰り返し(ループ)はこれで表す。別の kind にはせず、source と target が同じことで見分ける。
-- OPCAT は overtime と undertime を区別せず 309 にまとめている。書き出すときの扱いは Step 9 で決める。
+- OPCAT は overtime と undertime を区別せず 309 にまとめている。OPX にはどちらも 309 と書く([0017](../docs/decisions/0017-opx-export.md)、[opx.md](opx.md) §4.2)。
 
 ### 6.3 構造リンク
 
@@ -148,7 +148,7 @@ State を端に取るリンク(状態を指定した consumption など)は、so
 | tagged | tagged structural link | 始点 → 終点 | 何でも | tag 1、backward_tag 0..1 | A relates to B. | 205(backward_tag ありは 206) | Transform |
 
 - tagged で backward_tag があるものは双方向(ISO の bidirectional / reciprocal)。backward_tag が tag と同じなら reciprocal。
-- OPCAT の relation の source / destination の向きが全体・部分のどちらかは、Step 9 で例のファイルを見て確かめる。
+- OPCAT の relation の source は、aggregation・generalization・classification とも全体・一般・型の側で、この表と同じ向き(OPCAT の例のファイルで確かめた。[opx.md](opx.md) §4.2)。
 
 ### 6.4 Fan(論理の束ね)
 
