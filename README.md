@@ -4,6 +4,23 @@
 
 Specifications and tools for describing, exchanging and drawing juiz system models with OPM (Object-Process Methodology, ISO 19450).
 
+## 使い方
+
+コマンドは `juiz_opm` 1 本です。[Releases](https://github.com/OpenJUIZ/juiz_opm/releases) の配布物を使うか、`cargo install --git https://github.com/OpenJUIZ/juiz_opm juiz_opm` で入れます。
+
+```sh
+juiz_opm from-conf my_system.conf -o my_system.opl   # juiz の conf から juiz-OPL
+juiz_opm check my_system.opl                         # OPM と juiz の規則で検査
+juiz_opm draw my_system.opl > my_system.svg          # 略式図(Graphviz が要る)
+juiz_opm opx my_system.opl -o my_system.opz          # OPCAT・OPCloud 向け
+```
+
+通しの手順とコマンドの一覧は [docs/usage.md](docs/usage.md) にあります。
+
+### In English
+
+`juiz_opm` turns juiz confs (or a running juiz System) into OPM models written in juiz-OPL or the interchange XML, checks them against the OPM and juiz rules, draws them as diagrams (SVG / PNG through Graphviz), and exports them as OPCAT files (OPX) for OPCAT and OPCloud. Install a release archive or run `cargo install --git https://github.com/OpenJUIZ/juiz_opm juiz_opm`; `juiz_opm --help` lists the commands. The documents in this repository are written in Japanese; the OPL itself is English.
+
 ## 状態
 
 仕様づくりと道具づくりの段階です。交換形式の XML スキーマと検証スクリプト、juiz-OPL の文法、交換形式を読み書きして検査する opm_model クレート、juiz-OPL を読み書きして検査する opm_opl クレート、モデルを図や OPX にする opm_graph クレート、juiz の conf と相互に変換する juiz_opm クレートがあります。
@@ -30,6 +47,7 @@ Specifications and tools for describing, exchanging and drawing juiz system mode
 | [tests/opl/](tests/opl/) | OPL の文の形をすべて使う例と、誤りの例 |
 | [docs/decisions/](docs/decisions/) | 決めたことの記録(1 件 1 ファイル) |
 | [docs/research/](docs/research/) | 先行例の調査(OPCAT の保存形式など) |
+| [docs/usage.md](docs/usage.md) | 使い方(入れ方、conf から図・OPX までの手順、コマンドの一覧) |
 | [docs/roadmap.md](docs/roadmap.md) | 今後の作業の順番 |
 
 道具(Rust の workspace、`crates/` に置く):
@@ -39,7 +57,7 @@ Specifications and tools for describing, exchanging and drawing juiz system mode
 | opm_model | OPM のメタモデル、交換用 XML の読み書き、コアの規則の検査 | あり(Step 4) |
 | opm_opl | OPL の解析・検査・正規形での出力、XML との変換(コマンド `opm_opl`) | あり(Step 5) |
 | opm_graph | 略式図の SVG / PNG と、OPM の形の DOT の描画、OPCAT・OPCloud 向けの OPX の書き出し(コマンド `opm_graph`) | あり(Step 6、9) |
-| juiz_opm | juiz の conf と juiz-OPL・XML の相互変換、動いている System からの書き出し、juiz の規則 J1〜J13 の検査(コマンド `juiz_opm`) | あり(Step 7、8) |
+| juiz_opm | juiz の conf と juiz-OPL・XML の相互変換、動いている System からの書き出し、juiz の規則 J1〜J13 の検査。他のクレートのコマンドもまとめた `juiz_opm` コマンド | あり(Step 7、8、0018) |
 
 ## ライセンス
 

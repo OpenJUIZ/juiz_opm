@@ -30,6 +30,7 @@
 //! ```
 
 pub mod abbrev;
+pub mod cli;
 pub mod dot;
 pub mod draw;
 pub mod layout;

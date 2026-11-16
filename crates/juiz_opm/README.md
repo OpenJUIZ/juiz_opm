@@ -16,7 +16,7 @@ assert!(juiz_opm::check(&model).is_empty());                        // J1〜J13
 juiz_opm::round_trip(&text)?;                                       // conf → OPL / XML → conf
 ```
 
-コマンド:
+コマンド(`juiz_opm opl ...`・`draw`・`opx` で opm_opl・opm_graph も使える。全体の使い方は [docs/usage.md](../../docs/usage.md)):
 
 ```sh
 cargo run -p juiz_opm -- from-conf tests/conf/juiz_examples_rust/control_loop.conf > control_loop.opl
