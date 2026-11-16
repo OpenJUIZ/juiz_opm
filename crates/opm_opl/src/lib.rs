@@ -17,6 +17,7 @@
 //! ```
 
 pub mod build;
+pub mod cli;
 pub mod diag;
 pub mod json;
 pub mod juiz;

@@ -202,6 +202,7 @@ checksum = "3bd1574e617a9a6c1f8f8181bd7e841e1f20e4277607ef28945765188d6284d4"
 name = "juiz_opm"
 version = "0.1.0"
 dependencies = [
+ "opm_graph",
  "opm_model",
  "opm_opl",
  "serde_json",

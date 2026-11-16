@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT OR Apache-2.0
 // Copyright (c) ysuga
 
-//! `juiz_opm`: convert juiz confs to and from juiz-OPL / XML, and check the juiz rules.
+//! `juiz_opm`: the one command of the tools (decision 0018). It converts juiz confs to and
+//! from juiz-OPL / XML and checks the juiz rules itself, and runs `opm_opl` as `juiz_opm opl`
+//! and `opm_graph` as `juiz_opm draw`.
 
 use std::path::Path;
 use std::process::ExitCode;
@@ -11,6 +13,7 @@ use opm_model::Model;
 
 const USAGE: &str = "\
 usage:
+  juiz:
   juiz_opm from-conf [--xml] [--system <snapshot.json>] <file.conf> [-o <out>]
                                   conf to juiz-OPL (or the XML with --xml); with --system,
                                   add what the running System says (spec/system.md)
@@ -28,6 +31,18 @@ usage:
   juiz_opm round-trip <file.conf>...
                                   conf -> OPL -> conf must give the canonical conf
 
+  OPM (any model, juiz or not):
+  juiz_opm opl check|fmt|to-xml|from-xml ...
+                                  check and format juiz-OPL, convert to and from the XML
+                                  (`juiz_opm opl --help`; the same as `opm_opl`)
+  juiz_opm draw [-T svg|png|dot|opx|opz] [--diagram <name>] [-o <out>] <file.opl|file.xml>
+                                  draw the OPDs (`juiz_opm draw --help`; the same as
+                                  `opm_graph`)
+  juiz_opm opx <file.opl|file.xml> [-o <out.opx|out.opz>]
+                                  the model as an OPCAT file for OPCAT / OPCloud
+                                  (.opz is gzipped; the same as `draw -T opx|opz`)
+  juiz_opm --version
+
 exit status: 0 ok, 1 errors found, 2 bad usage or I/O error";
 
 fn main() -> ExitCode {
@@ -37,6 +52,13 @@ fn main() -> ExitCode {
         return ExitCode::from(2);
     };
     let r = match cmd.as_str() {
+        "opl" => return opm_opl::cli::run("juiz_opm opl", rest.to_vec()),
+        "draw" => return opm_graph::cli::run("juiz_opm draw", rest.to_vec()),
+        "opx" => return opm_graph::cli::run("juiz_opm draw", opx_args(rest)),
+        "-V" | "--version" | "version" => {
+            println!("juiz_opm {}", env!("CARGO_PKG_VERSION"));
+            Ok(true)
+        }
         "from-conf" => from_conf(rest),
         "fetch" => fetch(rest),
         "from-system" => from_system(rest),
@@ -58,6 +80,24 @@ fn main() -> ExitCode {
             ExitCode::from(2)
         }
     }
+}
+
+/// `opx <file> [-o <out>]` as the arguments of `draw`: `-T opz` when the output ends in
+/// `.opz`, `-T opx` otherwise.
+fn opx_args(rest: &[String]) -> Vec<String> {
+    let mut it = rest.iter();
+    let mut opz = false;
+    while let Some(a) = it.next() {
+        if a == "-o" {
+            opz = it.next().is_some_and(|o| o.ends_with(".opz"));
+        }
+    }
+    let mut v = vec![
+        "-T".to_string(),
+        if opz { "opz" } else { "opx" }.to_string(),
+    ];
+    v.extend(rest.iter().cloned());
+    v
 }
 
 struct Args {

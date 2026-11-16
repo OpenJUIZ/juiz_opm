@@ -13,6 +13,7 @@ categories = ["command-line-utilities", "encoding"]
 [dependencies]
 opm_model = { path = "../opm_model" }
 opm_opl = { path = "../opm_opl" }
+opm_graph = { path = "../opm_graph" }
 serde_json = { version = "1", features = ["preserve_order"] }
 serde_yaml = "0.9"
 ureq = { version = "2", default-features = false, features = ["json"] }
